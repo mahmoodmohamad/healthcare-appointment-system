@@ -114,7 +114,7 @@ Before installation, ensure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/healthcare-appointment-system.git
+git clone https://github.com/mahmoodmohamad/healthcare-appointment-system.git
 cd healthcare-appointment-system
 ```
 
@@ -407,26 +407,7 @@ Contributions are welcome! Please follow these steps:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-MIT License
-
-Copyright (c) 2024 [Your Name]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-```
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for the complete terms.
 
 ---
 
@@ -472,7 +453,24 @@ For production deployment in healthcare:
 
 If you found this project helpful, please give it a ⭐️!
 
-For support, email your.email@example.com or open an issue on GitHub.
+## Appointments API
+
+The project includes an authenticated REST API for appointment booking and management. It supports paginated listing, booking, viewing, rescheduling, completion, and cancellation with role-aware access control.
+
+See the complete API contract in [`docs/api/appointments.md`](docs/api/appointments.md).
+
+```text
+GET    /api/appointments
+POST   /api/appointments
+GET    /api/appointments/{appointment}
+PUT    /api/appointments/{appointment}
+PATCH  /api/appointments/{appointment}
+DELETE /api/appointments/{appointment}
+```
+
+The API uses Laravel Sanctum bearer authentication and returns JSON responses with validation errors, authorization responses, and appointment resources.
+
+For support, open an issue on GitHub with a reproducible description of the problem.
 
 ---
 

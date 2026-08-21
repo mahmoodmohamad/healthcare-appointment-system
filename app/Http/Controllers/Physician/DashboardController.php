@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\physician;
+namespace App\Http\Controllers\Physician;
 
 
 use Illuminate\Routing\Controller;
