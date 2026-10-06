@@ -2,63 +2,25 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
+use App\Models\Appointment;
+use App\Policies\AppointmentPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-         \App\Models\Appointment::class => \App\Policies\AppointmentPolicy::class,
+        Appointment::class => AppointmentPolicy::class,
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
     public function boot()
     {
         $this->registerPolicies();
 
-
-        Auth::viaRequest('patient', function (Request $request) {
-            return ($request->user() && $request->user()->isPatient()) ?
-                $request->user() : null;
-        });
-
-        Auth::viaRequest('doctor', function (Request $request) {
-            return ($request->user() && $request->user()->isDoctor()) ?
-                $request->user() : null;
-        });
-        Auth::viaRequest('radiologist', function (Request $request) {
-            return ($request->user() && $request->user()->isRadiologist()) ?
-                $request->user() : null;
-        });
-        Auth::viaRequest('LabSpecialist', function (Request $request) {
-            return ($request->user() && $request->user()->isLabSpecialist()) ?
-                $request->user() : null;
-        });
-        Auth::viaRequest('receptionist', function (Request $request) {
-            return ($request->user() && $request->user()->isReceptionist()) ?
-                $request->user() : null;
-        });
-
-        Auth::viaRequest('clinicManger', function (Request $request) {
-            return ($request->user() && $request->user()->isClinicManger()) ?
-                $request->user() : null;
-        });
-
-        Auth::viaRequest('admin', function (Request $request) {
-            return ($request->user() && $request->user()->isAdmin()) ?
-                $request->user() : null;
+        // Admin bypass. Must return null (not false) for everyone else,
+        // otherwise every policy check is denied.
+        Gate::before(function ($user) {
+            return $user->isAdmin() ? true : null;
         });
     }
 }

@@ -1,182 +1,123 @@
 <?php
 
-namespace App\Http\Controllers\Appointment;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\{Appointment, Doctor, Patient};
+use App\Http\Requests\Api\StoreAppointmentRequest;
+use App\Http\Requests\Api\UpdateAppointmentRequest;
+use App\Http\Resources\AppointmentResource;
+use App\Models\Appointment;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
+/**
+ * All authorization goes through AppointmentPolicy
+ * (same rules as the web routes).
+ */
 class AppointmentController extends Controller
 {
-    // List all appointments
+    private const WITH = ['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis'];
+
     public function index(Request $request)
     {
-        $query = Appointment::with(['patient.user', 'doctor.user', 'receptionist.user']);
+        $this->authorize('viewAny', Appointment::class);
 
-        // Filter by status
-        if ($status = $request->status) {
-            $query->where('status', $status);
+        $user = $request->user();
+
+        $query = Appointment::query()
+            ->with(self::WITH)
+            ->latest('appointment_date')
+            ->latest('appointment_time');
+
+        if ($user->isDoctor()) {
+            $query->where('doctor_id', $user->doctor->id);
+        } elseif ($user->isPatient()) {
+            $query->where('patient_id', $user->patient->id);
         }
 
-        // Filter by date
-        if ($date = $request->date) {
-            $query->whereDate('appointment_date', $date);
+        $query->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')->toString()));
+        $query->when($request->filled('date'), fn ($q) => $q->whereDate('appointment_date', $request->date('date')));
+
+        return AppointmentResource::collection($query->paginate(15));
+    }
+
+    public function store(StoreAppointmentRequest $request): JsonResponse
+    {
+        $this->authorize('create', Appointment::class);
+
+        $data = $request->validated();
+
+        if (! Appointment::isAvailable($data['doctor_id'], $data['appointment_date'], $data['appointment_time'])) {
+            return $this->slotTaken();
         }
 
-        $appointments = $query->latest('appointment_date')->paginate(15);
-
-        return view('appointments.index', compact('appointments'));
-    }
-
-    // Show create form
-    public function create()
-    {
-        $doctors = Doctor::with('user')->get();
-        $patients = Patient::with('user')->get();
-        
-        return view('appointments.create', compact('doctors', 'patients'));
-    }
-
-    // Store appointment
-    public function store(Request $request)
-    {
-        $request->validate([
-            'patient_id' => 'required|exists:patients,id',
-            'doctor_id' => 'required|exists:doctors,id',
-            'appointment_date' => 'required|date|after_or_equal:today',
-            'appointment_time' => 'required|date_format:H:i',
+        $appointment = Appointment::create([
+            ...$data,
+            'receptionist_id'  => optional($request->user()->receptionist)->id,
+            'appointment_date' => Carbon::parse($data['appointment_date'] . ' ' . $data['appointment_time']),
+            'status'           => 'scheduled',
         ]);
 
-        // Check availability
-        $available = Appointment::isAvailable(
-            $request->doctor_id,
-            $request->appointment_date,
-            $request->appointment_time
-        );
+        return (new AppointmentResource($appointment->load(self::WITH)))
+            ->response()
+            ->setStatusCode(201);
+    }
 
-        if (!$available) {
-            return back()
-                ->withErrors(['appointment_time' => 'This time slot is already booked.'])
-                ->withInput();
+    public function show(Appointment $appointment): AppointmentResource
+    {
+        $this->authorize('view', $appointment);
+
+        return new AppointmentResource($appointment->load(self::WITH));
+    }
+
+    public function update(UpdateAppointmentRequest $request, Appointment $appointment): JsonResponse|AppointmentResource
+    {
+        $this->authorize('manage', $appointment);
+
+        $user = $request->user();
+        $data = $request->validated();
+
+        // A doctor may only change status / notes, never reassign or reschedule
+        if (! ($user->isAdmin() || $user->isReceptionist())) {
+            $data = Arr::only($data, ['status', 'notes']);
         }
 
-        // Combine date and time into appointment_date
-        $appointmentDateTime = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
+        if (Arr::hasAny($data, ['doctor_id', 'appointment_date', 'appointment_time'])) {
+            $doctorId = (int) ($data['doctor_id'] ?? $appointment->doctor_id);
+            $date     = isset($data['appointment_date'])
+                ? Carbon::parse($data['appointment_date'])->format('Y-m-d')
+                : $appointment->appointment_date->format('Y-m-d');
+            $time     = $data['appointment_time'] ?? substr($appointment->appointment_time, 0, 5);
 
-        Appointment::create([
-            'patient_id' => $request->patient_id,
-            'doctor_id' => $request->doctor_id,
-            'receptionist_id' => auth()->user()->receptionist->id ?? null,
-            'appointment_date' => $appointmentDateTime,
-            'appointment_time' => $request->appointment_time,
-            'status' => 'scheduled',
-            'notes' => $request->notes,
-        ]);
-
-        return redirect()->route('appointments.index')
-            ->with('success', 'Appointment booked successfully!');
-    }
-
-    // Show single appointment
-    public function show(Appointment $appointment)
-    {
-        $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
-        
-        return view('appointments.show', compact('appointment'));
-    }
-
-    // Cancel appointment
-    public function destroy(Appointment $appointment)
-    {
-        $appointment->update(['status' => 'cancelled']);
-        
-        return redirect()->route('appointments.index')
-            ->with('success', 'Appointment cancelled successfully!');
-    }
-
-    // ✅ Calendar view - Fixed method name
-    public function calendar(Request $request)
-    {
-        $month = $request->get('month', now()->month);
-        $year = $request->get('year', now()->year);
-        
-        $date = Carbon::create($year, $month, 1);
-        $startDate = $date->copy()->startOfMonth()->startOfWeek();
-        $endDate = $date->copy()->endOfMonth()->endOfWeek();
-        
-        // Get appointments for this month
-        $appointmentsQuery = Appointment::with(['patient.user', 'doctor.user'])
-            ->whereBetween('appointment_date', [$startDate, $endDate]);
-
-        // Filter by doctor if requested
-        if ($doctorId = $request->get('doctor_id')) {
-            $appointmentsQuery->where('doctor_id', $doctorId);
-        }
-
-        $appointments = $appointmentsQuery->get()
-            ->groupBy(function($appointment) {
-                return $appointment->appointment_date->format('Y-m-d');
-            });
-        
-        // Get doctors for filter
-        $doctors = Doctor::with('user')->get();
-        
-        return view('appointments.calendar', compact('appointments', 'date', 'doctors'));
-    }
-    
-    // Get appointments by date (for AJAX)
-    public function getAppointments(Request $request)
-    {
-        $date = $request->get('date');
-        $doctorId = $request->get('doctor_id');
-        
-        $query = Appointment::with(['patient.user', 'doctor.user'])
-            ->whereDate('appointment_date', $date);
-        
-        if ($doctorId) {
-            $query->where('doctor_id', $doctorId);
-        }
-        
-        $appointments = $query->orderBy('appointment_time')->get();
-        
-        return response()->json($appointments);
-    }
-
-    // ✅ NEW: Get available time slots
-    public function getAvailableSlots(Request $request)
-    {
-        $doctorId = $request->doctor_id;
-        $date = $request->date;
-
-        // Define working hours (you can move this to config or database)
-        $workingHours = [
-            ['start' => '09:00', 'end' => '12:00'],
-            ['start' => '14:00', 'end' => '17:00'],
-        ];
-
-        // Get booked slots
-        $bookedSlots = Appointment::where('doctor_id', $doctorId)
-            ->whereDate('appointment_date', $date)
-            ->where('status', '!=', 'cancelled')
-            ->pluck('appointment_time')
-            ->toArray();
-
-        // Generate available slots
-        $availableSlots = [];
-        foreach ($workingHours as $hours) {
-            $current = Carbon::parse($hours['start']);
-            $end = Carbon::parse($hours['end']);
-
-            while ($current < $end) {
-                $timeSlot = $current->format('H:i');
-                if (!in_array($timeSlot, $bookedSlots)) {
-                    $availableSlots[] = $timeSlot;
-                }
-                $current->addMinutes(30); // 30-minute slots
+            if (! Appointment::isAvailable($doctorId, $date, $time, $appointment->id)) {
+                return $this->slotTaken();
             }
+
+            $data['appointment_date'] = Carbon::parse("$date $time");
+            $data['appointment_time'] = $time;
         }
 
-        return response()->json($availableSlots);
+        $appointment->update($data);
+
+        return new AppointmentResource($appointment->load(self::WITH));
+    }
+
+    public function destroy(Appointment $appointment): JsonResponse
+    {
+        $this->authorize('delete', $appointment);
+
+        $appointment->update(['status' => 'cancelled']);
+
+        return response()->json(['message' => 'Appointment cancelled successfully.']);
+    }
+
+    private function slotTaken(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'The selected doctor is not available at this time.',
+            'errors'  => ['appointment_time' => ['This time slot is already booked.']],
+        ], 422);
     }
 }

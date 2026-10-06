@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -16,27 +18,41 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
-        $credentials = $request->only('email','password');
-        $remember = $request->has('remember');
+        $credentials = $request->only('email', 'password');
+        $remember = $request->boolean('remember');
 
-        if(Auth::attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-
-            // Redirect based on role
-            $user = Auth::user();
-            if($user->isAdmin()) return redirect()->route('admin.dashboard');
-            if($user->isDoctor()) return redirect()->route('doctor.dashboard');
-            if($user->isReceptionist()) return redirect()->route('receptionist.dashboard');
-            if($user->isPatient()) return redirect()->route('patient.dashboard');
-
-            return redirect()->intended('/');
+        // Tell a deactivated user why (only if the password is correct)
+        $user = User::where('email', $credentials['email'])->first();
+        if ($user && ! $user->activation && Hash::check($credentials['password'], $user->password)) {
+            return back()
+                ->with('error', 'Your account is deactivated. Please contact the administrator.')
+                ->withInput($request->only('email'));
         }
 
-        return back()->with('error', 'Invalid credentials')->withInput();
+        if (Auth::attempt($credentials + ['activation' => true], $remember)) {
+            $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            if ($user->isAdmin())        return redirect()->route('admin.dashboard');
+            if ($user->isDoctor())       return redirect()->route('doctor.dashboard');
+            if ($user->isReceptionist()) return redirect()->route('receptionist.dashboard');
+            if ($user->isPatient())      return redirect()->route('patient.dashboard');
+
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect()->route('login')->with('error', 'Your account has no assigned role.');
+        }
+
+        return back()
+            ->with('error', 'Invalid credentials')
+            ->withInput($request->only('email'));
     }
 
     public function logout(Request $request)
@@ -44,6 +60,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 }
