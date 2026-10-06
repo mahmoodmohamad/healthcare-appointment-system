@@ -13,39 +13,30 @@ use Illuminate\Support\Facades\DB;
  */
 class DoctorController extends Controller
 {
-    public function appointments(Request $request)
-    {
-        $doctor = auth()->user()->doctor;
+   public function appointments(Request $request)
+{
+    $validated = $request->validate([
+        'status' => ['nullable', 'in:scheduled,completed,cancelled'],
+        'date'   => ['nullable', 'date'],
+        'filter' => ['nullable', 'in:today,upcoming,past'],
+    ]);
 
-        $query = $doctor->appointments()->with(['patient.user', 'diagnosis']);
+    $appointments = auth()->user()->doctor
+        ->appointments()
+        ->with(['patient.user', 'diagnosis'])
+        ->when($validated['status'] ?? null, fn ($q, $status) => $q->where('status', $status))
+        ->when($validated['date'] ?? null, fn ($q, $date) => $q->whereDate('appointment_date', $date))
+        ->when($validated['filter'] ?? null, fn ($q, $filter) => match ($filter) {
+            'today'    => $q->whereDate('appointment_date', today()),
+            'upcoming' => $q->where('appointment_date', '>', now()),
+            'past'     => $q->where('appointment_date', '<', now()),
+        })
+        ->pendingFirst()
+        ->paginate(15)
+        ->withQueryString();
 
-        if ($status = $request->status) {
-            $query->where('status', $status);
-        }
-
-        if ($date = $request->date) {
-            $query->whereDate('appointment_date', $date);
-        }
-
-        switch ($request->filter) {
-            case 'today':
-                $query->whereDate('appointment_date', today());
-                break;
-            case 'upcoming':
-                $query->where('appointment_date', '>', now());
-                break;
-            case 'past':
-                $query->where('appointment_date', '<', now());
-                break;
-        }
-
-        $appointments = $query->orderByDesc('appointment_date')
-            ->orderByDesc('appointment_time')
-            ->paginate(15);
-
-        return view('doctor.appointments.index', compact('appointments'));
-    }
-
+    return view('doctor.appointments.index', compact('appointments'));
+}
     public function showAppointment(Appointment $appointment)
     {
         $appointment->load(['patient.user', 'patient.city', 'diagnosis']);

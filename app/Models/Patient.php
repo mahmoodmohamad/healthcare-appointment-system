@@ -74,8 +74,12 @@ class Patient extends Model
 protected static function booted(): void
 {
     static::addGlobalScope('doctor', function ($q) {
-        if (auth()->check() && auth()->user()->doctor) {
-            $q->where('doctor_id', auth()->user()->doctor->id);
+        $user = auth()->user();
+
+        if ($user && $user->doctor) {
+            $q->whereHas('appointments', function ($a) use ($user) {
+                $a->where('doctor_id', $user->doctor->id);
+            });
         }
     });
 }

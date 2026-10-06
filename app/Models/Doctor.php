@@ -42,9 +42,16 @@ class Doctor extends Model
     }
 
     public function diagnoses()
-    {
-        return $this->hasMany(Diagnosis::class);
-    }
+{
+    return $this->hasManyThrough(
+        Diagnosis::class,
+        Appointment::class,
+        'doctor_id',       // FK on appointments
+        'appointment_id',  // FK on diagnoses
+        'id',
+        'id'
+    );
+}
 
     public function todayAppointments()
     {

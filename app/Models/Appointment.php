@@ -114,4 +114,13 @@ class Appointment extends Model
         }
         return $this->appointment_date;
     }
+  
+public function scopePendingFirst($query)
+{
+    return $query
+        ->withExists('diagnosis')
+        ->orderBy('diagnosis_exists')
+        ->orderBy('appointment_date')
+        ->orderBy('appointment_time');
+}
 }
