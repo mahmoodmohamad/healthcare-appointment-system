@@ -70,7 +70,7 @@ class AppointmentController extends Controller
             ], 422);
         }
 
-        $appointment = Appointment::create([
+        $appointment = Appointment::book([
             ...$data,
             'receptionist_id' => optional($user->receptionist)->id,
             'appointment_date' => Carbon::parse(
@@ -134,7 +134,12 @@ class AppointmentController extends Controller
             $data['appointment_time'] = $time;
         }
 
-        $appointment->update($data);
+        try {
+            $appointment->update($data);
+        } catch (\Illuminate\Database\QueryException $e) {
+            throw Appointment::translateSlotConflict($e);
+        }
+
         $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
 
         return new AppointmentResource($appointment);

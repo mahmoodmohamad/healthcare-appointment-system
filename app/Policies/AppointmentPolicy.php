@@ -15,7 +15,7 @@ class AppointmentPolicy
      */
     public function before(User $user)
     {
-        if ($user->hasRole('admin')) {
+        if ($user->isAdmin()) {
             return true;
         }
     }
@@ -25,8 +25,8 @@ class AppointmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('receptionist')
-            || $user->hasRole('doctor');
+        return $user->isReceptionist()
+            || $user->isDoctor();
     }
 
     /**
@@ -35,12 +35,12 @@ class AppointmentPolicy
     public function view(User $user, Appointment $appointment): bool
     {
         // Doctor can view his own appointments
-        if ($user->hasRole('doctor')) {
+        if ($user->isDoctor()) {
             return $appointment->doctor_id === $user->doctor?->id;
         }
 
         // Receptionist can view appointments she created
-        if ($user->hasRole('receptionist')) {
+        if ($user->isReceptionist()) {
             return $appointment->receptionist_id === $user->receptionist?->id;
         }
 
@@ -52,7 +52,7 @@ class AppointmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('receptionist');
+        return $user->isReceptionist();
     }
 
     /**
@@ -61,7 +61,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        return $user->hasRole('doctor')
+        return $user->isDoctor()
             && $appointment->doctor_id === $user->doctor?->id
             && $appointment->status !== 'cancelled';
     }
@@ -71,7 +71,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        return $user->hasRole('receptionist')
+        return $user->isReceptionist()
             && $appointment->receptionist_id === $user->receptionist?->id
             && $appointment->status !== 'completed';
     }

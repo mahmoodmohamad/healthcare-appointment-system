@@ -58,7 +58,7 @@ class DoctorController extends Controller
      */
     public function showAppointment(Appointment $appointment)
     {
-        
+        $this->authorize('view', $appointment);
 
         $appointment->load(['patient.user', 'patient.city', 'diagnosis']);
 
@@ -71,7 +71,7 @@ class DoctorController extends Controller
      */
     public function createDiagnosis(Appointment $appointment)
     {
-        
+        $this->authorize('update', $appointment);
 
         if ($appointment->diagnosis) {
             return redirect()
@@ -86,40 +86,41 @@ class DoctorController extends Controller
     /**
      * Store diagnosis
      */
-    public function storeDiagnosis(Request $request, Appointment $appointment)
-    {
-        $this->authorize('update', $appointment);
+   public function storeDiagnosis(Request $request, Appointment $appointment)
+{
+    $this->authorize('update', $appointment);
 
-        if ($appointment->diagnosis) {
-            return redirect()->back()->with('error', 'Diagnosis already exists');
+    $request->validate([
+        'symptoms'     => 'required|string',
+        'diagnosis'    => 'required|string',
+        'prescription' => 'nullable|string',
+        'notes'        => 'nullable|string',
+    ]);
+
+    DB::transaction(function () use ($request, $appointment) {
+        $locked = Appointment::lockForUpdate()->findOrFail($appointment->id);
+
+        if ($locked->diagnosis()->exists()) {
+            throw ValidationException::withMessages([
+                'diagnosis' => 'Diagnosis already exists.',
+            ]);
         }
 
-        $request->validate([
-            'symptoms' => 'required|string',
-            'diagnosis' => 'required|string',
-            'prescription' => 'nullable|string',
-            'notes' => 'nullable|string',
+        $locked->complete(); 
+
+        Diagnosis::create([
+            'appointment_id' => $locked->id,
+            'symptoms'       => $request->symptoms,
+            'diagnosis'      => $request->diagnosis,
+            'prescription'   => $request->prescription,
+            'notes'          => $request->notes,
         ]);
+    });
 
-        DB::transaction(function () use ($request, $appointment) {
-            Diagnosis::create([
-                'appointment_id' => $appointment->id,
-                'patient_id' => $appointment->patient_id,
-                'doctor_id' => $appointment->doctor_id,
-                'symptoms' => $request->symptoms,
-                'diagnosis' => $request->diagnosis,
-                'prescription' => $request->prescription,
-                'notes' => $request->notes,
-            ]);
-
-            $appointment->update(['status' => 'completed']);
-        });
-
-        return redirect()
-            ->route('doctor.appointments.show', $appointment)
-            ->with('success', 'Diagnosis saved successfully!');
-    }
-
+    return redirect()
+        ->route('doctor.appointments.show', $appointment)
+        ->with('success', 'Diagnosis saved successfully!');
+}
 
     /**
      * View patient medical history
@@ -127,6 +128,12 @@ class DoctorController extends Controller
     public function patientHistory(Patient $patient)
     {
         $doctor = auth()->user()->doctor;
+
+        // A doctor may only view patients he has appointments with
+        abort_unless(
+            $patient->appointments()->where('doctor_id', $doctor->id)->exists(),
+            403
+        );
 
         // Get all appointments for this patient with this doctor
         $appointments = $patient->appointments()

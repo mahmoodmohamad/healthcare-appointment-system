@@ -60,9 +60,5 @@ class AuthServiceProvider extends ServiceProvider
             return ($request->user() && $request->user()->isAdmin()) ?
                 $request->user() : null;
         });
-
-        Gate::before(function ($user) {
-            return $user->first_name === 'admin';
-        });
     }
 }

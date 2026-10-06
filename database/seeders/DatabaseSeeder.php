@@ -266,6 +266,10 @@ class DatabaseSeeder extends Seeder
                     default => rand(0, 10) === 0 ? 'cancelled' : 'completed'
                 };
 
+                if (! Appointment::isAvailable($doctor->id, $appointmentDate->toDateString(), $appointmentTime)) {
+                    continue; // slot already taken (unique index would reject it)
+                }
+
                 $appointment = Appointment::create([
                     'patient_id' => $patient->id,
                     'doctor_id' => $doctor->id,

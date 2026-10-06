@@ -26,6 +26,8 @@ return new class extends Migration
         'cancelled'
     ])->default('scheduled');
     $table->text('notes')->nullable();
+     $table->string('slot_lock', 40)->nullable()->unique()
+            ->storedAs("IF(status = 'cancelled', NULL, CONCAT(doctor_id, '-', DATE(appointment_date), '-', appointment_time))");
     $table->timestamps();
         });
     }
