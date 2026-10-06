@@ -29,18 +29,18 @@
                             @enderror
                         </div>
 
-                        <!-- Physician Selection -->
+                        <!-- Doctor Selection -->
                         <div class="mb-3">
-                            <label for="physician_id" class="form-label">Physician *</label>
-                            <select name="physician_id" id="physician_id" class="form-select @error('physician_id') is-invalid @enderror" required>
-                                <option value="">Select Physician</option>
-                                @foreach($physicians as $physician)
-                                    <option value="{{ $physician->id }}" {{ old('physician_id') == $physician->id ? 'selected' : '' }}>
-                                        Dr. {{ $physician->user->name }} - {{ $physician->specialization }}
+                            <label for="doctor_id" class="form-label">Doctor *</label>
+                            <select name="doctor_id" id="doctor_id" class="form-select @error('doctor_id') is-invalid @enderror" required>
+                                <option value="">Select Doctor</option>
+                                @foreach($doctors as $doctor)
+                                    <option value="{{ $doctor->id }}" {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
+                                        Dr. {{ $doctor->user->name }} - {{ $doctor->specialization }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('physician_id')
+                            @error('doctor_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -117,20 +117,20 @@
 
 @section('scripts')
 <script>
-// Optional: Load available slots dynamically when physician and date are selected
+// Optional: Load available slots dynamically when doctor and date are selected
 document.addEventListener('DOMContentLoaded', function() {
-    const physicianSelect = document.getElementById('physician_id');
+    const doctorSelect = document.getElementById('doctor_id');
     const dateInput = document.getElementById('appointment_date');
     const timeSelect = document.getElementById('appointment_time');
 
     function loadAvailableSlots() {
-        const physicianId = physicianSelect.value;
+        const doctorId = doctorSelect.value;
         const date = dateInput.value;
 
-        if (physicianId && date) {
+        if (doctorId && date) {
             // You can implement AJAX call to getAvailableSlots here
-            console.log('Loading slots for physician:', physicianId, 'on date:', date);
-            // fetch(`/appointments/available-slots?physician_id=${physicianId}&date=${date}`)
+            console.log('Loading slots for doctor:', doctorId, 'on date:', date);
+            // fetch(`/appointments/available-slots?doctor_id=${doctorId}&date=${date}`)
             //     .then(response => response.json())
             //     .then(slots => {
             //         // Update time select with available slots
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    physicianSelect.addEventListener('change', loadAvailableSlots);
+    doctorSelect.addEventListener('change', loadAvailableSlots);
     dateInput.addEventListener('change', loadAvailableSlots);
 });
 </script>

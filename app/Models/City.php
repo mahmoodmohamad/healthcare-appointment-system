@@ -21,14 +21,14 @@ class City extends Model
         return $this->hasMany(Patient::class);
     }
 
-    public function physicians()
+    public function doctors()
     {
-        return $this->hasMany(Physician::class);
+        return $this->hasMany(Doctor::class);
     }
 
-    public function secretaries()
+    public function receptionists()
     {
-        return $this->hasMany(Secretary::class);
+        return $this->hasMany(Receptionist::class);
     }
 
     public function scopeSearch($query, string $search)

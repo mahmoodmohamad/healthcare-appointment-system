@@ -24,8 +24,8 @@ class RoleMiddleware
         // Check role
         $check = match($role) {
             'admin' => $user->isAdmin(),
-            'physician' => $user->isPhysician(),
-            'secretary' => $user->isSecretary(),
+            'doctor' => $user->isDoctor(),
+            'receptionist' => $user->isReceptionist(),
             'patient' => $user->isPatient(),
             default => false
         };

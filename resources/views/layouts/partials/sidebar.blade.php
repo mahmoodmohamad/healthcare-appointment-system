@@ -78,19 +78,19 @@
                 </li>
             @endif
 
-            {{-- PHYSICIAN SIDEBAR --}}
-            @if(auth()->user()->isPhysician())
+            {{-- DOCTOR SIDEBAR --}}
+            @if(auth()->user()->isDoctor())
                 <!-- Dashboard -->
-                <li class="menu-item {{ request()->routeIs('physician.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('physician.dashboard') }}" class="menu-link">
+                <li class="menu-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('doctor.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
                         <div>Dashboard</div>
                     </a>
                 </li>
 
                 <!-- Appointments -->
-                <li class="menu-item {{ request()->routeIs('physician.appointments.*') ? 'active' : '' }}">
-                    <a href="{{ route('physician.appointments.index') }}" class="menu-link">
+                <li class="menu-item {{ request()->routeIs('doctor.appointments.*') ? 'active' : '' }}">
+                    <a href="{{ route('doctor.appointments.index') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-calendar-check-line"></i>
                         <div>My Appointments</div>
                     </a>
@@ -110,11 +110,11 @@
                 </li>
             @endif
 
-            {{-- SECRETARY SIDEBAR --}}
-            @if(auth()->user()->isSecretary())
+            {{-- RECEPTIONIST SIDEBAR --}}
+            @if(auth()->user()->isReceptionist())
                 <!-- Dashboard -->
-                <li class="menu-item {{ request()->routeIs('secretary.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('secretary.dashboard') }}" class="menu-link">
+                <li class="menu-item {{ request()->routeIs('receptionist.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('receptionist.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
                         <div>Dashboard</div>
                     </a>

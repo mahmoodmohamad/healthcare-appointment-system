@@ -24,12 +24,12 @@ class AppointmentController extends Controller
         }
 
         $query = Appointment::query()
-            ->with(['patient.user', 'physician.user', 'secretary.user', 'diagnosis'])
+            ->with(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis'])
             ->latest('appointment_date')
             ->latest('appointment_time');
 
-        if ($user->isPhysician()) {
-            $query->where('physician_id', $user->physician->id);
+        if ($user->isDoctor()) {
+            $query->where('doctor_id', $user->doctor->id);
         } elseif ($user->isPatient()) {
             $query->where('patient_id', $user->patient->id);
         }
@@ -51,19 +51,19 @@ class AppointmentController extends Controller
 
         if (! $this->canManageAppointments($user)) {
             return response()->json([
-                'message' => 'Only administrators and secretaries can book appointments.',
+                'message' => 'Only administrators and receptionists can book appointments.',
             ], 403);
         }
 
         $data = $request->validated();
 
         if (! Appointment::isAvailable(
-            $data['physician_id'],
+            $data['doctor_id'],
             $data['appointment_date'],
             $data['appointment_time']
         )) {
             return response()->json([
-                'message' => 'The selected physician is not available at this time.',
+                'message' => 'The selected doctor is not available at this time.',
                 'errors' => [
                     'appointment_time' => ['This time slot is already booked.'],
                 ],
@@ -72,14 +72,14 @@ class AppointmentController extends Controller
 
         $appointment = Appointment::create([
             ...$data,
-            'secretary_id' => optional($user->secretary)->id,
+            'receptionist_id' => optional($user->receptionist)->id,
             'appointment_date' => Carbon::parse(
                 $data['appointment_date'] . ' ' . $data['appointment_time']
             ),
             'status' => 'scheduled',
         ]);
 
-        $appointment->load(['patient.user', 'physician.user', 'secretary.user', 'diagnosis']);
+        $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
 
         return (new AppointmentResource($appointment))
             ->response()
@@ -95,7 +95,7 @@ class AppointmentController extends Controller
         }
 
         return new AppointmentResource(
-            $appointment->load(['patient.user', 'physician.user', 'secretary.user', 'diagnosis'])
+            $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis'])
         );
     }
 
@@ -112,18 +112,18 @@ class AppointmentController extends Controller
         }
 
         $data = $request->validated();
-        $physicianId = $data['physician_id'] ?? $appointment->physician_id;
+        $doctorId = $data['doctor_id'] ?? $appointment->doctor_id;
         $date = $data['appointment_date'] ?? $appointment->appointment_date->format('Y-m-d');
         $time = $data['appointment_time'] ?? $appointment->appointment_time;
 
-        if (isset($data['appointment_date']) || isset($data['appointment_time']) || isset($data['physician_id'])) {
-            $isSameSlot = $physicianId === $appointment->physician_id
+        if (isset($data['appointment_date']) || isset($data['appointment_time']) || isset($data['doctor_id'])) {
+            $isSameSlot = $doctorId === $appointment->doctor_id
                 && $date === $appointment->appointment_date->format('Y-m-d')
                 && $time === $appointment->appointment_time;
 
-            if (! $isSameSlot && ! Appointment::isAvailable($physicianId, $date, $time)) {
+            if (! $isSameSlot && ! Appointment::isAvailable($doctorId, $date, $time)) {
                 return response()->json([
-                    'message' => 'The selected physician is not available at this time.',
+                    'message' => 'The selected doctor is not available at this time.',
                     'errors' => [
                         'appointment_time' => ['This time slot is already booked.'],
                     ],
@@ -135,7 +135,7 @@ class AppointmentController extends Controller
         }
 
         $appointment->update($data);
-        $appointment->load(['patient.user', 'physician.user', 'secretary.user', 'diagnosis']);
+        $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
 
         return new AppointmentResource($appointment);
     }
@@ -159,15 +159,15 @@ class AppointmentController extends Controller
     {
         return $user !== null && (
             $user->isAdmin()
-            || $user->isSecretary()
-            || $user->isPhysician()
+            || $user->isReceptionist()
+            || $user->isDoctor()
             || $user->isPatient()
         );
     }
 
     private function canManageAppointments($user): bool
     {
-        return $user !== null && ($user->isAdmin() || $user->isSecretary());
+        return $user !== null && ($user->isAdmin() || $user->isReceptionist());
     }
 
     private function canViewAppointment($user, Appointment $appointment): bool
@@ -176,11 +176,11 @@ class AppointmentController extends Controller
             return false;
         }
 
-        if ($user->isAdmin() || $user->isSecretary()) {
+        if ($user->isAdmin() || $user->isReceptionist()) {
             return true;
         }
 
-        return ($user->isPhysician() && optional($user->physician)->id === $appointment->physician_id)
+        return ($user->isDoctor() && optional($user->doctor)->id === $appointment->doctor_id)
             || ($user->isPatient() && optional($user->patient)->id === $appointment->patient_id);
     }
 
@@ -191,7 +191,7 @@ class AppointmentController extends Controller
         }
 
         return $user !== null
-            && $user->isPhysician()
-            && optional($user->physician)->id === $appointment->physician_id;
+            && $user->isDoctor()
+            && optional($user->doctor)->id === $appointment->doctor_id;
     }
 }

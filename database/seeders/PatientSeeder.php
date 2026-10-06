@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\City;
 use App\Models\User;
 use App\Models\Patient;
-use App\Models\Secretary;
+use App\Models\Receptionist;
 use Illuminate\Support\Facades\Hash;
 class PatientSeeder extends Seeder
 {
@@ -20,7 +20,7 @@ class PatientSeeder extends Seeder
     {
         //
 		$city = City::first();
-        $secretary = Secretary::first();
+        $receptionist = Receptionist::first();
 
         for ($i = 1; $i <= 10; $i++) {
 
@@ -38,7 +38,7 @@ class PatientSeeder extends Seeder
                 'gender' => $i % 2 ? 'male' : 'female',
                 'birth_date' => now()->subYears(rand(20, 60)),
                 'city_id' => $city->id,
-                'secretary_id' => $secretary->id,
+                'receptionist_id' => $receptionist->id,
             ]);
         }
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Appointment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Appointment, Physician, Patient};
+use App\Models\{Appointment, Doctor, Patient};
 use Carbon\Carbon;
 
 class AppointmentController extends Controller
@@ -12,7 +12,7 @@ class AppointmentController extends Controller
     // List all appointments
     public function index(Request $request)
     {
-        $query = Appointment::with(['patient.user', 'physician.user', 'secretary.user']);
+        $query = Appointment::with(['patient.user', 'doctor.user', 'receptionist.user']);
 
         // Filter by status
         if ($status = $request->status) {
@@ -32,10 +32,10 @@ class AppointmentController extends Controller
     // Show create form
     public function create()
     {
-        $physicians = Physician::with('user')->get();
+        $doctors = Doctor::with('user')->get();
         $patients = Patient::with('user')->get();
         
-        return view('appointments.create', compact('physicians', 'patients'));
+        return view('appointments.create', compact('doctors', 'patients'));
     }
 
     // Store appointment
@@ -43,14 +43,14 @@ class AppointmentController extends Controller
     {
         $request->validate([
             'patient_id' => 'required|exists:patients,id',
-            'physician_id' => 'required|exists:physicians,id',
+            'doctor_id' => 'required|exists:doctors,id',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required|date_format:H:i',
         ]);
 
         // Check availability
         $available = Appointment::isAvailable(
-            $request->physician_id,
+            $request->doctor_id,
             $request->appointment_date,
             $request->appointment_time
         );
@@ -66,8 +66,8 @@ class AppointmentController extends Controller
 
         Appointment::create([
             'patient_id' => $request->patient_id,
-            'physician_id' => $request->physician_id,
-            'secretary_id' => auth()->user()->secretary->id ?? null,
+            'doctor_id' => $request->doctor_id,
+            'receptionist_id' => auth()->user()->receptionist->id ?? null,
             'appointment_date' => $appointmentDateTime,
             'appointment_time' => $request->appointment_time,
             'status' => 'scheduled',
@@ -81,7 +81,7 @@ class AppointmentController extends Controller
     // Show single appointment
     public function show(Appointment $appointment)
     {
-        $appointment->load(['patient.user', 'physician.user', 'secretary.user', 'diagnosis']);
+        $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
         
         return view('appointments.show', compact('appointment'));
     }
@@ -106,12 +106,12 @@ class AppointmentController extends Controller
         $endDate = $date->copy()->endOfMonth()->endOfWeek();
         
         // Get appointments for this month
-        $appointmentsQuery = Appointment::with(['patient.user', 'physician.user'])
+        $appointmentsQuery = Appointment::with(['patient.user', 'doctor.user'])
             ->whereBetween('appointment_date', [$startDate, $endDate]);
 
-        // Filter by physician if requested
-        if ($physicianId = $request->get('physician_id')) {
-            $appointmentsQuery->where('physician_id', $physicianId);
+        // Filter by doctor if requested
+        if ($doctorId = $request->get('doctor_id')) {
+            $appointmentsQuery->where('doctor_id', $doctorId);
         }
 
         $appointments = $appointmentsQuery->get()
@@ -119,23 +119,23 @@ class AppointmentController extends Controller
                 return $appointment->appointment_date->format('Y-m-d');
             });
         
-        // Get physicians for filter
-        $physicians = Physician::with('user')->get();
+        // Get doctors for filter
+        $doctors = Doctor::with('user')->get();
         
-        return view('appointments.calendar', compact('appointments', 'date', 'physicians'));
+        return view('appointments.calendar', compact('appointments', 'date', 'doctors'));
     }
     
     // Get appointments by date (for AJAX)
     public function getAppointments(Request $request)
     {
         $date = $request->get('date');
-        $physicianId = $request->get('physician_id');
+        $doctorId = $request->get('doctor_id');
         
-        $query = Appointment::with(['patient.user', 'physician.user'])
+        $query = Appointment::with(['patient.user', 'doctor.user'])
             ->whereDate('appointment_date', $date);
         
-        if ($physicianId) {
-            $query->where('physician_id', $physicianId);
+        if ($doctorId) {
+            $query->where('doctor_id', $doctorId);
         }
         
         $appointments = $query->orderBy('appointment_time')->get();
@@ -146,7 +146,7 @@ class AppointmentController extends Controller
     // ✅ NEW: Get available time slots
     public function getAvailableSlots(Request $request)
     {
-        $physicianId = $request->physician_id;
+        $doctorId = $request->doctor_id;
         $date = $request->date;
 
         // Define working hours (you can move this to config or database)
@@ -156,7 +156,7 @@ class AppointmentController extends Controller
         ];
 
         // Get booked slots
-        $bookedSlots = Appointment::where('physician_id', $physicianId)
+        $bookedSlots = Appointment::where('doctor_id', $doctorId)
             ->whereDate('appointment_date', $date)
             ->where('status', '!=', 'cancelled')
             ->pluck('appointment_time')

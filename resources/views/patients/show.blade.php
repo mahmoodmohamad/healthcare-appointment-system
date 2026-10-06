@@ -68,10 +68,10 @@
                             <th>Registered:</th>
                             <td>{{ $patient->created_at->format('Y-m-d') }}</td>
                         </tr>
-                        @if($patient->secretary)
+                        @if($patient->receptionist)
                         <tr>
                             <th>Registered By:</th>
-                            <td>{{ $patient->secretary->user->name }}</td>
+                            <td>{{ $patient->receptionist->user->name }}</td>
                         </tr>
                         @endif
                     </table>
@@ -122,7 +122,7 @@
                                 <thead>
                                     <tr>
                                         <th>Date & Time</th>
-                                        <th>Physician</th>
+                                        <th>Doctor</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -138,9 +138,9 @@
                                             </small>
                                         </td>
                                         <td>
-                                            Dr. {{ $appointment->physician->user->name }}
+                                            Dr. {{ $appointment->doctor->user->name }}
                                             <br>
-                                            <small class="text-muted">{{ $appointment->physician->specialization }}</small>
+                                            <small class="text-muted">{{ $appointment->doctor->specialization }}</small>
                                         </td>
                                         <td>
                                             <span class="badge bg-primary">{{ ucfirst($appointment->status) }}</span>
@@ -175,7 +175,7 @@
                         <div class="border-bottom pb-3 mb-3">
                             <div class="d-flex justify-content-between">
                                 <strong>{{ $diagnosis->created_at->format('Y-m-d') }}</strong>
-                                <small class="text-muted">Dr. {{ $diagnosis->physician->user->name }}</small>
+                                <small class="text-muted">Dr. {{ $diagnosis->doctor->user->name }}</small>
                             </div>
                             <p class="mb-1"><strong>Symptoms:</strong> {{ Str::limit($diagnosis->symptoms, 80) }}</p>
                             <p class="mb-0"><strong>Diagnosis:</strong> {{ Str::limit($diagnosis->diagnosis, 80) }}</p>

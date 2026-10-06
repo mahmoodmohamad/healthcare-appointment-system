@@ -6,9 +6,9 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\City;
 use App\Models\User;
-use App\Models\Physician;
+use App\Models\Doctor;
 use App\Models\Patient;
-use App\Models\Secretary;
+use App\Models\Receptionist;
 use Carbon\Carbon;
 use App\Models\Appointment;
 
@@ -22,8 +22,8 @@ class AppointmentSeeder extends Seeder
     public function run()
     {
         //
-		$physician = Physician::first();
-        $secretary = Secretary::first();
+		$doctor = Doctor::first();
+        $receptionist = Receptionist::first();
         $patients = Patient::all();
 
         $startTime = Carbon::createFromTime(10, 0);
@@ -32,8 +32,8 @@ class AppointmentSeeder extends Seeder
 
             Appointment::create([
                 'patient_id' => $patient->id,
-                'physician_id' => $physician->id,
-                'secretary_id' => $secretary->id,
+                'doctor_id' => $doctor->id,
+                'receptionist_id' => $receptionist->id,
                 'appointment_date' => now()->addDays(1),
                 'appointment_time' => $startTime->copy()->addMinutes($index * 30),
                 'status' => 'scheduled',

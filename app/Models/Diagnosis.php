@@ -36,16 +36,16 @@ class Diagnosis extends Model
         );
     }
 
-    // ✅ للوصول للـ physician عن طريق appointment
-    public function physician()
+    // ✅ للوصول للـ doctor عن طريق appointment
+    public function doctor()
     {
         return $this->hasOneThrough(
-            Physician::class,
+            Doctor::class,
             Appointment::class,
             'id',
             'id',
             'appointment_id',
-            'physician_id'
+            'doctor_id'
         );
     }
 }

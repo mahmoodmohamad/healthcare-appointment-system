@@ -153,8 +153,8 @@
 
     /* Role-specific colors */
     .admin-stat .stat-icon { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-    .physician-stat .stat-icon { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
-    .secretary-stat .stat-icon { background: rgba(6, 182, 212, 0.1); color: var(--info); }
+    .doctor-stat .stat-icon { background: rgba(79, 70, 229, 0.1); color: var(--primary); }
+    .receptionist-stat .stat-icon { background: rgba(6, 182, 212, 0.1); color: var(--info); }
     .patient-stat .stat-icon { background: rgba(16, 185, 129, 0.1); color: var(--secondary); }
 
     /* Chart Card */
@@ -188,7 +188,7 @@
         border-radius: 8px;
     }
 
-    /* Top Physicians */
+    /* Top Doctors */
     .rank-card {
         background: white;
         border-radius: 16px;
@@ -230,17 +230,17 @@
         color: white;
     }
 
-    .physician-info {
+    .doctor-info {
         flex: 1;
     }
 
-    .physician-name {
+    .doctor-name {
         font-weight: 600;
         color: var(--dark);
         margin-bottom: 0.25rem;
     }
 
-    .physician-specialty {
+    .doctor-specialty {
         font-size: 0.875rem;
         color: var(--gray);
     }
@@ -408,13 +408,13 @@
             @php
                 $roleConfig = [
                     'admins' => ['icon' => 'fas fa-user-shield', 'class' => 'admin-stat', 'trend' => '+2'],
-                    'physicians' => ['icon' => 'fas fa-user-md', 'class' => 'physician-stat', 'trend' => '+12'],
-                    'secretaries' => ['icon' => 'fas fa-user-tie', 'class' => 'secretary-stat', 'trend' => '+5'],
+                    'doctors' => ['icon' => 'fas fa-user-md', 'class' => 'doctor-stat', 'trend' => '+12'],
+                    'receptionists' => ['icon' => 'fas fa-user-tie', 'class' => 'receptionist-stat', 'trend' => '+5'],
                     'patients' => ['icon' => 'fas fa-user-injured', 'class' => 'patient-stat', 'trend' => '+45']
                 ];
             @endphp
             
-            @foreach(['admins'=>'Admins','physicians'=>'Physicians','secretaries'=>'Secretaries','patients'=>'Patients'] as $key=>$label)
+            @foreach(['admins'=>'Admins','doctors'=>'Doctors','receptionists'=>'Receptionists','patients'=>'Patients'] as $key=>$label)
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stat-card {{ $roleConfig[$key]['class'] }}">
                     <div class="stat-card-header">
@@ -435,7 +435,7 @@
             @endforeach
         </div>
 
-        <!-- Charts & Top Physicians -->
+        <!-- Charts & Top Doctors -->
         <div class="row mb-4">
             <!-- Appointments Chart -->
             <div class="col-xl-8 col-lg-7 mb-4 fade-in-up" style="animation-delay: 0.2s">
@@ -453,28 +453,28 @@
                 </div>
             </div>
 
-            <!-- Top Physicians -->
+            <!-- Top Doctors -->
             <div class="col-xl-4 col-lg-5 mb-4 fade-in-up" style="animation-delay: 0.4s">
                 <div class="rank-card">
                     <div class="chart-card-header">
                         <div>
-                            <h3 class="chart-title">Top Physicians</h3>
+                            <h3 class="chart-title">Top Doctors</h3>
                             <p class="text-muted mb-0">Most active doctors</p>
                         </div>
                         <div class="chart-period">This Month</div>
                     </div>
                     <div class="rank-list">
-                        @foreach($stats['appointments_by_physician']->take(5) as $index => $physician)
+                        @foreach($stats['appointments_by_doctor']->take(5) as $index => $doctor)
                         <div class="rank-item">
                             <div class="rank-number {{ $index < 3 ? 'top-3' : '' }}">
                                 {{ $index + 1 }}
                             </div>
-                            <div class="physician-info">
-                                <div class="physician-name">Dr. {{ $physician->user->name }}</div>
-                                <div class="physician-specialty">{{ $physician->specialization }}</div>
+                            <div class="doctor-info">
+                                <div class="doctor-name">Dr. {{ $doctor->user->name }}</div>
+                                <div class="doctor-specialty">{{ $doctor->specialization }}</div>
                             </div>
                             <div class="appointment-count">
-                                {{ $physician->appointments_count }}
+                                {{ $doctor->appointments_count }}
                             </div>
                         </div>
                         @endforeach
@@ -497,8 +497,8 @@
                                 <tr>
                                     <th>City</th>
                                     <th>Patients</th>
-                                    <th>Physicians</th>
-                                    <th>Secretaries</th>
+                                    <th>Doctors</th>
+                                    <th>Receptionists</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -512,10 +512,10 @@
                                         </div>
                                     </td>
                                     <td>{{ number_format($city->patients_count) }}</td>
-                                    <td>{{ number_format($city->physicians_count) }}</td>
-                                    <td>{{ number_format($city->secretaries_count) }}</td>
+                                    <td>{{ number_format($city->doctors_count) }}</td>
+                                    <td>{{ number_format($city->receptionists_count) }}</td>
                                     <td class="total-cell">
-                                        {{ number_format($city->patients_count + $city->physicians_count + $city->secretaries_count) }}
+                                        {{ number_format($city->patients_count + $city->doctors_count + $city->receptionists_count) }}
                                     </td>
                                 </tr>
                                 @endforeach

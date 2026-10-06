@@ -57,8 +57,8 @@
                                 <tr>
                                     <th>Booked By:</th>
                                     <td>
-                                        @if($appointment->secretary)
-                                            {{ $appointment->secretary->user->name }} (Secretary)
+                                        @if($appointment->receptionist)
+                                            {{ $appointment->receptionist->user->name }} (Receptionist)
                                         @else
                                             System
                                         @endif
@@ -115,10 +115,10 @@
                 </div>
             </div>
 
-            <!-- Physician Info -->
+            <!-- Doctor Info -->
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Physician Information</h5>
+                    <h5 class="mb-0">Doctor Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -126,11 +126,11 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th width="150">Name:</th>
-                                    <td>Dr. {{ $appointment->physician->user->name }}</td>
+                                    <td>Dr. {{ $appointment->doctor->user->name }}</td>
                                 </tr>
                                 <tr>
                                     <th>Specialization:</th>
-                                    <td>{{ $appointment->physician->specialization }}</td>
+                                    <td>{{ $appointment->doctor->specialization }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -138,11 +138,11 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th width="150">Phone:</th>
-                                    <td>{{ $appointment->physician->phone }}</td>
+                                    <td>{{ $appointment->doctor->phone }}</td>
                                 </tr>
                                 <tr>
                                     <th>City:</th>
-                                    <td>{{ $appointment->physician->city->name ?? 'N/A' }}</td>
+                                    <td>{{ $appointment->doctor->city->name ?? 'N/A' }}</td>
                                 </tr>
                             </table>
                         </div>

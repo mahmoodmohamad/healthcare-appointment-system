@@ -26,7 +26,7 @@
                             <h5 class="mb-1">{{ $appointment->appointment_date->format('F j, Y') }}</h5>
                             <p class="text-muted mb-0">
                                 {{ $appointment->appointment_time ?? $appointment->appointment_date->format('g:i A') }} • 
-                                Dr. {{ $appointment->physician->user->name }} ({{ $appointment->physician->specialization }})
+                                Dr. {{ $appointment->doctor->user->name }} ({{ $appointment->doctor->specialization }})
                             </p>
                         </div>
                         <span class="badge bg-{{ $appointment->status == 'completed' ? 'success' : ($appointment->status == 'cancelled' ? 'danger' : 'primary') }}">

@@ -9,8 +9,8 @@ use App\Models\{
     Admin,
     Country,
     City,
-    Secretary,
-    Physician,
+    Receptionist,
+    Doctor,
     Patient,
     Appointment,
     Diagnosis
@@ -30,8 +30,8 @@ class DatabaseSeeder extends Seeder
 
         // 2️⃣ Users & Roles
         $this->seedAdmin();
-        $this->seedSecretaries();
-        $this->seedPhysicians();
+        $this->seedReceptionists();
+        $this->seedDoctors();
         $this->seedPatients();
 
         // 3️⃣ Appointments & Diagnoses
@@ -41,8 +41,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('');
         $this->command->info('📧 Demo Accounts:');
         $this->command->info('   Admin:     admin@example.com / password');
-        $this->command->info('   Physician: alice@example.com / password');
-        $this->command->info('   Secretary: secretary1@example.com / password');
+        $this->command->info('   Doctor: alice@example.com / password');
+        $this->command->info('   Receptionist: receptionist1@example.com / password');
         $this->command->info('   Patient:   jane@example.com / password');
     }
 
@@ -98,31 +98,31 @@ class DatabaseSeeder extends Seeder
     }
 
     /**
-     * Seed secretaries
+     * Seed receptionists
      */
-    private function seedSecretaries(): void
+    private function seedReceptionists(): void
     {
-        $this->command->info('📝 Seeding secretaries...');
+        $this->command->info('📝 Seeding receptionists...');
 
-        $secretaries = [
+        $receptionists = [
             [
                 'name' => 'Sarah Johnson',
-                'email' => 'secretary1@example.com',
+                'email' => 'receptionist1@example.com',
                 'phone' => '555-0101',
             ],
             [
                 'name' => 'Emily Davis',
-                'email' => 'secretary2@example.com',
+                'email' => 'receptionist2@example.com',
                 'phone' => '555-0102',
             ],
             [
                 'name' => 'Michael Brown',
-                'email' => 'secretary3@example.com',
+                'email' => 'receptionist3@example.com',
                 'phone' => '555-0103',
             ],
         ];
 
-        foreach ($secretaries as $sec) {
+        foreach ($receptionists as $sec) {
             $user = User::create([
                 'name' => $sec['name'],
                 'email' => $sec['email'],
@@ -130,24 +130,24 @@ class DatabaseSeeder extends Seeder
                 'activation' => true,
             ]);
 
-            Secretary::create([
+            Receptionist::create([
                 'user_id' => $user->id,
                 'phone' => $sec['phone'],
                 'city_id' => City::inRandomOrder()->first()->id,
             ]);
         }
 
-        $this->command->info('✓ Secretaries created');
+        $this->command->info('✓ Receptionists created');
     }
 
     /**
-     * Seed physicians
+     * Seed doctors
      */
-    private function seedPhysicians(): void
+    private function seedDoctors(): void
     {
-        $this->command->info('👨‍⚕️ Seeding physicians...');
+        $this->command->info('👨‍⚕️ Seeding doctors...');
 
-        $physicians = [
+        $doctors = [
             ['name' => 'Dr. Alice Williams', 'email' => 'alice@example.com', 'specialization' => 'Cardiology', 'phone' => '555-1001'],
             ['name' => 'Dr. Robert Smith', 'email' => 'robert@example.com', 'specialization' => 'Neurology', 'phone' => '555-1002'],
             ['name' => 'Dr. Jennifer Martinez', 'email' => 'jennifer@example.com', 'specialization' => 'Pediatrics', 'phone' => '555-1003'],
@@ -158,7 +158,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Dr. Richard Wilson', 'email' => 'richard@example.com', 'specialization' => 'General Surgery', 'phone' => '555-1008'],
         ];
 
-        foreach ($physicians as $doc) {
+        foreach ($doctors as $doc) {
             $user = User::create([
                 'name' => $doc['name'],
                 'email' => $doc['email'],
@@ -166,7 +166,7 @@ class DatabaseSeeder extends Seeder
                 'activation' => true,
             ]);
 
-            Physician::create([
+            Doctor::create([
                 'user_id' => $user->id,
                 'specialization' => $doc['specialization'],
                 'phone' => $doc['phone'],
@@ -174,7 +174,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ Physicians created');
+        $this->command->info('✓ Doctors created');
     }
 
     /**
@@ -202,7 +202,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Amelia Jackson', 'email' => 'amelia@example.com', 'phone' => '555-2015', 'national_id' => 'PAT015'],
         ];
 
-        $secretaries = Secretary::all();
+        $receptionists = Receptionist::all();
 
         foreach ($patients as $pat) {
             $user = User::create([
@@ -217,7 +217,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => $pat['phone'],
                 'national_id' => $pat['national_id'],
                 'city_id' => City::inRandomOrder()->first()->id,
-                'secretary_id' => $secretaries->random()->id,
+                'receptionist_id' => $receptionists->random()->id,
             ]);
         }
 
@@ -232,8 +232,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('📅 Seeding appointments...');
 
         $patients = Patient::all();
-        $physicians = Physician::all();
-        $secretaries = Secretary::all();
+        $doctors = Doctor::all();
+        $receptionists = Receptionist::all();
 
         $appointmentCount = 0;
         $diagnosisCount = 0;
@@ -243,8 +243,8 @@ class DatabaseSeeder extends Seeder
             $numAppointments = rand(2, 4);
 
             for ($i = 0; $i < $numAppointments; $i++) {
-                $physician = $physicians->random();
-                $secretary = $secretaries->random();
+                $doctor = $doctors->random();
+                $receptionist = $receptionists->random();
 
                 // Mix of past, today, and future appointments
                 $daysOffset = match($i) {
@@ -268,8 +268,8 @@ class DatabaseSeeder extends Seeder
 
                 $appointment = Appointment::create([
                     'patient_id' => $patient->id,
-                    'physician_id' => $physician->id,
-                    'secretary_id' => $secretary->id,
+                    'doctor_id' => $doctor->id,
+                    'receptionist_id' => $receptionist->id,
                     'appointment_date' => $appointmentDate,
                     'appointment_time' => $appointmentTime,
                     'status' => $status,

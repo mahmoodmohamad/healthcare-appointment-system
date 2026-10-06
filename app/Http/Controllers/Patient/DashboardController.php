@@ -11,7 +11,7 @@ class DashboardController extends Controller
     {
         $patient = Auth::user()->patient()->with('user')->firstOrFail();
         $appointments = $patient->appointments()
-            ->with(['physician.user', 'diagnosis'])
+            ->with(['doctor.user', 'diagnosis'])
             ->orderByDesc('appointment_date')
             ->orderByDesc('appointment_time')
             ->get();

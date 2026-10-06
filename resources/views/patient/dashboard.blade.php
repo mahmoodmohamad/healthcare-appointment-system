@@ -16,7 +16,7 @@
         </div>
         <div class="patient-card" id="profile">
             <span class="patient-stat-label">Care team</span>
-            <strong class="patient-stat-value">{{ $appointments->pluck('physician')->filter()->unique('id')->count() }}</strong>
+            <strong class="patient-stat-value">{{ $appointments->pluck('doctor')->filter()->unique('id')->count() }}</strong>
         </div>
     </section>
 
@@ -48,8 +48,8 @@
                         <tr>
                             <td>{{ $appointment->appointment_date?->format('M j, Y') }}</td>
                             <td>{{ \Illuminate\Support\Carbon::parse($appointment->appointment_time)->format('g:i A') }}</td>
-                            <td>{{ $appointment->physician?->user?->name ?? 'Assigned doctor' }}</td>
-                            <td>{{ $appointment->physician?->specialization ?? 'General care' }}</td>
+                            <td>{{ $appointment->doctor?->user?->name ?? 'Assigned doctor' }}</td>
+                            <td>{{ $appointment->doctor?->specialization ?? 'General care' }}</td>
                             <td><span class="patient-badge">{{ ucfirst($appointment->status) }}</span></td>
                         </tr>
                     @endforeach

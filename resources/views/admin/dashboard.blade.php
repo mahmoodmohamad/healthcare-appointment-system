@@ -40,8 +40,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-white-50 mb-1">Total Physicians</h6>
-                            <h2 class="mb-0">{{ $stats['total_physicians'] }}</h2>
+                            <h6 class="text-white-50 mb-1">Total Doctors</h6>
+                            <h2 class="mb-0">{{ $stats['total_doctors'] }}</h2>
                         </div>
                         <div class="fs-1">👨‍⚕️</div>
                     </div>
@@ -129,20 +129,20 @@
 
         <!-- Side Column -->
         <div class="col-md-4">
-            <!-- Top Physicians -->
+            <!-- Top Doctors -->
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">🏆 Top Physicians</h5>
+                    <h5 class="mb-0">🏆 Top Doctors</h5>
                 </div>
                 <div class="card-body">
-                    @foreach($topPhysicians as $physician)
+                    @foreach($topDoctors as $doctor)
                     <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
                         <div>
-                            <strong>Dr. {{ $physician->user->name }}</strong>
+                            <strong>Dr. {{ $doctor->user->name }}</strong>
                             <br>
-                            <small class="text-muted">{{ $physician->specialization }}</small>
+                            <small class="text-muted">{{ $doctor->specialization }}</small>
                         </div>
-                        <span class="badge bg-primary">{{ $physician->appointments_count }}</span>
+                        <span class="badge bg-primary">{{ $doctor->appointments_count }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -180,7 +180,7 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Patient</th>
-                                    <th>Physician</th>
+                                    <th>Doctor</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -189,7 +189,7 @@
                                 <tr>
                                     <td>{{ $appointment->appointment_date->format('Y-m-d H:i') }}</td>
                                     <td>{{ $appointment->patient->user->name }}</td>
-                                    <td>Dr. {{ $appointment->physician->user->name }}</td>
+                                    <td>Dr. {{ $appointment->doctor->user->name }}</td>
                                     <td>
                                         <span class="badge bg-{{ $appointment->status == 'completed' ? 'success' : ($appointment->status == 'cancelled' ? 'danger' : 'primary') }}">
                                             {{ ucfirst($appointment->status) }}

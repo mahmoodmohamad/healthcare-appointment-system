@@ -14,7 +14,7 @@ class Patient extends Model
         'national_id',
         'phone',
         'city_id',
-        'secretary_id',
+        'receptionist_id',
 		'gender',
         'birth_date',
     ];
@@ -38,9 +38,9 @@ class Patient extends Model
         return $this->belongsTo(City::class);
     }
 
-    public function secretary()
+    public function receptionist()
     {
-        return $this->belongsTo(Secretary::class);
+        return $this->belongsTo(Receptionist::class);
     }
 
     public function appointments()
@@ -70,4 +70,13 @@ class Patient extends Model
         })->orWhere('national_id', 'LIKE', $like)
           ->orWhere('phone', 'LIKE', $like);
     }
+	// in the Patient model
+protected static function booted(): void
+{
+    static::addGlobalScope('doctor', function ($q) {
+        if (auth()->check() && auth()->user()->doctor) {
+            $q->where('doctor_id', auth()->user()->doctor->id);
+        }
+    });
+}
 }

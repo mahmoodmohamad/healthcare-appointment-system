@@ -25,8 +25,8 @@ class AppointmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('secretary')
-            || $user->hasRole('physician');
+        return $user->hasRole('receptionist')
+            || $user->hasRole('doctor');
     }
 
     /**
@@ -34,45 +34,45 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment): bool
     {
-        // Physician can view his own appointments
-        if ($user->hasRole('physician')) {
-            return $appointment->physician_id === $user->physician?->id;
+        // Doctor can view his own appointments
+        if ($user->hasRole('doctor')) {
+            return $appointment->doctor_id === $user->doctor?->id;
         }
 
-        // Secretary can view appointments she created
-        if ($user->hasRole('secretary')) {
-            return $appointment->secretary_id === $user->secretary?->id;
+        // Receptionist can view appointments she created
+        if ($user->hasRole('receptionist')) {
+            return $appointment->receptionist_id === $user->receptionist?->id;
         }
 
         return false;
     }
 
     /**
-     * Create appointment (secretary only)
+     * Create appointment (receptionist only)
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('secretary');
+        return $user->hasRole('receptionist');
     }
 
     /**
      * Update appointment
-     * (Physician updates diagnosis / status)
+     * (Doctor updates diagnosis / status)
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        return $user->hasRole('physician')
-            && $appointment->physician_id === $user->physician?->id
+        return $user->hasRole('doctor')
+            && $appointment->doctor_id === $user->doctor?->id
             && $appointment->status !== 'cancelled';
     }
 
     /**
-     * Delete appointment (secretary only)
+     * Delete appointment (receptionist only)
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        return $user->hasRole('secretary')
-            && $appointment->secretary_id === $user->secretary?->id
+        return $user->hasRole('receptionist')
+            && $appointment->receptionist_id === $user->receptionist?->id
             && $appointment->status !== 'completed';
     }
 }

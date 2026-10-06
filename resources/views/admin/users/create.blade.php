@@ -52,13 +52,13 @@
                                         <span style="font-size: 20px;">👨‍💼</span>
                                         <span>Admin</span>
                                     </div>
-                                    <div class="role-badge physician" data-role="physician" onclick="selectRole('physician')">
+                                    <div class="role-badge doctor" data-role="doctor" onclick="selectRole('doctor')">
                                         <span style="font-size: 20px;">👨‍⚕️</span>
-                                        <span>Physician</span>
+                                        <span>Doctor</span>
                                     </div>
-                                    <div class="role-badge secretary" data-role="secretary" onclick="selectRole('secretary')">
+                                    <div class="role-badge receptionist" data-role="receptionist" onclick="selectRole('receptionist')">
                                         <span style="font-size: 20px;">👩‍💼</span>
-                                        <span>Secretary</span>
+                                        <span>Receptionist</span>
                                     </div>
                                     <div class="role-badge patient" data-role="patient" onclick="selectRole('patient')">
                                         <span style="font-size: 20px;">🏥</span>
@@ -168,7 +168,7 @@
 
                                 <div class="row">
                                     <!-- Phone -->
-                                    <div class="col-md-6 mb-3 role-field" data-roles="physician,secretary,patient">
+                                    <div class="col-md-6 mb-3 role-field" data-roles="doctor,receptionist,patient">
                                         <label for="phone" class="form-label">
                                             <span class="required">*</span> Phone Number
                                         </label>
@@ -187,7 +187,7 @@
                                     </div>
 
                                     <!-- City -->
-                                    <div class="col-md-6 mb-3 role-field" data-roles="physician,secretary,patient">
+                                    <div class="col-md-6 mb-3 role-field" data-roles="doctor,receptionist,patient">
                                         <label for="city_id" class="form-label">
                                             <span class="required">*</span> City
                                         </label>
@@ -210,7 +210,7 @@
                                     </div>
 
                                     <!-- Specialization -->
-                                    <div class="col-12 mb-3 role-field" data-roles="physician">
+                                    <div class="col-12 mb-3 role-field" data-roles="doctor">
                                         <label for="specialization" class="form-label">
                                             <span class="required">*</span> Medical Specialization
                                         </label>
@@ -229,7 +229,7 @@
                                     </div>
 
                                     <!-- National ID -->
-                                    <div class="col-12 mb-3 role-field" data-roles="secretary,patient">
+                                    <div class="col-12 mb-3 role-field" data-roles="receptionist,patient">
                                         <label for="national_id" class="form-label">
                                             <span class="required">*</span> National ID
                                         </label>

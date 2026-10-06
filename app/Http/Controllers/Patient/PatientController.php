@@ -15,7 +15,7 @@ class PatientController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Patient::with(['user', 'city', 'secretary.user']);
+        $query = Patient::with(['user', 'city', 'receptionist.user']);
 
         // Search by name, national_id, or phone
         if ($search = $request->search) {
@@ -79,7 +79,7 @@ class PatientController extends Controller
                 'national_id' => $request->national_id,
                 'phone' => $request->phone,
                 'city_id' => $request->city_id,
-                'secretary_id' => auth()->user()->secretary->id ?? null,
+                'receptionist_id' => auth()->user()->receptionist->id ?? null,
             ]);
 
             DB::commit();
@@ -103,8 +103,8 @@ class PatientController extends Controller
     $patient->load([
         'user',
         'city.country',
-        'secretary.user',
-        'appointments.physician.user',
+        'receptionist.user',
+        'appointments.doctor.user',
         'appointments.diagnosis',
     ]);
 
@@ -135,7 +135,7 @@ class PatientController extends Controller
      * =========================
      */
     $upcomingAppointments = $patient->appointments()
-        ->with(['physician.user'])
+        ->with(['doctor.user'])
         ->where('appointment_date', '>', now())
         ->where('status', 'scheduled')
         ->orderBy('appointment_date')
@@ -145,10 +145,10 @@ class PatientController extends Controller
      * =========================
      * 🩺 Recent Diagnoses
      * =========================
-     * Diagnosis -> Appointment -> Physician -> User
+     * Diagnosis -> Appointment -> Doctor -> User
      */
     $recentDiagnoses = $patient->diagnoses()
-        ->with(['appointment.physician.user'])
+        ->with(['appointment.doctor.user'])
         ->latest()
         ->take(5)
         ->get();
@@ -169,7 +169,7 @@ class PatientController extends Controller
         $patient->load(['user', 'city']);
 
         $appointments = $patient->appointments()
-            ->with(['physician.user', 'diagnosis'])
+            ->with(['doctor.user', 'diagnosis'])
             ->orderByDesc('appointment_date')
             ->paginate(10);
 
@@ -182,9 +182,9 @@ class PatientController extends Controller
    public function edit(Patient $patient)
 {
     $cities = City::all();
-    $secretaries = \App\Models\Secretary::with('user')->get(); // جلب كل السكرتير مع المستخدم
+    $receptionists = \App\Models\Receptionist::with('user')->get(); // جلب كل السكرتير مع المستخدم
 
-    return view('patients.edit', compact('patient', 'cities', 'secretaries'));
+    return view('patients.edit', compact('patient', 'cities', 'receptionists'));
 }
 
 

@@ -12,8 +12,8 @@ class Appointment extends Model
 
     protected $fillable = [
         'patient_id',
-        'physician_id',
-        'secretary_id',
+        'doctor_id',
+        'receptionist_id',
         'appointment_date',
         'appointment_time', // ✅ Add this
         'status',
@@ -30,14 +30,14 @@ class Appointment extends Model
         return $this->belongsTo(Patient::class);
     }
 
-    public function physician()
+    public function doctor()
     {
-        return $this->belongsTo(Physician::class);
+        return $this->belongsTo(Doctor::class);
     }
 
-    public function secretary()
+    public function receptionist()
     {
-        return $this->belongsTo(Secretary::class);
+        return $this->belongsTo(Receptionist::class);
     }
 
     public function diagnosis()
@@ -46,9 +46,9 @@ class Appointment extends Model
     }
 
     // ✅ Add this method
-    public static function isAvailable($physicianId, $date, $time)
+    public static function isAvailable($doctorId, $date, $time)
     {
-        return !self::where('physician_id', $physicianId)
+        return !self::where('doctor_id', $doctorId)
             ->whereDate('appointment_date', $date)
             ->where('appointment_time', $time)
             ->where('status', '!=', 'cancelled')
@@ -63,4 +63,19 @@ class Appointment extends Model
         }
         return $this->appointment_date;
     }
+	
+	// Appointment.php
+public static function book(array $data): self
+{
+    return DB::transaction(function () use ($data) {
+        Doctor::whereKey($data['doctor_id'])->lockForUpdate()->firstOrFail();
+
+        if (! self::isAvailable($data['doctor_id'], $data['appointment_date'], $data['appointment_time'])) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'This time slot is already booked.',
+            ]);
+        }
+        return self::create($data);
+    });
+}
 }

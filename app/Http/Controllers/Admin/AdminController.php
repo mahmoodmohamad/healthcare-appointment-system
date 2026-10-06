@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{User, Patient, Physician, Secretary, Appointment, Diagnosis, City};
+use App\Models\{User, Patient, Doctor, Receptionist, Appointment, Diagnosis, City};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -19,8 +19,8 @@ class AdminController extends Controller
         $stats = [
             'total_users' => User::count(),
             'total_patients' => Patient::count(),
-            'total_physicians' => Physician::count(),
-            'total_secretaries' => Secretary::count(),
+            'total_doctors' => Doctor::count(),
+            'total_receptionists' => Receptionist::count(),
             'total_appointments' => Appointment::count(),
             'total_diagnoses' => Diagnosis::count(),
             
@@ -38,7 +38,7 @@ class AdminController extends Controller
         ];
 
         // Recent Activity
-        $recentAppointments = Appointment::with(['patient.user', 'physician.user'])
+        $recentAppointments = Appointment::with(['patient.user', 'doctor.user'])
             ->latest()
             ->take(10)
             ->get();
@@ -63,8 +63,8 @@ class AdminController extends Controller
             ->orderBy('month')
             ->get();
 
-        // Top Physicians by Appointments
-        $topPhysicians = Physician::withCount('appointments')
+        // Top Doctors by Appointments
+        $topDoctors = Doctor::withCount('appointments')
             ->with('user')
             ->orderByDesc('appointments_count')
             ->take(5)
@@ -76,7 +76,7 @@ class AdminController extends Controller
             'recentPatients',
             'appointmentsByStatus',
             'monthlyData',
-            'topPhysicians'
+            'topDoctors'
         ));
     }
 
@@ -89,8 +89,8 @@ class AdminController extends Controller
         $stats = [
             'users_by_role' => [
                 'patients' => Patient::count(),
-                'physicians' => Physician::count(),
-                'secretaries' => Secretary::count(),
+                'doctors' => Doctor::count(),
+                'receptionists' => Receptionist::count(),
                 'admins' => User::admins()->count(),
             ],
             
@@ -103,13 +103,13 @@ class AdminController extends Controller
                 ->orderBy('month')
                 ->get(),
             
-            'appointments_by_physician' => Physician::withCount('appointments')
+            'appointments_by_doctor' => Doctor::withCount('appointments')
                 ->with('user')
                 ->having('appointments_count', '>', 0)
                 ->orderByDesc('appointments_count')
                 ->get(),
             
-            'cities_distribution' => City::withCount(['patients', 'physicians', 'secretaries'])
+            'cities_distribution' => City::withCount(['patients', 'doctors', 'receptionists'])
                 ->get(),
         ];
 

@@ -35,14 +35,14 @@ class User extends Authenticatable
         return $this->hasOne(Admin::class);
     }
 
-    public function physician(): HasOne
+    public function doctor(): HasOne
     {
-        return $this->hasOne(Physician::class);
+        return $this->hasOne(Doctor::class);
     }
 
-    public function secretary(): HasOne
+    public function receptionist(): HasOne
     {
-        return $this->hasOne(Secretary::class);
+        return $this->hasOne(Receptionist::class);
     }
 
     public function patient(): HasOne
@@ -56,14 +56,14 @@ class User extends Authenticatable
         return $this->hasRole('admin');
     }
 
-    public function isPhysician(): bool
+    public function isDoctor(): bool
     {
-        return $this->hasRole('physician');
+        return $this->hasRole('doctor');
     }
 
-    public function isSecretary(): bool
+    public function isReceptionist(): bool
     {
-        return $this->hasRole('secretary');
+        return $this->hasRole('receptionist');
     }
 
     public function isPatient(): bool
@@ -86,8 +86,8 @@ class User extends Authenticatable
     public function getRoleName(): string
     {
         if ($this->isAdmin()) return 'Admin';
-        if ($this->isPhysician()) return 'Physician';
-        if ($this->isSecretary()) return 'Secretary';
+        if ($this->isDoctor()) return 'Doctor';
+        if ($this->isReceptionist()) return 'Receptionist';
         if ($this->isPatient()) return 'Patient';
         
         return 'Unknown';
@@ -96,8 +96,8 @@ class User extends Authenticatable
     public function getRoleAttribute()
     {
         return $this->admin 
-            ?? $this->physician 
-            ?? $this->secretary 
+            ?? $this->doctor 
+            ?? $this->receptionist 
             ?? $this->patient;
     }
 
@@ -122,14 +122,14 @@ class User extends Authenticatable
         return $query->where('activation', true);
     }
 
-    public function scopePhysicians($query)
+    public function scopeDoctors($query)
     {
-        return $query->whereHas('physician');
+        return $query->whereHas('doctor');
     }
 
-    public function scopeSecretaries($query)
+    public function scopeReceptionists($query)
     {
-        return $query->whereHas('secretary');
+        return $query->whereHas('receptionist');
     }
 
     public function scopePatients($query)

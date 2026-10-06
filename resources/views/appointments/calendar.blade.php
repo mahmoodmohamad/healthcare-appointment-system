@@ -21,13 +21,13 @@
     </div>
 
     <div class="filter-section">
-        <label>Filter by Physician:</label>
-        <select id="physicianFilter" onchange="filterByPhysician()">
-            <option value="">All Physicians</option>
-            @foreach($physicians as $physician)
-                <option value="{{ $physician->id }}" 
-                    {{ request('physician_id') == $physician->id ? 'selected' : '' }}>
-                    {{ $physician->user->name }} - {{ $physician->specialization }}
+        <label>Filter by Doctor:</label>
+        <select id="doctorFilter" onchange="filterByDoctor()">
+            <option value="">All Doctors</option>
+            @foreach($doctors as $doctor)
+                <option value="{{ $doctor->id }}" 
+                    {{ request('doctor_id') == $doctor->id ? 'selected' : '' }}>
+                    {{ $doctor->user->name }} - {{ $doctor->specialization }}
                 </option>
             @endforeach
         </select>
@@ -65,7 +65,7 @@
                         @foreach($appointments[$dateKey] as $appointment)
                             <div class="appointment-item {{ $appointment->status }}" 
                                  onclick="showAppointmentDetails({{ $appointment->id }})"
-                                 title="{{ $appointment->patient->user->name }} with Dr. {{ $appointment->physician->user->name }}">
+                                 title="{{ $appointment->patient->user->name }} with Dr. {{ $appointment->doctor->user->name }}">
                                 {{ $appointment->appointment_time ?? $appointment->appointment_date->format('H:i') }} - 
                                 {{ $appointment->patient->user->name }}
                             </div>
@@ -112,23 +112,23 @@ function changeMonth(delta) {
     url.searchParams.set('month', month);
     url.searchParams.set('year', year);
     
-    // Preserve physician_id if it exists
-    const physicianId = document.getElementById('physicianFilter').value;
-    if (physicianId) {
-        url.searchParams.set('physician_id', physicianId);
+    // Preserve doctor_id if it exists
+    const doctorId = document.getElementById('doctorFilter').value;
+    if (doctorId) {
+        url.searchParams.set('doctor_id', doctorId);
     }
     
     window.location = url;
 }
 
-function filterByPhysician() {
-    const physicianId = document.getElementById('physicianFilter').value;
+function filterByDoctor() {
+    const doctorId = document.getElementById('doctorFilter').value;
     const url = new URL(window.location);
     
-    if (physicianId) {
-        url.searchParams.set('physician_id', physicianId);
+    if (doctorId) {
+        url.searchParams.set('doctor_id', doctorId);
     } else {
-        url.searchParams.delete('physician_id');
+        url.searchParams.delete('doctor_id');
     }
     
     // Preserve month and year

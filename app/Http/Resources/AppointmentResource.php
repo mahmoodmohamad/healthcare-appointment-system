@@ -12,8 +12,8 @@ class AppointmentResource extends JsonResource
         return [
             'id' => $this->id,
             'patient_id' => $this->patient_id,
-            'physician_id' => $this->physician_id,
-            'secretary_id' => $this->secretary_id,
+            'doctor_id' => $this->doctor_id,
+            'receptionist_id' => $this->receptionist_id,
             'appointment_date' => optional($this->appointment_date)->format('Y-m-d'),
             'appointment_time' => $this->appointment_time,
             'status' => $this->status,
@@ -25,17 +25,17 @@ class AppointmentResource extends JsonResource
                     'national_id' => $this->patient->national_id,
                 ];
             }),
-            'physician' => $this->whenLoaded('physician', function () {
+            'doctor' => $this->whenLoaded('doctor', function () {
                 return [
-                    'id' => $this->physician->id,
-                    'name' => optional($this->physician->user)->name,
-                    'specialization' => $this->physician->specialization,
+                    'id' => $this->doctor->id,
+                    'name' => optional($this->doctor->user)->name,
+                    'specialization' => $this->doctor->specialization,
                 ];
             }),
-            'secretary' => $this->whenLoaded('secretary', function () {
+            'receptionist' => $this->whenLoaded('receptionist', function () {
                 return [
-                    'id' => $this->secretary->id,
-                    'name' => optional($this->secretary->user)->name,
+                    'id' => $this->receptionist->id,
+                    'name' => optional($this->receptionist->user)->name,
                 ];
             }),
             'diagnosis' => $this->whenLoaded('diagnosis'),

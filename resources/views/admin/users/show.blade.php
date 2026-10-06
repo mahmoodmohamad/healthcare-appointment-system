@@ -60,8 +60,8 @@
                                         @php
                                             $roleBadge = [
                                                 'Admin' => 'danger',
-                                                'Physician' => 'primary',
-                                                'Secretary' => 'info',
+                                                'Doctor' => 'primary',
+                                                'Receptionist' => 'info',
                                                 'Patient' => 'success',
                                             ];
                                             $role = $user->getRoleName();
@@ -99,40 +99,40 @@
             </div>
 
             <!-- Role-Specific Information -->
-            @if($user->isPhysician() && $user->physician)
+            @if($user->isDoctor() && $user->doctor)
                 <div class="card mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Physician Information</h5>
+                        <h5 class="mb-0">Doctor Information</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Specialization:</strong> {{ $user->physician->specialization }}</p>
-                                <p><strong>Phone:</strong> {{ $user->physician->phone }}</p>
+                                <p><strong>Specialization:</strong> {{ $user->doctor->specialization }}</p>
+                                <p><strong>Phone:</strong> {{ $user->doctor->phone }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>City:</strong> {{ $user->physician->city->name ?? 'N/A' }}</p>
-                                <p><strong>Total Appointments:</strong> {{ $user->physician->appointments()->count() }}</p>
+                                <p><strong>City:</strong> {{ $user->doctor->city->name ?? 'N/A' }}</p>
+                                <p><strong>Total Appointments:</strong> {{ $user->doctor->appointments()->count() }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             @endif
 
-            @if($user->isSecretary() && $user->secretary)
+            @if($user->isReceptionist() && $user->receptionist)
                 <div class="card mb-4">
                     <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">Secretary Information</h5>
+                        <h5 class="mb-0">Receptionist Information</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Phone:</strong> {{ $user->secretary->phone }}</p>
-                                <p><strong>City:</strong> {{ $user->secretary->city->name ?? 'N/A' }}</p>
+                                <p><strong>Phone:</strong> {{ $user->receptionist->phone }}</p>
+                                <p><strong>City:</strong> {{ $user->receptionist->city->name ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Patients Registered:</strong> {{ $user->secretary->patients()->count() }}</p>
-                                <p><strong>Appointments Created:</strong> {{ $user->secretary->appointments()->count() }}</p>
+                                <p><strong>Patients Registered:</strong> {{ $user->receptionist->patients()->count() }}</p>
+                                <p><strong>Appointments Created:</strong> {{ $user->receptionist->appointments()->count() }}</p>
                             </div>
                         </div>
                     </div>

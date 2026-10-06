@@ -34,8 +34,8 @@ class AuthServiceProvider extends ServiceProvider
                 $request->user() : null;
         });
 
-        Auth::viaRequest('physicain', function (Request $request) {
-            return ($request->user() && $request->user()->isPhysicain()) ?
+        Auth::viaRequest('doctor', function (Request $request) {
+            return ($request->user() && $request->user()->isDoctor()) ?
                 $request->user() : null;
         });
         Auth::viaRequest('radiologist', function (Request $request) {
@@ -46,8 +46,8 @@ class AuthServiceProvider extends ServiceProvider
             return ($request->user() && $request->user()->isLabSpecialist()) ?
                 $request->user() : null;
         });
-        Auth::viaRequest('secretary', function (Request $request) {
-            return ($request->user() && $request->user()->isSecretary()) ?
+        Auth::viaRequest('receptionist', function (Request $request) {
+            return ($request->user() && $request->user()->isReceptionist()) ?
                 $request->user() : null;
         });
 

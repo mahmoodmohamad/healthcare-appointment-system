@@ -43,8 +43,8 @@
                     <select name="role" class="form-select">
                         <option value="">All Roles</option>
                         <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="physician" {{ request('role') == 'physician' ? 'selected' : '' }}>Physician</option>
-                        <option value="secretary" {{ request('role') == 'secretary' ? 'selected' : '' }}>Secretary</option>
+                        <option value="doctor" {{ request('role') == 'doctor' ? 'selected' : '' }}>Doctor</option>
+                        <option value="receptionist" {{ request('role') == 'receptionist' ? 'selected' : '' }}>Receptionist</option>
                         <option value="patient" {{ request('role') == 'patient' ? 'selected' : '' }}>Patient</option>
                     </select>
                 </div>
@@ -89,8 +89,8 @@
                                     @php
                                         $roleBadge = [
                                             'Admin' => 'danger',
-                                            'Physician' => 'primary',
-                                            'Secretary' => 'info',
+                                            'Doctor' => 'primary',
+                                            'Receptionist' => 'info',
                                             'Patient' => 'success',
                                         ];
                                         $role = $user->getRoleName();

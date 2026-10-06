@@ -6,9 +6,9 @@ use App\Http\Controllers\Appointment\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Patient\DashboardController as PatientDashboardController;
 use App\Http\Controllers\Patient\PatientController;
-use App\Http\Controllers\Physician\DashboardController as PhysicianDashboardController;
-use App\Http\Controllers\Physician\PhysicianController;
-use App\Http\Controllers\Secretary\DashboardController as SecretaryDashboardController;
+use App\Http\Controllers\Doctor\DashboardController as DoctorDashboardController;
+use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\Receptionist\DashboardController as ReceptionistDashboardController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -24,12 +24,12 @@ Route::get('/', function () {
         return redirect()->route('admin.dashboard');
     }
 
-    if ($user->isPhysician()) {
-        return redirect()->route('physician.dashboard');
+    if ($user->isDoctor()) {
+        return redirect()->route('doctor.dashboard');
     }
 
-    if ($user->isSecretary()) {
-        return redirect()->route('secretary.dashboard');
+    if ($user->isReceptionist()) {
+        return redirect()->route('receptionist.dashboard');
     }
 
     if ($user->isPatient()) {
@@ -54,9 +54,9 @@ Route::middleware(['auth', 'role:admin'])
             ->name('users.toggle-activation');
     });
 
-Route::middleware(['auth', 'role:secretary'])
+Route::middleware(['auth', 'role:receptionist'])
     ->group(function () {
-        Route::get('/secretary/dashboard', SecretaryDashboardController::class)->name('secretary.dashboard');
+        Route::get('/receptionist/dashboard', ReceptionistDashboardController::class)->name('receptionist.dashboard');
 
         Route::get('/appointments/calendar', [AppointmentController::class, 'calendar'])
             ->name('appointments.calendar');
@@ -71,41 +71,41 @@ Route::middleware(['auth', 'role:secretary'])
         Route::get('/patients/{patient}/medical-history', [PatientController::class, 'medicalHistory'])
             ->name('patients.medical-history');
 
-        // Compatibility routes for the legacy secretary patient templates.
-        Route::get('/secretary/patients', [PatientController::class, 'index'])
-            ->name('secretary.patient.list');
-        Route::get('/secretary/patients/{patient}', [PatientController::class, 'show'])
-            ->name('secretary.patient.details');
-        Route::get('/secretary/patients/{patient}/edit', [PatientController::class, 'edit'])
-            ->name('secretary.patient.edit');
-        Route::post('/secretary/patients', [PatientController::class, 'store'])
-            ->name('secretary.patient.save');
-        Route::get('/secretary/patients/{patient}/clinic/edit', [PatientController::class, 'edit'])
-            ->name('secretary.patient.clinic.edit');
-        Route::post('/secretary/patients/{patient}/clinic', [PatientController::class, 'update'])
-            ->name('secretary.patient.clinic.save');
-        Route::get('/secretary/ajax/country', function () {
+        // Compatibility routes for the legacy receptionist patient templates.
+        Route::get('/receptionist/patients', [PatientController::class, 'index'])
+            ->name('receptionist.patient.list');
+        Route::get('/receptionist/patients/{patient}', [PatientController::class, 'show'])
+            ->name('receptionist.patient.details');
+        Route::get('/receptionist/patients/{patient}/edit', [PatientController::class, 'edit'])
+            ->name('receptionist.patient.edit');
+        Route::post('/receptionist/patients', [PatientController::class, 'store'])
+            ->name('receptionist.patient.save');
+        Route::get('/receptionist/patients/{patient}/clinic/edit', [PatientController::class, 'edit'])
+            ->name('receptionist.patient.clinic.edit');
+        Route::post('/receptionist/patients/{patient}/clinic', [PatientController::class, 'update'])
+            ->name('receptionist.patient.clinic.save');
+        Route::get('/receptionist/ajax/country', function () {
             return response()->json(\App\Models\Country::query()->orderBy('name')->get());
-        })->name('secretary.ajax.country');
+        })->name('receptionist.ajax.country');
     });
 
-Route::middleware(['auth', 'role:physician'])
-    ->prefix('physician')
-    ->name('physician.')
+Route::middleware(['auth', 'role:doctor'])
+    ->prefix('doctor')
+    ->name('doctor.')
     ->group(function () {
-        Route::get('/dashboard', [PhysicianDashboardController::class, 'dashboard'])->name('dashboard');
-        Route::get('/appointments', [PhysicianController::class, 'appointments'])->name('appointments.index');
-        Route::get('/appointments/{appointment}', [PhysicianController::class, 'showAppointment'])
+        Route::get('/dashboard', [DoctorDashboardController::class, 'dashboard'])->name('dashboard');
+        Route::get('/appointments', [DoctorController::class, 'appointments'])->name('appointments.index');
+        Route::get('/appointments/{appointment}', [DoctorController::class, 'showAppointment'])
             ->name('appointments.show');
-        Route::get('/appointments/{appointment}/diagnosis/create', [PhysicianController::class, 'createDiagnosis'])
+        Route::get('/appointments/{appointment}/diagnosis/create', [DoctorController::class, 'createDiagnosis'])
             ->name('diagnosis.create');
-        Route::post('/appointments/{appointment}/diagnosis', [PhysicianController::class, 'storeDiagnosis'])
+        Route::post('/appointments/{appointment}/diagnosis', [DoctorController::class, 'storeDiagnosis'])
             ->name('diagnosis.store');
-        Route::get('/appointments/{appointment}/diagnosis/edit', [PhysicianController::class, 'editDiagnosis'])
+        Route::get('/appointments/{appointment}/diagnosis/edit', [DoctorController::class, 'editDiagnosis'])
             ->name('diagnosis.edit');
-        Route::put('/appointments/{appointment}/diagnosis', [PhysicianController::class, 'updateDiagnosis'])
+        Route::put('/appointments/{appointment}/diagnosis', [DoctorController::class, 'updateDiagnosis'])
             ->name('diagnosis.update');
-        Route::get('/patients/{patient}/history', [PhysicianController::class, 'patientHistory'])
+        Route::get('/patients/{patient}/history', [DoctorController::class, 'patientHistory'])
             ->name('patients.history');
     });
 

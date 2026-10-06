@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{User, Admin, Patient, Physician, Secretary, City};
+use App\Models\{User, Admin, Patient, Doctor, Receptionist, City};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -24,11 +24,11 @@ class UserManagementController extends Controller
                 case 'admin':
                     $query->admins();
                     break;
-                case 'physician':
-                    $query->physicians();
+                case 'doctor':
+                    $query->doctors();
                     break;
-                case 'secretary':
-                    $query->secretaries();
+                case 'receptionist':
+                    $query->receptionists();
                     break;
                 case 'patient':
                     $query->patients();
@@ -64,11 +64,11 @@ class UserManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => ['required', Rule::in(['admin', 'physician', 'secretary', 'patient'])],
-            'phone' => 'required_if:role,physician,secretary,patient',
-            'city_id' => 'required_if:role,physician,secretary,patient|exists:cities,id',
-            'specialization' => 'required_if:role,physician',
-            'national_id' => 'required_if:role,secretary,patient|unique:patients,national_id|unique:secretaries,national_id',
+            'role' => ['required', Rule::in(['admin', 'doctor', 'receptionist', 'patient'])],
+            'phone' => 'required_if:role,doctor,receptionist,patient',
+            'city_id' => 'required_if:role,doctor,receptionist,patient|exists:cities,id',
+            'specialization' => 'required_if:role,doctor',
+            
         ]);
 
         DB::beginTransaction();
@@ -87,8 +87,8 @@ class UserManagementController extends Controller
                     Admin::create(['user_id' => $user->id]);
                     break;
 
-                case 'physician':
-                    Physician::create([
+                case 'doctor':
+                    Doctor::create([
                         'user_id' => $user->id,
                         'specialization' => $request->specialization,
                         'phone' => $request->phone,
@@ -96,8 +96,8 @@ class UserManagementController extends Controller
                     ]);
                     break;
 
-                case 'secretary':
-                    Secretary::create([
+                case 'receptionist':
+                    Receptionist::create([
                         'user_id' => $user->id,
                         'phone' => $request->phone,
                         'city_id' => $request->city_id,
@@ -131,7 +131,7 @@ class UserManagementController extends Controller
      */
     public function show(User $user)
     {
-        $user->load(['admin', 'physician', 'secretary', 'patient']);
+        $user->load(['admin', 'doctor', 'receptionist', 'patient']);
         
         return view('admin.users.show', compact('user'));
     }
@@ -142,7 +142,7 @@ class UserManagementController extends Controller
     public function toggleActivation(User $user)
     {
         $user->update(['activation' => !$user->activation]);
-        
+        if (!$user->activation) { $user->tokens()->delete(); }
         $status = $user->activation ? 'activated' : 'deactivated';
         
         return redirect()->back()

@@ -15,7 +15,7 @@ class UpdateAppointmentRequest extends FormRequest
     {
         return [
             'patient_id' => ['sometimes', 'integer', 'exists:patients,id'],
-            'physician_id' => ['sometimes', 'integer', 'exists:physicians,id'],
+            'doctor_id' => ['sometimes', 'integer', 'exists:doctors,id'],
             'appointment_date' => ['sometimes', 'date', 'after_or_equal:today'],
             'appointment_time' => ['sometimes', 'date_format:H:i'],
             'status' => ['sometimes', 'in:scheduled,completed,cancelled'],

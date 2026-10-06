@@ -64,7 +64,7 @@
                                 <th>ID</th>
                                 <th>Date & Time</th>
                                 <th>Patient</th>
-                                <th>Physician</th>
+                                <th>Doctor</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -86,9 +86,9 @@
                                     <small class="text-muted">{{ $appointment->patient->national_id }}</small>
                                 </td>
                                 <td>
-                                    Dr. {{ $appointment->physician->user->name }}
+                                    Dr. {{ $appointment->doctor->user->name }}
                                     <br>
-                                    <small class="text-muted">{{ $appointment->physician->specialization }}</small>
+                                    <small class="text-muted">{{ $appointment->doctor->specialization }}</small>
                                 </td>
                                 <td>
                                     @if($appointment->status == 'scheduled')
