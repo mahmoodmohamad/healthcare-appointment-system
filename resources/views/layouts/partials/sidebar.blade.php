@@ -55,7 +55,40 @@
                         </li>
                     </ul>
                 </li>
+<!-- Appointments -->
+<li class="menu-item {{ request()->routeIs('admin.appointments.*') ? 'active open' : '' }}">
+    <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon icon-base ri-calendar-line"></i>
+        <div>Appointments</div>
+    </a>
+    <ul class="menu-sub">
+        <li class="menu-item {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}">
+            <a href="{{ route('admin.appointments.index') }}" class="menu-link">
+                <div>All Appointments</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('admin.appointments.calendar') ? 'active' : '' }}">
+            <a href="{{ route('admin.appointments.calendar') }}" class="menu-link">
+                <div>Calendar View</div>
+            </a>
+        </li>
+    </ul>
+</li>
+<!-- Doctors -->
+<li class="menu-item {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.doctors.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri-stethoscope-line"></i>
+        <div>Doctors</div>
+    </a>
+</li>
 
+<!-- Receptionists -->
+<li class="menu-item {{ request()->routeIs('admin.receptionists.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.receptionists.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri-user-star-line"></i>
+        <div>Receptionists</div>
+    </a>
+</li>
                 <!-- Statistics -->
                 <li class="menu-item {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
                     <a href="{{ route('admin.statistics') }}" class="menu-link">

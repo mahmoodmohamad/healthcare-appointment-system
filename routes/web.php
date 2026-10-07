@@ -9,6 +9,9 @@ use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Patient\DashboardController as PatientDashboardController;
 use App\Http\Controllers\Patient\PatientController;
 use App\Http\Controllers\Receptionist\DashboardController as ReceptionistDashboardController;
+use App\Http\Controllers\Admin\AdminAppointmentController;
+use App\Http\Controllers\Admin\AdminDoctorController;
+use App\Http\Controllers\Admin\AdminReceptionistController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +87,41 @@ Route::middleware(['auth', 'active', 'role:admin'])
 
         Route::post('/users/{user}/toggle-activation', [UserManagementController::class, 'toggleActivation'])
             ->name('users.toggle-activation');
+        
+            Route::get('/appointments', [AdminAppointmentController::class, 'index'])
+            ->name('appointments.index');
+
+        Route::get('/appointments/calendar', [AdminAppointmentController::class, 'calendar'])
+            ->name('appointments.calendar');
+
+        Route::get('/appointments/{appointment}', [AdminAppointmentController::class, 'show'])
+            ->name('appointments.show');
+
+            // ---- Doctors ------------------------------------------------
+Route::get('/doctors', [AdminDoctorController::class, 'index'])
+    ->name('doctors.index');
+
+Route::get('/doctors/create', [AdminDoctorController::class, 'create'])
+    ->name('doctors.create');
+
+Route::post('/doctors', [AdminDoctorController::class, 'store'])
+    ->name('doctors.store');
+
+Route::get('/doctors/{doctor}', [AdminDoctorController::class, 'show'])
+    ->name('doctors.show');
+
+// ---- Receptionists -------------------------------------------
+Route::get('/receptionists', [AdminReceptionistController::class, 'index'])
+    ->name('receptionists.index');
+
+Route::get('/receptionists/create', [AdminReceptionistController::class, 'create'])
+    ->name('receptionists.create');
+
+Route::post('/receptionists', [AdminReceptionistController::class, 'store'])
+    ->name('receptionists.store');
+
+Route::get('/receptionists/{receptionist}', [AdminReceptionistController::class, 'show'])
+    ->name('receptionists.show');
     });
 
 /*
