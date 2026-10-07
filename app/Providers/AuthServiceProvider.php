@@ -10,6 +10,8 @@ use App\Policies\DoctorPolicy;
 use App\Policies\ReceptionistPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Patient;
+use App\Policies\PatientPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
         Appointment::class => AppointmentPolicy::class,
          Doctor::class       => DoctorPolicy::class,
     Receptionist::class => ReceptionistPolicy::class,
+      Patient::class      => PatientPolicy::class,
     ];
 
     public function boot()

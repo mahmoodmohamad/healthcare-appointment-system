@@ -218,8 +218,7 @@ public function create(): View
      */
     public function destroy(Appointment $appointment): RedirectResponse
     {
-        $this->authorize('delete', $appointment);
-
+       $this->authorize('cancel', $appointment);
         $appointment->update([
             'status' => Appointment::CANCELLED,
         ]);

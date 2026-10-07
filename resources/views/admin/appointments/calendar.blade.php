@@ -30,7 +30,7 @@
                     @foreach($doctors as $doctor)
                         <option value="{{ $doctor->id }}"
                             {{ ($filters['doctor_id'] ?? '') == $doctor->id ? 'selected' : '' }}>
-                            Dr. {{ $doctor->user->name }} — {{ $doctor->specialization }}
+                            {{ $doctor->user->name }} — {{ $doctor->specialization }}
                         </option>
                     @endforeach
                 </select>
@@ -69,7 +69,7 @@
                         @foreach($dayItems as $item)
                             <a href="{{ route('admin.appointments.show', $item) }}"
                                class="d-block text-truncate small text-decoration-none"
-                               title="{{ $item->patient->user->name }} — Dr. {{ $item->doctor->user->name }}">
+                               title="{{ $item->patient->user->name }} — {{ $item->doctor->user->name }}">
                                 <span class="badge bg-{{ $item->status === 'completed' ? 'success' : ($item->status === 'cancelled' ? 'danger' : 'primary') }}">
                                     {{ $item->appointment_time ?? $item->appointment_date->format('H:i') }}
                                 </span>

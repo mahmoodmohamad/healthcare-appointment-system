@@ -52,8 +52,8 @@
                         @foreach($doctors as $doctor)
                             <option value="{{ $doctor->id }}"
                                 {{ ($filters['doctor_id'] ?? '') == $doctor->id ? 'selected' : '' }}>
-                                Dr. {{ $doctor->user->name }}
-                            </option>
+                                {{ $doctor->user->name }}
+                            </option> 
                         @endforeach
                     </select>
                 </div>
@@ -127,7 +127,7 @@
                                         </small>
                                     </td>
                                     <td>
-                                        Dr. {{ $appointment->doctor->user->name ?? '—' }}
+                                        {{ $appointment->doctor->user->name ?? '—' }}
                                         <br>
                                         <small class="text-muted">
                                             {{ $appointment->doctor->specialization ?? '' }}

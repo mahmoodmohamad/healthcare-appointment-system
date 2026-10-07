@@ -71,7 +71,7 @@
                             @foreach($doctors as $doctor)
                                 <tr>
                                     <td>#{{ $doctor->id }}</td>
-                                    <td><strong>Dr. {{ $doctor->user->name }}</strong></td>
+                                    <td><strong>{{ $doctor->user->name }}</strong></td>
                                     <td>{{ $doctor->user->email }}</td>
                                     <td><span class="badge bg-info">{{ $doctor->specialization }}</span></td>
                                     <td>{{ $doctor->phone }}</td>

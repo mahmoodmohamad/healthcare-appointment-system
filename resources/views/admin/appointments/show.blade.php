@@ -42,7 +42,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-success text-white"><h5 class="mb-0">Doctor</h5></div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> Dr. {{ $appointment->doctor->user->name }}</p>
+                    <p><strong>Name:</strong> {{ $appointment->doctor->user->name }}</p>
                     <p><strong>Specialization:</strong> {{ $appointment->doctor->specialization }}</p>
                     <p><strong>Phone:</strong> {{ $appointment->doctor->phone }}</p>
                 </div>

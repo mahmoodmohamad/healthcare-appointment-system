@@ -4,43 +4,46 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\{User, Patient, Doctor, Receptionist, Appointment, Diagnosis, City};
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AdminController extends Controller
 {
     /**
-     * Admin Dashboard - Overview
+     * Admin Dashboard — system overview.
      */
     public function dashboard()
     {
-        // Overall Statistics
         $stats = [
-            'total_users' => User::count(),
-            'total_patients' => Patient::count(),
-            'total_doctors' => Doctor::count(),
-            'total_receptionists' => Receptionist::count(),
-            'total_appointments' => Appointment::count(),
-            'total_diagnoses' => Diagnosis::count(),
-            
+            // Totals
+            'total_users'          => User::count(),
+            'total_patients'       => Patient::count(),
+            'total_doctors'        => Doctor::count(),
+            'total_receptionists'  => Receptionist::count(),
+            'total_appointments'   => Appointment::count(),
+            'total_diagnoses'      => Diagnosis::count(),
+
             // Today
-            'today_appointments' => Appointment::whereDate('appointment_date', today())->count(),
-            
-            // This Month
-            'month_appointments' => Appointment::whereMonth('created_at', now()->month)->count(),
-            'month_patients' => Patient::whereMonth('created_at', now()->month)->count(),
-            
+            'today_appointments'   => Appointment::whereDate('appointment_date', today())->count(),
+
+            // This month
+            'month_appointments'   => Appointment::whereMonth('created_at', now()->month)
+                                                ->whereYear('created_at', now()->year)
+                                                ->count(),
+            'month_patients'       => Patient::whereMonth('created_at', now()->month)
+                                                ->whereYear('created_at', now()->year)
+                                                ->count(),
+
             // Status breakdown
-            'scheduled' => Appointment::where('status', 'scheduled')->count(),
-            'completed' => Appointment::where('status', 'completed')->count(),
-            'cancelled' => Appointment::where('status', 'cancelled')->count(),
+            'scheduled'            => Appointment::where('status', 'scheduled')->count(),
+            'completed'            => Appointment::where('status', 'completed')->count(),
+            'cancelled'            => Appointment::where('status', 'cancelled')->count(),
         ];
 
-        // Recent Activity
+        // Recent activity
         $recentAppointments = Appointment::with(['patient.user', 'doctor.user'])
-            ->latest()
-            ->take(10)
+            ->latest('created_at')
+            ->take(8)
             ->get();
 
         $recentPatients = Patient::with('user')
@@ -48,12 +51,11 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        // Appointments by Status (for chart)
+        // Chart data
         $appointmentsByStatus = Appointment::select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->get();
 
-        // Monthly Appointments (last 6 months for chart)
         $monthlyData = Appointment::select(
                 DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
                 DB::raw('count(*) as count')
@@ -63,8 +65,14 @@ class AdminController extends Controller
             ->orderBy('month')
             ->get();
 
-        // Top Doctors by Appointments
         $topDoctors = Doctor::withCount('appointments')
+            ->with('user')
+            ->orderByDesc('appointments_count')
+            ->take(5)
+            ->get();
+
+        // New: top receptionists by bookings
+        $topReceptionists = Receptionist::withCount('appointments')
             ->with('user')
             ->orderByDesc('appointments_count')
             ->take(5)
@@ -76,24 +84,24 @@ class AdminController extends Controller
             'recentPatients',
             'appointmentsByStatus',
             'monthlyData',
-            'topDoctors'
+            'topDoctors',
+            'topReceptionists'
         ));
     }
 
     /**
-     * System Statistics Page
+     * Detailed statistics page.
      */
     public function statistics()
     {
-        // Detailed statistics
         $stats = [
             'users_by_role' => [
-                'patients' => Patient::count(),
-                'doctors' => Doctor::count(),
+                'patients'      => Patient::count(),
+                'doctors'       => Doctor::count(),
                 'receptionists' => Receptionist::count(),
-                'admins' => User::admins()->count(),
+                'admins'        => User::admins()->count(),
             ],
-            
+
             'appointments_by_month' => Appointment::select(
                     DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
                     DB::raw('count(*) as count')
@@ -102,13 +110,13 @@ class AdminController extends Controller
                 ->groupBy('month')
                 ->orderBy('month')
                 ->get(),
-            
+
             'appointments_by_doctor' => Doctor::withCount('appointments')
                 ->with('user')
                 ->having('appointments_count', '>', 0)
                 ->orderByDesc('appointments_count')
                 ->get(),
-            
+
             'cities_distribution' => City::withCount(['patients', 'doctors', 'receptionists'])
                 ->get(),
         ];

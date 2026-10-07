@@ -12,6 +12,7 @@ use App\Http\Controllers\Receptionist\DashboardController as ReceptionistDashboa
 use App\Http\Controllers\Admin\AdminAppointmentController;
 use App\Http\Controllers\Admin\AdminDoctorController;
 use App\Http\Controllers\Admin\AdminReceptionistController;
+use App\Http\Controllers\Admin\AdminPatientController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -122,6 +123,19 @@ Route::post('/receptionists', [AdminReceptionistController::class, 'store'])
 
 Route::get('/receptionists/{receptionist}', [AdminReceptionistController::class, 'show'])
     ->name('receptionists.show');
+
+    // ---- Patients -----------------------------------------------
+Route::get('/patients', [AdminPatientController::class, 'index'])
+    ->name('patients.index');
+
+Route::get('/patients/create', [AdminPatientController::class, 'create'])
+    ->name('patients.create');
+
+Route::post('/patients', [AdminPatientController::class, 'store'])
+    ->name('patients.store');
+
+Route::get('/patients/{patient}', [AdminPatientController::class, 'show'])
+    ->name('patients.show');
     });
 
 /*
@@ -202,19 +216,19 @@ Route::middleware(['auth', 'active', 'role:doctor'])
                 ->name('appointments.show');
         });
 
-        Route::middleware('can:update,appointment')->group(function () {
-            Route::get('/appointments/{appointment}/diagnosis/create', [DoctorController::class, 'createDiagnosis'])
-                ->name('diagnosis.create');
+        Route::middleware('can:diagnose,appointment')->group(function () {
+    Route::get('/appointments/{appointment}/diagnosis/create', [DoctorController::class, 'createDiagnosis'])
+        ->name('diagnosis.create');
 
-            Route::post('/appointments/{appointment}/diagnosis', [DoctorController::class, 'storeDiagnosis'])
-                ->name('diagnosis.store');
+    Route::post('/appointments/{appointment}/diagnosis', [DoctorController::class, 'storeDiagnosis'])
+        ->name('diagnosis.store');
 
-            Route::get('/appointments/{appointment}/diagnosis/edit', [DoctorController::class, 'editDiagnosis'])
-                ->name('diagnosis.edit');
+    Route::get('/appointments/{appointment}/diagnosis/edit', [DoctorController::class, 'editDiagnosis'])
+        ->name('diagnosis.edit');
 
-            Route::put('/appointments/{appointment}/diagnosis', [DoctorController::class, 'updateDiagnosis'])
-                ->name('diagnosis.update');
-        });
+    Route::put('/appointments/{appointment}/diagnosis', [DoctorController::class, 'updateDiagnosis'])
+        ->name('diagnosis.update');
+});
 
         Route::get('/patients/{patient}/history', [DoctorController::class, 'patientHistory'])
             ->name('patients.history');

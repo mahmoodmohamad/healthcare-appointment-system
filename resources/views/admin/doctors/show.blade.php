@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Dr. ' . $doctor->user->name)
+@section('title', $doctor->user->name)
 
 @section('content')
 <div class="container-fluid py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-0">Dr. {{ $doctor->user->name }}</h2>
+            <h2 class="mb-0">{{ $doctor->user->name }}</h2>
             <p class="text-muted mb-0">{{ $doctor->specialization }}</p>
         </div>
         <a href="{{ route('admin.doctors.index') }}" class="btn btn-secondary">← Back to Doctors</a>
@@ -52,7 +52,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white"><h5 class="mb-0">Profile</h5></div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> Dr. {{ $doctor->user->name }}</p>
+                    <p><strong>Name:</strong> {{ $doctor->user->name }}</p>
                     <p><strong>Email:</strong> {{ $doctor->user->email }}</p>
                     <p><strong>Specialization:</strong> {{ $doctor->specialization }}</p>
                     <p><strong>Phone:</strong> {{ $doctor->phone }}</p>

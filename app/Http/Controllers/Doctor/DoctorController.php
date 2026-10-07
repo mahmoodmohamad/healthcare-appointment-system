@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\{Appointment, Patient};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+ use Illuminate\Database\QueryException;
 /**
  * Ownership checks (view / update) are enforced in routes/web.php
  * through `can:view,appointment` and `can:update,appointment`.
@@ -58,15 +58,16 @@ class DoctorController extends Controller
     }
 
     public function storeDiagnosis(Request $request, Appointment $appointment)
-    {
-        $data = $request->validate([
-            'symptoms'     => 'required|string',
-            'diagnosis'    => 'required|string',
-            'prescription' => 'nullable|string',
-            'notes'        => 'nullable|string',
-        ]);
+{
+    $data = $request->validate([
+        'symptoms'     => 'required|string',
+        'diagnosis'    => 'required|string',
+        'prescription' => 'nullable|string',
+        'notes'        => 'nullable|string',
+    ]);
 
-        // Lock the row so two concurrent submits can't create two diagnoses
+    try {
+        // Row lock + unique index: two concurrent submits can't create two diagnoses
         $created = DB::transaction(function () use ($data, $appointment) {
             $locked = Appointment::lockForUpdate()->findOrFail($appointment->id);
 
@@ -79,18 +80,23 @@ class DoctorController extends Controller
 
             return true;
         });
-
-        if (! $created) {
-            return redirect()
-                ->route('doctor.appointments.show', $appointment)
-                ->with('error', 'Diagnosis already exists.');
+    } catch (QueryException $e) {
+        if (($e->errorInfo[1] ?? null) !== 1062) {
+            throw $e;
         }
-
-        return redirect()
-            ->route('doctor.appointments.show', $appointment)
-            ->with('success', 'Diagnosis saved successfully!');
+        $created = false;
     }
 
+    if (! $created) {
+        return redirect()
+            ->route('doctor.appointments.show', $appointment)
+            ->with('error', 'Diagnosis already exists.');
+    }
+
+    return redirect()
+        ->route('doctor.appointments.show', $appointment)
+        ->with('success', 'Diagnosis saved successfully!');
+}
     public function editDiagnosis(Appointment $appointment)
     {
         if (! $appointment->diagnosis) {

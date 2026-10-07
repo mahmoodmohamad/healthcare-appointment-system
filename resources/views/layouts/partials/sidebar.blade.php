@@ -88,6 +88,12 @@
         <i class="menu-icon icon-base ri-user-star-line"></i>
         <div>Receptionists</div>
     </a>
+</li><!-- Patients -->
+<li class="menu-item {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}">
+    <a href="{{ route('admin.patients.index') }}" class="menu-link">
+        <i class="menu-icon icon-base ri-user-heart-line"></i>
+        <div>Patients</div>
+    </a>
 </li>
                 <!-- Statistics -->
                 <li class="menu-item {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
