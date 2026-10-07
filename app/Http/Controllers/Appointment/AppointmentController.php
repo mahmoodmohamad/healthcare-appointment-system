@@ -233,10 +233,15 @@ public function calendar(Request $request): View
 {
     $this->authorize('viewAny', Appointment::class);
 
+    $user = $request->user();
+
     $month = (int) $request->input('month', now()->month);
     $year  = (int) $request->input('year', now()->year);
 
-    $date = now()->setYear($year)->setMonth($month)->startOfMonth();
+    $date = now()
+        ->setYear($year)
+        ->setMonth($month)
+        ->startOfMonth();
 
     $query = Appointment::query()
         ->with([
@@ -246,8 +251,20 @@ public function calendar(Request $request): View
         ->whereYear('appointment_date', $year)
         ->whereMonth('appointment_date', $month);
 
+    /*
+     * Receptionists may only see appointments
+     * created by themselves.
+     */
+    if ($user->isReceptionist()) {
+        $receptionist = $user->receptionist;
+
+        abort_unless($receptionist, 403);
+
+        $query->where('receptionist_id', $receptionist->id);
+    }
+
     if ($request->filled('doctor_id')) {
-        $query->where('doctor_id', $request->doctor_id);
+        $query->where('doctor_id', $request->integer('doctor_id'));
     }
 
     $appointments = $query
@@ -258,6 +275,9 @@ public function calendar(Request $request): View
             return $appointment->appointment_date->format('Y-m-d');
         });
 
+    /*
+     * Only needed for the receptionist calendar filter.
+     */
     $doctors = Doctor::with('user')
         ->orderBy('id')
         ->get();
@@ -268,5 +288,6 @@ public function calendar(Request $request): View
         'doctors'
     ));
 }
+
 
 }

@@ -78,15 +78,18 @@ class Appointment extends Model
     }
 
     // ---------- Booking ----------
-    public static function isAvailable($doctorId, $date, $time, $ignoreId = null)
-    {
-        return ! self::where('doctor_id', $doctorId)
-            ->whereDate('appointment_date', $date)
-            ->where('appointment_time', $time)
-            ->where('status', '!=', self::CANCELLED)
-            ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
-            ->exists();
-    }
+    public static function isAvailable($doctorId, $date, $time, $ignoreId = null): bool
+{
+    // Normalize to HH:MM:SS so MySQL/PG/SQLite all behave the same
+    $normalized = strlen($time) === 5 ? $time . ':00' : $time;
+
+    return ! self::where('doctor_id', $doctorId)
+        ->whereDate('appointment_date', $date)
+        ->where('appointment_time', $normalized)
+        ->where('status', '!=', self::CANCELLED)
+        ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+        ->exists();
+}
 
     public static function book(array $data): self
     {

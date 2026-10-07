@@ -28,7 +28,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'activation' => 'boolean',
     ];
+protected array $roleCache = [];
 
+protected function hasRole(string $role): bool
+{
+    if (! in_array($role, ['admin', 'doctor', 'receptionist', 'patient'], true)) {
+        return false;
+    }
+
+    return $this->roleCache[$role] ??= $this->{$role}()->exists();
+}
     // Relationships
     public function admin(): HasOne
     {
@@ -71,17 +80,7 @@ class User extends Authenticatable
         return $this->hasRole('patient');
     }
 
-    protected function hasRole(string $role): bool
-    {
-        static $cache = [];
-        
-        if (!isset($cache[$this->id][$role])) {
-            $cache[$this->id][$role] = $this->$role()->exists();
-        }
-        
-        return $cache[$this->id][$role];
-    }
-
+  
     // Helper methods
     public function getRoleName(): string
     {

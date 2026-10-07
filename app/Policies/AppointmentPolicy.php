@@ -10,56 +10,69 @@ class AppointmentPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user)
+    /**
+     * Admin can *see* everything — nothing more.
+     * Write actions still go through the methods below.
+     */
+    public function before(User $user, string $ability)
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
+        return ($user->isAdmin() && in_array($ability, ['viewAny', 'view'], true))
+            ? true
+            : null;
     }
 
     public function viewAny(User $user): bool
     {
-        return $user->isReceptionist() || $user->isDoctor() || $user->isPatient();
+        return $user->isAdmin()
+            || $user->isReceptionist()
+            || $user->isDoctor()
+            || $user->isPatient();
     }
 
-    public function view(User $user, Appointment $appointment): bool
+    public function view(User $user, Appointment $a): bool
     {
-        if ($user->isDoctor()) {
-            return $appointment->doctor_id === $user->doctor?->id;
-        }
-
-        if ($user->isPatient()) {
-            return $appointment->patient_id === $user->patient?->id;
-        }
-
-        return $user->isReceptionist();
+        return $user->isReceptionist()
+            || $this->ownsAsDoctor($user, $a)
+            || $this->ownsAsPatient($user, $a);
     }
 
     public function create(User $user): bool
     {
-        return $user->isReceptionist();
+        return $user->isAdmin() || $user->isReceptionist();
     }
 
-    /**
-     * Doctor: diagnosis / status on own, non-cancelled appointments.
-     */
-    public function update(User $user, Appointment $appointment): bool
+    public function manage(User $user, Appointment $a): bool
     {
-        return $user->isDoctor()
-            && $appointment->doctor_id === $user->doctor?->id
-            && $appointment->status !== 'cancelled';
+        return $user->isReceptionist() || $this->ownsAsDoctor($user, $a);
     }
 
-    /**
-     * Reschedule / edit via API: receptionist (any) or the doctor who owns it.
-     */
-    public function manage(User $user, Appointment $appointment): bool
+    public function cancel(User $user, Appointment $a): bool
     {
-        return $user->isReceptionist() || $this->update($user, $appointment);
+        return $user->isReceptionist() && $a->status === Appointment::SCHEDULED;
     }
 
-    public function delete(User $user, Appointment $appointment): bool
+    public function diagnose(User $user, Appointment $a): bool
     {
-        return $user->isReceptionist() && $appointment->status !== 'completed';
+        return $this->ownsAsDoctor($user, $a)
+            && $a->status !== Appointment::CANCELLED;
+    }
+
+    public function reschedule(User $user, Appointment $a): bool
+    {
+        return $a->status === Appointment::SCHEDULED
+            && ($user->isReceptionist() || $this->ownsAsDoctor($user, $a));
+    }
+
+    // ---- helpers -------------------------------------------------------
+    private function ownsAsDoctor(User $user, Appointment $a): bool
+    {
+        $id = $user->doctor?->id;
+        return $user->isDoctor() && $id !== null && (int) $a->doctor_id === (int) $id;
+    }
+
+    private function ownsAsPatient(User $user, Appointment $a): bool
+    {
+        $id = $user->patient?->id;
+        return $user->isPatient() && $id !== null && (int) $a->patient_id === (int) $id;
     }
 }

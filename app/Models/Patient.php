@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Patient extends Model
 {
@@ -15,72 +19,79 @@ class Patient extends Model
         'phone',
         'city_id',
         'receptionist_id',
-		'gender',
+        'gender',
         'birth_date',
     ];
 
-    protected static function boot()
+    /**
+     * Cascade-delete the linked user account when a patient is removed.
+     */
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::deleting(function (self $patient) {
             $patient->user()->delete();
         });
     }
 
-    public function user()
+    // ---------------------------------------------------------------------
+    // Relationships
+    // ---------------------------------------------------------------------
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function city()
+    public function city(): BelongsTo
     {
         return $this->belongsTo(City::class);
     }
 
-    public function receptionist()
+    public function receptionist(): BelongsTo
     {
         return $this->belongsTo(Receptionist::class);
     }
 
-    public function appointments()
+    public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
     }
 
-   public function diagnoses()
-{
-    return $this->hasManyThrough(
-        Diagnosis::class,
-        Appointment::class,
-        'patient_id',      // FK في appointments
-        'appointment_id',  // FK في diagnoses
-        'id',              // PK في patients
-        'id'               // PK في appointments
-    );
-}
+    public function diagnoses(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Diagnosis::class,
+            Appointment::class,
+            'patient_id',      // FK on appointments
+            'appointment_id',  // FK on diagnoses
+            'id',              // PK on patients
+            'id'               // PK on appointments
+        );
+    }
 
+    // ---------------------------------------------------------------------
+    // Query scopes
+    // ---------------------------------------------------------------------
 
-    public function scopeSearch($query, string $search)
+   
+    public function scopeSearch(Builder $query, string $search): Builder
     {
         $like = "%{$search}%";
-        
-        return $query->whereHas('user', function($q) use ($search) {
-            $q->search($search);
-        })->orWhere('national_id', 'LIKE', $like)
-          ->orWhere('phone', 'LIKE', $like);
-    }
-	// in the Patient model
-protected static function booted(): void
-{
-    static::addGlobalScope('doctor', function ($q) {
-        $user = auth()->user();
 
-        if ($user && $user->doctor) {
-            $q->whereHas('appointments', function ($a) use ($user) {
-                $a->where('doctor_id', $user->doctor->id);
-            });
-        }
-    });
-}
+        return $query->where(function (Builder $q) use ($search, $like) {
+            $q->whereHas('user', function (Builder $userQuery) use ($search) {
+                $userQuery->search($search);
+            })
+            ->orWhere('national_id', 'LIKE', $like)
+            ->orWhere('phone', 'LIKE', $like);
+        });
+    }
+
+   
+    public function scopeForDoctor(Builder $query, int $doctorId): Builder
+    {
+        return $query->whereHas('appointments', function (Builder $q) use ($doctorId) {
+            $q->where('doctor_id', $doctorId);
+        });
+    }
 }
