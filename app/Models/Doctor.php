@@ -16,16 +16,14 @@ class Doctor extends Model
         'city_id',
     ];
 
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::deleting(function (self $doctor) {
             $doctor->user()->delete();
         });
     }
 
-    // Relationships
+    // ---------- Relationships ----------
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -42,16 +40,16 @@ class Doctor extends Model
     }
 
     public function diagnoses()
-{
-    return $this->hasManyThrough(
-        Diagnosis::class,
-        Appointment::class,
-        'doctor_id',       // FK on appointments
-        'appointment_id',  // FK on diagnoses
-        'id',
-        'id'
-    );
-}
+    {
+        return $this->hasManyThrough(
+            Diagnosis::class,
+            Appointment::class,
+            'doctor_id',       // FK on appointments
+            'appointment_id',  // FK on diagnoses
+            'id',
+            'id'
+        );
+    }
 
     public function todayAppointments()
     {
@@ -65,19 +63,25 @@ class Doctor extends Model
     {
         return $this->appointments()
             ->where('appointment_date', '>=', now())
-            ->where('status', 'scheduled')
+            ->where('status', Appointment::SCHEDULED)
             ->orderBy('appointment_date')
             ->orderBy('appointment_time')
             ->get();
     }
 
-    // Search scope
+    /**
+     * كان فيه bug: orWhere برا أي grouping، فلما الـ scope يتركّب مع
+     * where تانية (مثلاً city_id) الـ OR كان بيكسر الفلتر.
+     * دلوقتي كل شروط البحث جوه where(closure) واحدة.
+     */
     public function scopeSearch($query, string $search)
     {
         $like = "%{$search}%";
-        
-        return $query->whereHas('user', function($q) use ($search) {
-            $q->search($search);
-        })->orWhere('specialization', 'LIKE', $like);
+
+        return $query->where(function ($q) use ($search, $like) {
+            $q->whereHas('user', fn ($u) => $u->search($search))
+              ->orWhere('specialization', 'LIKE', $like)
+              ->orWhere('phone', 'LIKE', $like);
+        });
     }
 }

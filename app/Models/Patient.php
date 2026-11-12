@@ -13,6 +13,11 @@ class Patient extends Model
 {
     use HasFactory;
 
+    /**
+     * address / notes / emergency اتشالوا: مفيش أعمدة ليهم في migration جدول patients،
+     * وأي create/update بيهم كان هيرمي SQL error.
+     * لو عايزهم فعلاً، ضيف migration وارجّعهم هنا.
+     */
     protected $fillable = [
         'user_id',
         'national_id',
@@ -23,9 +28,13 @@ class Patient extends Model
         'birth_date',
     ];
 
-    /**
-     * Cascade-delete the linked user account when a patient is removed.
-     */
+    protected $casts = [
+        'birth_date' => 'date',
+    ];
+
+    // لا نستخدم $appends عشان ما نعملش N+1 في الـ serialization.
+    // استخدم $patient->name و $patient->age مباشرة، ومعاهم with('user') في الـ queries.
+
     protected static function booted(): void
     {
         static::deleting(function (self $patient) {
@@ -33,10 +42,18 @@ class Patient extends Model
         });
     }
 
-    // ---------------------------------------------------------------------
-    // Relationships
-    // ---------------------------------------------------------------------
+    // ---------- Accessors ----------
+    public function getNameAttribute(): ?string
+    {
+        return $this->user?->name;
+    }
 
+    public function getAgeAttribute(): ?int
+    {
+        return $this->birth_date?->age;
+    }
+
+    // ---------- Relationships ----------
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -69,29 +86,20 @@ class Patient extends Model
         );
     }
 
-    // ---------------------------------------------------------------------
-    // Query scopes
-    // ---------------------------------------------------------------------
-
-   
+    // ---------- Scopes ----------
     public function scopeSearch(Builder $query, string $search): Builder
     {
         $like = "%{$search}%";
 
         return $query->where(function (Builder $q) use ($search, $like) {
-            $q->whereHas('user', function (Builder $userQuery) use ($search) {
-                $userQuery->search($search);
-            })
-            ->orWhere('national_id', 'LIKE', $like)
-            ->orWhere('phone', 'LIKE', $like);
+            $q->whereHas('user', fn (Builder $u) => $u->search($search))
+              ->orWhere('national_id', 'LIKE', $like)
+              ->orWhere('phone', 'LIKE', $like);
         });
     }
 
-   
     public function scopeForDoctor(Builder $query, int $doctorId): Builder
     {
-        return $query->whereHas('appointments', function (Builder $q) use ($doctorId) {
-            $q->where('doctor_id', $doctorId);
-        });
+        return $query->whereHas('appointments', fn (Builder $q) => $q->where('doctor_id', $doctorId));
     }
 }

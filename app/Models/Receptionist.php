@@ -15,10 +15,8 @@ class Receptionist extends Model
         'city_id',
     ];
 
-    protected static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
         static::deleting(function (self $receptionist) {
             $receptionist->user()->delete();
         });
@@ -44,10 +42,14 @@ class Receptionist extends Model
         return $this->hasMany(Appointment::class, 'receptionist_id');
     }
 
+    /** نفس إصلاح Doctor::scopeSearch — الـ OR لازم يكون جوه group واحد */
     public function scopeSearch($query, string $search)
     {
-        return $query->whereHas('user', function($q) use ($search) {
-            $q->search($search);
-        })->orWhere('phone', 'LIKE', "%{$search}%");
+        $like = "%{$search}%";
+
+        return $query->where(function ($q) use ($search, $like) {
+            $q->whereHas('user', fn ($u) => $u->search($search))
+              ->orWhere('phone', 'LIKE', $like);
+        });
     }
 }

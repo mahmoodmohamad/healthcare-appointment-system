@@ -1,32 +1,27 @@
+
 <?php
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Appointment;
 use App\Models\Diagnosis;
+use Illuminate\Database\Seeder;
 
 class DiagnosisSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //
-		$appointments = Appointment::take(3)->get();
+        $appointments = Appointment::all();
 
         foreach ($appointments as $appointment) {
-            $appointment->update(['status' => 'completed']);
-
             Diagnosis::create([
-                'appointment_id' => $appointment->id,
-                'description' => 'General examination completed',
-                'prescription' => 'Vitamin C + Rest',
-            ]);
+    'appointment_id' => $appointment->id,
+    'symptoms'       => 'Headache and mild fever',
+    'diagnosis'      => 'Viral infection',
+    'description'    => 'Rest and fluids recommended.',
+    'prescription'   => 'Paracetamol 500mg',
+    'notes'          => null,
+]);
         }
     }
 }

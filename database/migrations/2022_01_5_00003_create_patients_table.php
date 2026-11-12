@@ -21,6 +21,9 @@ class CreatePatientsTable extends Migration
 	$table->enum('gender', ['male', 'female'])->nullable();
     $table->date('birth_date')->nullable();
     $table->foreignId('city_id')->constrained()->onDelete('cascade');
+      $table->text('address')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('emergency')->nullable();
     $table->foreignId('receptionist_id')->nullable()->constrained()->onDelete('set null');
     $table->timestamps();
         });

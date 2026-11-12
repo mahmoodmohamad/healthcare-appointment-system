@@ -4,48 +4,35 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Diagnosis extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'appointment_id',  
+        'appointment_id',
         'symptoms',
         'diagnosis',
+        'description',
         'prescription',
         'notes',
     ];
 
-    // Relationships
-    public function appointment()
+    public function appointment(): BelongsTo
     {
         return $this->belongsTo(Appointment::class);
     }
 
-    // ✅ للوصول للـ patient عن طريق appointment
-    public function patient()
+    // Usage: $diagnosis->patient
+    public function getPatientAttribute()
     {
-        return $this->hasOneThrough(
-            Patient::class,
-            Appointment::class,
-            'id',           // FK في appointments
-            'id',           // FK في patients
-            'appointment_id', // Local key في diagnoses
-            'patient_id'     // Local key في appointments
-        );
+        return $this->appointment?->patient;
     }
 
-    // ✅ للوصول للـ doctor عن طريق appointment
-    public function doctor()
+    // Usage: $diagnosis->doctor
+    public function getDoctorAttribute()
     {
-        return $this->hasOneThrough(
-            Doctor::class,
-            Appointment::class,
-            'id',
-            'id',
-            'appointment_id',
-            'doctor_id'
-        );
+        return $this->appointment?->doctor;
     }
 }
