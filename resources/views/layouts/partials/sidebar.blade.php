@@ -13,7 +13,7 @@
                     </svg>
                 </span>
             </span>
-            <span class="app-brand-text demo menu-text fw-semibold ms-2">🏥 Healthcare</span>
+            <span class="app-brand-text demo menu-text fw-semibold ms-2">🏥 @lang('site.brand_healthcare')</span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -27,7 +27,7 @@
             <strong>{{ auth()->user()->name }}</strong>
          
         </span>
-        <span class="ui-sidebar-online" title="{{ __("Active account") }}"></span>
+        <span class="ui-sidebar-online" title="{{ __('site.active_account') }}"></span>
     </div>
 
     <div class="menu-inner-shadow"></div>
