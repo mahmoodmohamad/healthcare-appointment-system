@@ -33,7 +33,7 @@ return new class extends Migration
 
         $expression = match ($driver) {
             'sqlite' => "CASE WHEN status = 'cancelled' THEN NULL ELSE CAST(patient_id AS TEXT) || '-' || date(appointment_date) || '-' || time(appointment_time) END",
-            'pgsql' => "CASE WHEN status = 'cancelled' THEN NULL ELSE patient_id::text || '-' || to_char(appointment_date, 'YYYY-MM-DD') || '-' || to_char(appointment_time, 'HH24:MI:SS') END",
+            'pgsql' => "CASE WHEN status = 'cancelled' THEN NULL ELSE patient_id::text || '-' || appointment_date::date::text || '-' || appointment_time::text END",
             default => "IF(status = 'cancelled', NULL, CONCAT(patient_id, '-', DATE(appointment_date), '-', appointment_time))",
         };
 
