@@ -634,3 +634,13 @@ a.ui-row:hover {
         justify-content: flex-start;
     }
 }
+
+/* Shared refinements for migrated pages */
+.ui-card { overflow: hidden; }
+.ui-page .ui-input { min-height: 2.65rem; }
+.ui-page .ui-search { position: relative; }
+.ui-page .ui-search .ui-icon { position: absolute; inset-inline-start: .85rem; top: 50%; transform: translateY(-50%); color: var(--ui-muted); pointer-events: none; }
+.ui-page .ui-search input { padding-inline-start: 2.5rem; }
+.ui-page .ui-row-actions .ui-btn { min-width: 2.25rem; }
+.ui-page .ui-chip { white-space: nowrap; }
+.ui-page .ui-empty-icon.ui-tone-teal { background: var(--ui-accent-soft); color: var(--ui-accent-dark); }
