@@ -794,3 +794,29 @@ a.ui-row:hover {
     max-height: 1.05rem;
     flex-basis: 1.05rem;
 }
+
+
+/* Locale-aware typography and direction */
+html[lang="ar"] body,
+html[lang="ar"] button,
+html[lang="ar"] input,
+html[lang="ar"] select,
+html[lang="ar"] textarea {
+    font-family: "Cairo", sans-serif;
+}
+
+html[lang="ar"] .dropdown-menu {
+    text-align: right;
+}
+
+html[lang="ar"] .navbar-nav .dropdown-menu {
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+}
+
+.language-switcher-current {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    white-space: nowrap;
+}
