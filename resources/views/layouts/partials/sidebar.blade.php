@@ -1,4 +1,4 @@
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme ui-sidebar">
     <!-- Brand -->
     <div class="app-brand demo">
         <a href="{{ url('/') }}" class="app-brand-link">
@@ -19,6 +19,15 @@
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
             <i class="menu-toggle-icon d-xl-inline-block align-middle"></i>
         </a>
+    </div>
+
+    <div class="ui-sidebar-profile">
+        <span class="ui-sidebar-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name ?? "U", 0, 1)) }}</span>
+        <span class="ui-sidebar-profile-copy">
+            <strong>{{ auth()->user()->name }}</strong>
+            <small>{{ __(ucfirst(auth()->user()->role ?? "User")) }}</small>
+        </span>
+        <span class="ui-sidebar-online" title="{{ __("Active account") }}"></span>
     </div>
 
     <div class="menu-inner-shadow"></div>
@@ -222,7 +231,7 @@
             @if(auth()->user()->isPatient())
                 <!-- Dashboard -->
                 <li class="menu-item {{ request()->routeIs('patient.dashboard') ? 'active' : '' }}">
-                    <a href="#" class="menu-link">
+                    <a href="{{ route('patient.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
                         <div>Dashboard</div>
                     </a>
