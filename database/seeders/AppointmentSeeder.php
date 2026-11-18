@@ -29,7 +29,7 @@ class AppointmentSeeder extends Seeder
             $seeded = Appointment::query()
                 ->where('patient_id', $patient->id)
                 ->where('doctor_id', $doctor->id)
-                ->where('notes', '[SEED] Initial visit')
+                ->whereIn('notes', ['[SEED] Initial visit', 'Initial visit'])
                 ->first();
 
             if ($seeded && $seeded->status !== Appointment::SCHEDULED) {
