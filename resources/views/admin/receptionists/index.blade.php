@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'All Receptionists')
+@section('title', 'All @lang('site.receptionists')')
 
 @section('content')
 <div class="container-fluid py-4">
@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-0">@lang('site.receptionists')</h2>
-            <p class="text-muted mb-0">All registered front-desk staff.</p>
+            <p class="text-muted mb-0">@lang('site.all_receptionists_description')</p>
         </div>
         <a href="{{ route('admin.receptionists.create') }}" class="btn btn-primary">
             ➕ Add Receptionist
@@ -31,9 +31,9 @@
                            value="{{ $filters['search'] ?? '' }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">City</label>
+                    <label class="form-label">@lang('site.city')</label>
                     <select name="city_id" class="form-select">
-                        <option value="">All Cities</option>
+                        <option value="">@lang('site.all_cities')</option>
                         @foreach($cities as $city)
                             <option value="{{ $city->id }}"
                                 {{ ($filters['city_id'] ?? '') == $city->id ? 'selected' : '' }}>
@@ -44,7 +44,7 @@
                 </div>
                 <div class="col-md-3 d-flex align-items-end gap-2">
                     <button class="btn btn-primary flex-grow-1">@lang('site.filter')</button>
-                    <a href="{{ route('admin.receptionists.index') }}" class="btn btn-outline-secondary">Clear</a>
+                    <a href="{{ route('admin.receptionists.index') }}" class="btn btn-outline-secondary">@lang('site.clear')</a>
                 </div>
             </form>
         </div>
@@ -61,7 +61,7 @@
                                 <th>@lang('site.name')</th>
                                 <th>@lang('site.email')</th>
                                 <th>@lang('site.phone')</th>
-                                <th>City</th>
+                                <th>@lang('site.city')</th>
                                 <th>@lang('site.appointments')</th>
                                 <th>@lang('site.patients')</th>
                                 <th></th>
@@ -91,7 +91,7 @@
                     {{ $receptionists->links() }}
                 </div>
             @else
-                <p class="text-center text-muted py-5 mb-0">No receptionists found.</p>
+                <p class="text-center text-muted py-5 mb-0">@lang('site.no_receptionists_found')</p>
             @endif
         </div>
     </div>
