@@ -29,7 +29,7 @@
 
                 {{-- Email --}}
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
+                    <label class="form-label">@lang('site.email')</label>
                     <input
                         type="email"
                         name="email"
@@ -51,13 +51,13 @@
 
                 {{-- Confirm Password --}}
                 <div class="mb-3">
-                    <label class="form-label">Confirm Password</label>
+                    <label class="form-label">@lang('site.confirm_password')</label>
                     <input type="password" name="password_confirmation" class="form-control">
                 </div>
 
                 {{-- Role --}}
                 <div class="mb-3">
-                    <label class="form-label">Role</label>
+                    <label class="form-label">@lang('site.role')</label>
                     <select name="role" class="form-select" required>
                         @foreach($roles as $role)
                             <option value="{{ $role }}"
@@ -75,7 +75,7 @@
                         type="checkbox"
                         name="activation"
                         {{ $user->activation ? 'checked' : '' }}>
-                    <label class="form-check-label">Active</label>
+                    <label class="form-check-label">@lang('site.active')</label>
                 </div>
 
                 <button type="submit" class="btn btn-primary">
@@ -83,7 +83,7 @@
                 </button>
 
                 <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                    Cancel
+                    @lang('site.cancel')
                 </a>
 
             </form>

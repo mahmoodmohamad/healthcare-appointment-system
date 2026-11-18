@@ -31,7 +31,7 @@
         <div class="card-body">
             <form method="GET" action="{{ route('admin.users.index') }}" class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Search</label>
+                    <label class="form-label">@lang('site.search')</label>
                     <input type="text" 
                            name="search" 
                            class="form-control" 
@@ -39,18 +39,18 @@
                            value="{{ request('search') }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Role</label>
+                    <label class="form-label">@lang('site.role')</label>
                     <select name="role" class="form-select">
                         <option value="">All Roles</option>
                         <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="doctor" {{ request('role') == 'doctor' ? 'selected' : '' }}>Doctor</option>
-                        <option value="receptionist" {{ request('role') == 'receptionist' ? 'selected' : '' }}>Receptionist</option>
-                        <option value="patient" {{ request('role') == 'patient' ? 'selected' : '' }}>Patient</option>
+                        <option value="doctor" {{ request('role') == 'doctor' ? 'selected' : '' }}>@lang('site.doctor')</option>
+                        <option value="receptionist" {{ request('role') == 'receptionist' ? 'selected' : '' }}>@lang('site.receptionist')</option>
+                        <option value="patient" {{ request('role') == 'patient' ? 'selected' : '' }}>@lang('site.patient')</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>
-                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    <button type="submit" class="btn btn-primary w-100">@lang('site.filter')</button>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>
@@ -69,10 +69,10 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Status</th>
+                                <th>@lang('site.name')</th>
+                                <th>@lang('site.email')</th>
+                                <th>@lang('site.role')</th>
+                                <th>@lang('site.status')</th>
                                 <th>Registered</th>
                                 <th>Actions</th>
                             </tr>
@@ -100,9 +100,9 @@
                                 </td>
                                 <td>
                                     @if($user->activation)
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success">@lang('site.active')</span>
                                     @else
-                                        <span class="badge bg-secondary">Inactive</span>
+                                        <span class="badge bg-secondary">@lang('site.inactive')</span>
                                     @endif
                                 </td>
                                 <td>

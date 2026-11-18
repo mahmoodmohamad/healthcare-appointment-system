@@ -54,15 +54,15 @@
                                     </div>
                                     <div class="role-badge doctor" data-role="doctor" onclick="selectRole('doctor')">
                                         <span style="font-size: 20px;">👨‍⚕️</span>
-                                        <span>Doctor</span>
+                                        <span>@lang('site.doctor')</span>
                                     </div>
                                     <div class="role-badge receptionist" data-role="receptionist" onclick="selectRole('receptionist')">
                                         <span style="font-size: 20px;">👩‍💼</span>
-                                        <span>Receptionist</span>
+                                        <span>@lang('site.receptionist')</span>
                                     </div>
                                     <div class="role-badge patient" data-role="patient" onclick="selectRole('patient')">
                                         <span style="font-size: 20px;">🏥</span>
-                                        <span>Patient</span>
+                                        <span>@lang('site.patient')</span>
                                     </div>
                                 </div>
 
@@ -117,7 +117,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="password" class="form-label">
-                                        <span class="required">*</span> Password
+                                        <span class="required">*</span> @lang('site.password')
                                     </label>
                                     <div class="position-relative">
                                         <span class="input-icon">🔒</span>
@@ -143,7 +143,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="password_confirmation" class="form-label">
-                                        <span class="required">*</span> Confirm Password
+                                        <span class="required">*</span> @lang('site.confirm_password')
                                     </label>
                                     <div class="position-relative">
                                         <span class="input-icon">🔒</span>
@@ -252,7 +252,7 @@
                             <!-- Submit Buttons -->
                             <div class="d-flex justify-content-between align-items-center mt-5 gap-3">
                                 <a href="{{ route('admin.users.index') }}" class="btn btn-cancel">
-                                    Cancel
+                                    @lang('site.cancel')
                                 </a>
                                 <button type="submit" class="btn btn-submit text-white" id="submitBtn">
                                     Create User Account
