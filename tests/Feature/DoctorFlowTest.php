@@ -22,7 +22,9 @@ class DoctorFlowTest extends TestCase
 
     public function test_saving_diagnosis_completes_the_appointment(): void
     {
-        $appointment = Appointment::factory()->create();
+        $appointment = Appointment::factory()->create([
+            'appointment_date' => now()->subDay()->setTime(10, 0),
+        ]);
 
         $this->actingAs($appointment->doctor->user)
              ->post(route('doctor.diagnosis.store', $appointment), [
