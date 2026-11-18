@@ -1,32 +1,32 @@
 @extends('layouts.app')
-@section('title', '{{ __('site.appointment') }} Calendar')
+@section('title', 'Appointment Calendar')
 
 @section('content')
 <div class="container-fluid py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">{{ $date->format('F Y') }} — {{ __('site.all_appointments') }}</h2>
+        <h2 class="mb-0">{{ $date->format('F Y') }} — All Appointments</h2>
         <div class="d-flex gap-2">
             <a href="{{ route('admin.appointments.index') }}" class="btn btn-outline-primary">
-                📋 List {{ __('site.view') }}
+                📋 List View
             </a>
             <a href="{{ route('admin.appointments.calendar', ['month' => $date->copy()->subMonth()->month, 'year' => $date->copy()->subMonth()->year]) }}"
-               class="btn btn-outline-secondary">{{ __('site.calendar_prev') }}</a>
-            <a href="{{ route('admin.appointments.calendar') }}" class="btn btn-outline-secondary">{{ __('site.today') }}</a>
+               class="btn btn-outline-secondary">← Prev</a>
+            <a href="{{ route('admin.appointments.calendar') }}" class="btn btn-outline-secondary">Today</a>
             <a href="{{ route('admin.appointments.calendar', ['month' => $date->copy()->addMonth()->month, 'year' => $date->copy()->addMonth()->year]) }}"
-               class="btn btn-outline-secondary">{{ __('site.calendar_next') }}</a>
+               class="btn btn-outline-secondary">Next →</a>
         </div>
     </div>
 
-    <!-- {{ __('site.doctor') }} filter -->
+    <!-- Doctor filter -->
     <div class="card mb-4">
         <div class="card-body d-flex align-items-center gap-3">
-            <label class="mb-0 fw-semibold">{{ __('site.filter_by_doctor') }}</label>
-            <form method="GET" class="d-flex gap-2" id="doctor{{ __('site.filter') }}Form">
+            <label class="mb-0 fw-semibold">Filter by doctor:</label>
+            <form method="GET" class="d-flex gap-2" id="doctorFilterForm">
                 <input type="hidden" name="month" value="{{ $date->month }}">
                 <input type="hidden" name="year"  value="{{ $date->year }}">
                 <select name="doctor_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">{{ __('site.all_doctors') }}</option>
+                    <option value="">All doctors</option>
                     @foreach($doctors as $doctor)
                         <option value="{{ $doctor->id }}"
                             {{ ($filters['doctor_id'] ?? '') == $doctor->id ? 'selected' : '' }}>
@@ -58,13 +58,13 @@
                     @php
                         $key          = $cursor->format('Y-m-d');
                         $inMonth      = $cursor->month === $date->month;
-                        $is{{ __('site.today') }}      = $cursor->is{{ __('site.today') }}();
+                        $isToday      = $cursor->isToday();
                         $dayItems     = $appointments[$key] ?? collect();
                     @endphp
                     <div class="col border p-2"
                          style="min-height: 110px;
                                 {{ !$inMonth ? 'background:#f8f9fa;color:#adb5bd;' : '' }}
-                                {{ $is{{ __('site.today') }} ? 'border:2px solid #0d6efd;' : '' }}">
+                                {{ $isToday ? 'border:2px solid #0d6efd;' : '' }}">
                         <div class="fw-bold mb-1">{{ $cursor->day }}</div>
                         @foreach($dayItems as $item)
                             <a href="{{ route('admin.appointments.show', $item) }}"
