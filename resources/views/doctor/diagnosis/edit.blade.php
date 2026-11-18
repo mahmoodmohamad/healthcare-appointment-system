@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Edit Diagnosis')
+@section('title', '@lang('site.edit_diagnosis')')
 
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Edit Diagnosis</h2>
+                <h2>@lang('site.edit_diagnosis')</h2>
                 <a href="{{ route('doctor.appointments.show', $appointment) }}" class="btn btn-secondary">
                     ← Back
                 </a>
@@ -29,8 +29,8 @@
                         <div class="col-md-6">
                             <h5>{{ $appointment->patient->user->name }}</h5>
                             <p class="mb-0">
-                                <strong>National ID:</strong> {{ $appointment->patient->national_id }}<br>
-                                <strong>Appointment:</strong> {{ $appointment->appointment_date->format('F j, Y - g:i A') }}
+                                <strong>@lang('site.national_id_label')</strong> {{ $appointment->patient->national_id }}<br>
+                                <strong>@lang('site.appointment_label')</strong> {{ $appointment->appointment_date->format('F j, Y - g:i A') }}
                             </p>
                         </div>
                         <div class="col-md-6 text-end">
@@ -42,10 +42,10 @@
                 </div>
             </div>
 
-            <!-- Edit Diagnosis Form -->
+            <!-- @lang('site.edit_diagnosis') Form -->
             <div class="card">
                 <div class="card-header bg-warning">
-                    <h5 class="mb-0">Edit Diagnosis</h5>
+                    <h5 class="mb-0">@lang('site.edit_diagnosis')</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('doctor.diagnosis.update', $appointment) }}">
@@ -54,7 +54,7 @@
 
                         <!-- Symptoms -->
                         <div class="mb-4">
-                            <label for="symptoms" class="form-label">Symptoms / Chief Complaints *</label>
+                            <label for="symptoms" class="form-label">@lang('site.symptoms_complaints_required')</label>
                             <textarea name="symptoms" 
                                       id="symptoms" 
                                       rows="4"
@@ -67,7 +67,7 @@
 
                         <!-- Diagnosis -->
                         <div class="mb-4">
-                            <label for="diagnosis" class="form-label">Diagnosis / Assessment *</label>
+                            <label for="diagnosis" class="form-label">@lang('site.diagnosis_assessment_required')</label>
                             <textarea name="diagnosis" 
                                       id="diagnosis" 
                                       rows="4"
@@ -80,7 +80,7 @@
 
                         <!-- Prescription -->
                         <div class="mb-4">
-                            <label for="prescription" class="form-label">Prescription / Treatment Plan</label>
+                            <label for="prescription" class="form-label">@lang('site.prescription_treatment_plan')</label>
                             <textarea name="prescription" 
                                       id="prescription" 
                                       rows="6"
@@ -90,9 +90,9 @@
                             @enderror
                         </div>
 
-                        <!-- Additional Notes -->
+                        <!-- @lang('site.additional_notes') -->
                         <div class="mb-4">
-                            <label for="notes" class="form-label">Additional Notes</label>
+                            <label for="notes" class="form-label">@lang('site.additional_notes')</label>
                             <textarea name="notes" 
                                       id="notes" 
                                       rows="3"
