@@ -105,7 +105,7 @@
                         <!-- Buttons -->
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('doctor.appointments.show', $appointment) }}" class="btn btn-secondary btn-lg">
-                                Cancel
+                                @lang('site.cancel')
                             </a>
                             <button type="submit" class="btn btn-warning btn-lg">
                                 💾 Update Diagnosis

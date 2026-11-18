@@ -121,7 +121,7 @@
                         <!-- Buttons -->
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('doctor.appointments.show', $appointment) }}" class="btn btn-secondary btn-lg">
-                                Cancel
+                                @lang('site.cancel')
                             </a>
                             <button type="submit" class="btn btn-success btn-lg">
                                 💾 Save Diagnosis
