@@ -869,7 +869,7 @@
         margin-bottom: 20px;
     }
 
-    .appointments-page .create-user-container .alert {
+    .appointments-page .alert {
         border-radius: 10px;
         border: 0;
     }
@@ -1228,7 +1228,7 @@
         margin: 0;
     }
 
-    .booking-page .create-user-container .alert {
+    .booking-page .alert {
         border-radius: 10px;
         border: 0;
     }
