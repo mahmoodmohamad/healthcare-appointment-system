@@ -97,10 +97,6 @@
                             <h3 class="text-warning">{{ $stats['completed_appointments'] }}</h3>
                             <small class="text-muted">@lang('site.completed')</small>
                         </div>
-                        <div class="col-6">
-                            <h3 class="text-danger">{{ $stats['total_diagnoses'] }}</h3>
-                            <small class="text-muted">@lang('site.diagnoses')</small>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -142,7 +138,7 @@
                                             <br>
                                             <small class="text-muted">{{ $appointment->doctor->specialization }}</small>
                                         </td>
-                                        <td data-label="Status">
+                                        <td data-label="@lang('site.status')">
                                             <span class="ui-badge ui-badge-scheduled">{{ match ($appointment->status) { 'scheduled' => __('site.scheduled'), 'completed' => __('site.completed'), 'cancelled' => __('site.cancelled'), default => __('site.unknown') } }}</span>
                                         </td>
                                         <td data-label="@lang('site.actions')">
