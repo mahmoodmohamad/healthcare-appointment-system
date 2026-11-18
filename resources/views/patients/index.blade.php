@@ -84,10 +84,10 @@
                     </a>
                 @endif
                 @if(request('city_id'))
-                    @php $active@lang('site.city') = $cities->firstWhere('id', request('city_id')); @endphp
+                    @php $activeCity = $cities->firstWhere('id', request('city_id')); @endphp
                     <a class="ui-tab" href="{{ route('patients.index', request()->except('city_id', 'page')) }}"
                        aria-label="Remove city filter">
-                        {{ $active@lang('site.city')->name ?? '@lang('site.city')' }}
+                        {{ $activeCity->name ?? __('site.city') }}
                         <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
                     </a>
                 @endif
