@@ -1,7 +1,8 @@
 <!doctype html>
 
 <html
-  lang="en"
+  lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+  dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}"
   class="layout-menu-fixed layout-compact"
   data-assets-path="{{ asset('assets/...') }}"
   data-template="vertical-menu-template-free">
@@ -9,7 +10,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+      content="width=device-width, initial-scale=1.0, width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
 
     <title>@yield('title', 'Appointment System')</title>
