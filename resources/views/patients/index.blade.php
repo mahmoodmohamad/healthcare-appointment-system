@@ -160,8 +160,8 @@
 
                                 <td  data-label="Registered">
                                     <time class="ui-meta" datetime="{{ $patient->created_at->toDateString() }}"
-                                          title="{{ $patient->created_at->format('d M Y, H:i') }}">
-                                        {{ $patient->created_at->format('d M Y') }}
+                                          title="{{ $patient->created_at->translatedFormat('d M Y, H:i') }}">
+                                        {{ $patient->created_at->translatedFormat('d M Y') }}
                                     </time>
                                 </td>
 
@@ -203,7 +203,7 @@
         @else
             {{-- Empty state --}}
             <div class="ui-empty">
-                <div class="ui-empty-ui-icon ui-tone-teal" aria-hidden="true">
+                <div class="ui-empty-icon ui-tone-teal" aria-hidden="true">
                     <svg class="ui-icon"><use href="#i-users"/></svg>
                 </div>
                 @if(request('search') || request('city_id'))
