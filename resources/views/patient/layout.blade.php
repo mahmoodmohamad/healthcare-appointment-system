@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +23,7 @@
         .patient-stat-label { color: var(--patient-muted); font-size: .82rem; }
         .patient-stat-value { display: block; font-size: 1.8rem; font-weight: 800; margin-top: 8px; color: var(--patient-primary); }
         .patient-table { width: 100%; border-collapse: collapse; }
-        .patient-table th, .patient-table td { padding: 13px 10px; border-bottom: 1px solid #edf2f7; text-align: left; }
+        .patient-table th, .patient-table td { padding: 13px 10px; border-bottom: 1px solid #edf2f7; text-align: start; }
         .patient-table th { color: var(--patient-muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
         .patient-badge { display: inline-block; padding: 5px 9px; border-radius: 999px; background: #e8f1ff; color: #1d4ed8; font-size: .78rem; font-weight: 700; }
         @media (max-width: 900px) { .patient-shell { grid-template-columns: 1fr; } .patient-sidebar { padding: 18px; } .patient-nav { display: flex; flex-wrap: wrap; gap: 6px; } .patient-nav a { margin: 0; } .patient-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -52,7 +52,10 @@
                 <h1>{{ $heading ?? __('site.your_healthcare_overview') }}</h1>
                 <div class="patient-user">{{ auth()->user()->name }}</div>
             </div>
-            <div class="patient-user">{{ now()->format('l, F j, Y') }}</div>
+            <div class="patient-user">
+                <span>{{ now()->translatedFormat('l, F j, Y') }}</span>
+                <span class="ms-3"><a href="{{ route('language.switch', ['locale' => 'ar']) }}">@lang('site.arabic')</a> | <a href="{{ route('language.switch', ['locale' => 'en']) }}">@lang('site.english')</a></span>
+            </div>
         </header>
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
