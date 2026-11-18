@@ -27,7 +27,6 @@ return [
     'confirm' => 'Confirm',
     'yes' => 'Yes',
     'no' => 'No',
-    'actions' => 'Actions',
     'name' => 'Name',
     'email' => 'Email',
     'phone' => 'Phone',
@@ -240,4 +239,5 @@ return [
     'role_receptionist' => 'Receptionist',
     'role_patient' => 'Patient',
     'mm_dd_yyyy' => 'mm/dd/yyyy',
+    'dr_prefix' => 'Dr.',
 ];

@@ -27,7 +27,6 @@ return [
     'confirm' => 'Confirm',
     'yes' => 'Yes',
     'no' => 'No',
-    'actions' => 'Actions',
     'name' => 'Name',
     'email' => 'Email',
     'phone' => 'Phone',

@@ -238,4 +238,5 @@ return [
     'role_receptionist' => 'موظف استقبال',
     'role_patient' => 'مريض',
     'mm_dd_yyyy' => 'يوم/شهر/سنة',
+    'dr_prefix' => 'د.',
 ];
