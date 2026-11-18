@@ -1,14 +1,14 @@
 @extends('layouts.app')
-@section('title', 'Appointment Details')
+@section('title', '@lang('site.appointment_details')')
 
 @section('content')
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Appointment Details</h2>
+                <h2>@lang('site.appointment_details')</h2>
                 <a href="{{ route('doctor.appointments.index') }}" class="btn btn-secondary">
-                    ← Back
+                    @lang('site.back')
                 </a>
             </div>
 
@@ -29,14 +29,14 @@
             <!-- Appointment Info -->
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Appointment Information</h5>
+                    <h5 class="mb-0">@lang('site.appointment_information')</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Date:</strong> {{ $appointment->appointment_date->format('l, F j, Y') }}</p>
-                            <p><strong>Time:</strong> {{ $appointment->appointment_time ?? $appointment->appointment_date->format('g:i A') }}</p>
-                            <p><strong>Status:</strong> 
+                            <p><strong>@lang('site.date_label')</strong> {{ $appointment->appointment_date->format('l, F j, Y') }}</p>
+                            <p><strong>@lang('site.time_label')</strong> {{ $appointment->appointment_time ?? $appointment->appointment_date->format('g:i A') }}</p>
+                            <p><strong>@lang('site.status_label')</strong> 
                                 <span class="badge bg-{{ $appointment->status == 'completed' ? 'success' : ($appointment->status == 'cancelled' ? 'danger' : 'primary') }}">
                                     {{ ucfirst($appointment->status) }}
                                 </span>
@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-md-6">
                             @if($appointment->notes)
-                            <p><strong>Notes:</strong> {{ $appointment->notes }}</p>
+                            <p><strong>@lang('site.notes_label')</strong> {{ $appointment->notes }}</p>
                             @endif
                         </div>
                     </div>
@@ -54,20 +54,20 @@
             <!-- Patient Info -->
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Patient Information</h5>
+                    <h5 class="mb-0">@lang('site.patient_information')</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ $appointment->patient->user->name }}</p>
-                            <p><strong>National ID:</strong> {{ $appointment->patient->national_id }}</p>
-                            <p><strong>Phone:</strong> {{ $appointment->patient->phone }}</p>
+                            <p><strong>@lang('site.name_label')</strong> {{ $appointment->patient->user->name }}</p>
+                            <p><strong>@lang('site.national_id_label')</strong> {{ $appointment->patient->national_id }}</p>
+                            <p><strong>@lang('site.phone_label')</strong> {{ $appointment->patient->phone }}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Email:</strong> {{ $appointment->patient->user->email }}</p>
-                            <p><strong>City:</strong> {{ $appointment->patient->city->name ?? 'N/A' }}</p>
+                            <p><strong>@lang('site.email_label')</strong> {{ $appointment->patient->user->email }}</p>
+                            <p><strong>@lang('site.city_label')</strong> {{ $appointment->patient->city->name ?? 'N/A' }}</p>
                             <a href="{{ route('doctor.patients.history', $appointment->patient) }}" class="btn btn-sm btn-outline-primary">
-                                View Medical History →
+                                @lang('site.view_medical_history') →
                             </a>
                         </div>
                     </div>
@@ -80,27 +80,27 @@
                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">@lang('site.diagnosis')</h5>
                     <a href="{{ route('doctor.diagnosis.edit', $appointment) }}" class="btn btn-sm btn-light">
-                        ✏️ Edit
+                        ✏️ @lang('site.edit')
                     </a>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <strong>Symptoms:</strong>
+                        <strong>@lang('site.symptoms_label')</strong>
                         <p>{{ $appointment->diagnosis->symptoms }}</p>
                     </div>
                     <div class="mb-3">
-                        <strong>Diagnosis:</strong>
+                        <strong>@lang('site.diagnosis_label')</strong>
                         <p>{{ $appointment->diagnosis->diagnosis }}</p>
                     </div>
                     @if($appointment->diagnosis->prescription)
                     <div class="mb-3">
-                        <strong>Prescription:</strong>
+                        <strong>@lang('site.prescription_label')</strong>
                         <p style="white-space: pre-line;">{{ $appointment->diagnosis->prescription }}</p>
                     </div>
                     @endif
                     @if($appointment->diagnosis->notes)
                     <div class="mb-3">
-                        <strong>Notes:</strong>
+                        <strong>@lang('site.notes_label')</strong>
                         <p>{{ $appointment->diagnosis->notes }}</p>
                     </div>
                     @endif
@@ -113,8 +113,8 @@
                 @if($appointment->status != 'cancelled')
                 <div class="card border-warning">
                     <div class="card-body text-center">
-                        <h5>No Diagnosis Recorded</h5>
-                        <p class="text-muted">This appointment doesn't have a diagnosis yet.</p>
+                        <h5>@lang('site.no_diagnosis_recorded_title')</h5>
+                        <p class="text-muted">@lang('site.appointment_no_diagnosis')</p>
                         <a href="{{ route('doctor.diagnosis.create', $appointment) }}" class="btn btn-success btn-lg">
                             + Add Diagnosis
                         </a>
