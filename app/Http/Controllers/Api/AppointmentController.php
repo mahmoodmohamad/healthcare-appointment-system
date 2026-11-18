@@ -65,7 +65,7 @@ class AppointmentController extends Controller
 
         if (! $this->canManageAppointments($user)) {
             return response()->json([
-                'message' => 'Only administrators and receptionists can book appointments.',
+                'message' => 'Only receptionists can book appointments.',
             ], 403);
         }
 
