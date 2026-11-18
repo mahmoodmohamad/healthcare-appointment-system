@@ -97,4 +97,30 @@ class AppointmentBookingTest extends TestCase
             ->assertOk();
     }
 
+    public function test_receptionist_cannot_change_patient_login_credentials(): void
+    {
+        $receptionistUser = User::factory()->create();
+        Receptionist::factory()->for($receptionistUser)->create();
+        $patient = Patient::factory()->create();
+        $originalEmail = $patient->user->email;
+        $originalPasswordHash = $patient->user->password;
+
+        $this->actingAs($receptionistUser)
+            ->put(route('patients.update', $patient), [
+                'name' => 'Updated Patient Name',
+                'email' => 'changed@example.com',
+                'password' => 'ChangedPassword123!',
+                'password_confirmation' => 'ChangedPassword123!',
+                'national_id' => $patient->national_id,
+                'phone' => $patient->phone,
+                'city_id' => $patient->city_id,
+                'gender' => $patient->gender,
+                'birth_date' => $patient->birth_date?->format('Y-m-d'),
+            ])
+            ->assertRedirect(route('patients.show', $patient));
+
+        $this->assertSame($originalEmail, $patient->user->fresh()->email);
+        $this->assertSame($originalPasswordHash, $patient->user->fresh()->password);
+    }
+
 }
