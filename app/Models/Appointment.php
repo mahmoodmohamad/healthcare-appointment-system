@@ -109,6 +109,18 @@ class Appointment extends Model
             ]);
         }
 
+        if (! static::isPatientAvailable($this->patient_id, $date, $time, $this->id)) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'The patient already has an appointment at this time.',
+            ]);
+        }
+
+        if (Carbon::parse($date . ' ' . substr($time, 0, 5))->isPast()) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'Appointments cannot be rescheduled into the past.',
+            ]);
+        }
+
         try {
             $this->update([
                 'doctor_id'        => $doctorId,
@@ -136,11 +148,39 @@ class Appointment extends Model
 
     public static function book(array $data): self
     {
+        $date = Carbon::parse($data['appointment_date'])->toDateString();
+        $time = substr((string) $data['appointment_time'], 0, 5);
+        $startsAt = Carbon::parse($date . ' ' . $time);
+
+        if ($startsAt->isPast()) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'Appointments cannot be booked in the past.',
+            ]);
+        }
+
+        if (! static::isPatientAvailable($data['patient_id'], $date, $time)) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'The patient already has an appointment at this time.',
+            ]);
+        }
+
         try {
             return static::create($data);
         } catch (QueryException $e) {
             throw static::translateSlotConflict($e);
         }
+    }
+
+    public static function isPatientAvailable($patientId, $date, $time, $ignoreId = null): bool
+    {
+        $normalized = strlen($time) === 5 ? $time . ':00' : $time;
+
+        return ! self::where('patient_id', $patientId)
+            ->whereDate('appointment_date', $date)
+            ->where('appointment_time', $normalized)
+            ->where('status', '!=', self::CANCELLED)
+            ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
+            ->exists();
     }
 
     public static function isDuplicateKey(QueryException $e): bool
