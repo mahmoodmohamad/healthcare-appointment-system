@@ -31,7 +31,8 @@ class DoctorPolicy
     public function view(User $user, Doctor $doctor): bool
     {
         return $user->isAdmin()
-            || ($user->isDoctor() && $user->doctor?->id === $doctor->id);
+            || ($user->isDoctor()
+                && (int) $user->doctor?->id === (int) $doctor->id);
     }
 
     public function create(User $user): bool
