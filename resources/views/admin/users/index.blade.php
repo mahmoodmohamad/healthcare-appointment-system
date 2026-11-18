@@ -95,8 +95,9 @@
                                         ];
                                         $role = $user->getRoleName();
                                         $badge = $roleBadge[$role] ?? 'secondary';
+                                        $roleLabel = __('site.role_' . strtolower($role));
                                     @endphp
-                                    <span class="badge bg-{{ $badge }}">{{ $role }}</span>
+                                    <span class="badge bg-{{ $badge }}" >{{ $roleLabel === 'site.role_' . strtolower($role) ? $role : $roleLabel }}</span>
                                 </td>
                                 <td>
                                     @if($user->activation)
