@@ -437,4 +437,5 @@ return [
     'appointments_today' => 'Appointments today',
     'view_appointment_for' => 'View appointment for :name',
     'not_available' => 'Not available',
+    'all_receptionists' => 'All Receptionists',
 ];
