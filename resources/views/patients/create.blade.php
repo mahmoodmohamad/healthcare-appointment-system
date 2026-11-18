@@ -99,7 +99,7 @@
                                     type="text"
                                     name="name"
                                     id="name"
-                                    class="form-control @error('name') is-invalid @enderror"
+                                    class="form-control ui-input @error('name') is-invalid @enderror"
                                     value="{{ old('name') }}"
                                     placeholder="Enter patient's full name"
                                     autocomplete="name"
@@ -193,7 +193,7 @@
                                 <select
                                     name="city_id"
                                     id="city_id"
-                                    class="form-select @error('city_id') is-invalid @enderror"
+                                    class="form-select ui-input @error('city_id') is-invalid @enderror"
                                     required
                                 >
                                     <option value="">Select city</option>
@@ -342,11 +342,11 @@
                     </div>
 
                     <div class="footer-actions">
-                        <a href="{{ route('patients.index') }}" class="btn-cancel">
+                        <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost btn-cancel">
                             Cancel
                         </a>
 
-                        <button type="submit" class="btn-submit">
+                        <button type="submit" class="ui-btn ui-btn-primary btn-submit">
                             <i class="bi bi-person-check" aria-hidden="true"></i>
                             Register Patient
                         </button>
@@ -359,7 +359,7 @@
         {{-- Helpful Sidebar --}}
         <aside class="sidebar-column">
 
-            <section class="side-card">
+            <section class="ui-card side-card">
                 <h3>Registration Checklist</h3>
 
                 <div class="info-item">
@@ -407,7 +407,7 @@
                 </div>
             </section>
 
-            <section class="side-card privacy-note">
+            <section class="ui-card side-card privacy-note">
                 <div class="info-item">
                     <div class="info-item-icon">
                         <i class="bi bi-shield-check" aria-hidden="true"></i>
