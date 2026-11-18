@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" class="layout-wide customizer-hide" data-assets-path="{{ asset('assets') }}/" data-template="vertical-menu-template-free">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}" class="layout-wide customizer-hide" data-assets-path="{{ asset('assets') }}/" data-template="vertical-menu-template-free">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Login - Materio Dashboard</title>
+    <title>@lang('site.login_title')</title>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
 
@@ -38,13 +38,13 @@
                                 <!-- SVG Logo Here -->
                             </span>
                         </span>
-                        <span class="app-brand-text demo text-heading fw-semibold">Materio</span>
+                        <span class="app-brand-text demo text-heading fw-semibold">@lang('site.brand_healthcare')</span>
                     </a>
                 </div>
 
                 <div class="card-body mt-1">
-                    <h4 class="mb-1">Welcome! 👋🏻</h4>
-                    <p class="mb-5">Sign in to start your session</p>
+                    <h4 class="mb-1">@lang('site.welcome_login') + ' 👋🏻'</h4>
+                    <p class="mb-5">@lang('site.login_subtitle')</p>
 
                     @if(session('error'))
                         <div class="alert alert-danger">{{ session('error') }}</div>
@@ -75,7 +75,7 @@
                                 <input class="form-check-input" type="checkbox" name="remember" id="remember-me">
                                 <label class="form-check-label" for="remember-me">@lang('site.remember_me')</label>
                             </div>
-                            <a href="#" class="float-end mb-1">Forgot Password?</a>
+                            <a href="#" class="float-end mb-1">@lang('site.forgot_password')</a>
                         </div>
 
                         <div class="mb-5">
@@ -84,8 +84,8 @@
                     </form>
 
                     <p class="text-center mb-5">
-                        <span>New here?</span>
-                        <a href="#">Create an account</a>
+                        <span>@lang('site.new_here')</span>
+                        <a href="#">@lang('site.create_account')</a>
                     </p>
                 </div>
             </div>
