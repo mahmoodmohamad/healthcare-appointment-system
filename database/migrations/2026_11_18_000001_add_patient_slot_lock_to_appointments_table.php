@@ -10,14 +10,16 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasColumn('appointments', 'patient_slot_lock')) {
+            return;
+        }
+
         $duplicates = DB::table('appointments')
             ->select('patient_id')
             ->selectRaw('DATE(appointment_date) as appointment_day')
-            ->selectRaw('TIME(appointment_time) as appointment_clock')
             ->where('status', '!=', 'cancelled')
             ->groupBy('patient_id')
             ->groupByRaw('DATE(appointment_date)')
-            ->groupByRaw('TIME(appointment_time)')
             ->havingRaw('COUNT(*) > 1')
             ->exists();
 
