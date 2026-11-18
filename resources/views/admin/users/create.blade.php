@@ -50,7 +50,7 @@
                                 <div class="d-flex flex-wrap justify-content-center mb-4">
                                     <div class="role-badge admin" data-role="admin" onclick="selectRole('admin')">
                                         <span style="font-size: 20px;">👨‍💼</span>
-                                        <span>Admin</span>
+                                        <span>@lang('site.admin')</span>
                                     </div>
                                     <div class="role-badge doctor" data-role="doctor" onclick="selectRole('doctor')">
                                         <span style="font-size: 20px;">👨‍⚕️</span>
