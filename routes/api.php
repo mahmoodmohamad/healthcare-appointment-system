@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\AppointmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:sanctum')
+Route::middleware(['auth:sanctum', 'active'])
     ->name('api.')
     ->group(function () {
         Route::get('/user', function (Request $request) {
