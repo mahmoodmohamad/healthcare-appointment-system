@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? '@lang('site.patient_portal')' }} · @lang('site.brand_healthcare')</title>
+    <title>{{ $title ?? __('site.patient_portal') }} · @lang('site.brand_healthcare')</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         :root { --patient-primary: #2563eb; --patient-ink: #172033; --patient-muted: #64748b; --patient-bg: #f5f8fc; }
@@ -49,7 +49,7 @@
     <main class="patient-main">
         <header class="patient-topbar">
             <div>
-                <h1>{{ $heading ?? '@lang('site.your_healthcare_overview')' }}</h1>
+                <h1>{{ $heading ?? __('site.your_healthcare_overview') }}</h1>
                 <div class="patient-user">{{ auth()->user()->name }}</div>
             </div>
             <div class="patient-user">{{ now()->format('l, F j, Y') }}</div>
