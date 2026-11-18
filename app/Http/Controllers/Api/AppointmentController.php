@@ -8,6 +8,8 @@ use App\Http\Requests\Api\StoreAppointmentRequest;
 use App\Http\Requests\Api\UpdateAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
+use App\Models\Doctor;
+use App\Models\Patient;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -68,6 +70,21 @@ class AppointmentController extends Controller
         }
 
         $data = $request->validated();
+
+        $patientIsActive = Patient::query()
+            ->whereKey($data['patient_id'])
+            ->whereHas('user', fn ($query) => $query->active())
+            ->exists();
+        $doctorIsActive = Doctor::query()
+            ->whereKey($data['doctor_id'])
+            ->whereHas('user', fn ($query) => $query->active())
+            ->exists();
+
+        if (! $patientIsActive || ! $doctorIsActive) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'doctor_id' => 'The selected doctor or patient account is inactive.',
+            ]);
+        }
 
         try {
             $appointment = Appointment::book([
@@ -144,6 +161,13 @@ class AppointmentController extends Controller
                 array_flip($allowed)
             );
 
+            if (isset($data['status']) && $data['status'] === 'completed'
+                && ! $appointment->diagnosis()->exists()) {
+                return response()->json([
+                    'message' => 'An appointment requires a diagnosis before completion.',
+                ], 422);
+            }
+
             if (isset($data['status']) && $data['status'] !== 'completed') {
                 return response()->json([
                     'message' => 'Doctors may only mark appointments as completed.',
@@ -169,6 +193,16 @@ class AppointmentController extends Controller
             }
 
             $doctorId = $data['doctor_id'] ?? $appointment->doctor_id;
+            $doctorIsActive = Doctor::query()
+                ->whereKey($doctorId)
+                ->whereHas('user', fn ($query) => $query->active())
+                ->exists();
+
+            if (! $doctorIsActive) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'doctor_id' => 'The selected doctor account is inactive.',
+                ]);
+            }
 
             $date = $data['appointment_date']
                 ?? $appointment->appointment_date->format('Y-m-d');
