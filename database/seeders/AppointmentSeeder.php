@@ -32,6 +32,10 @@ class AppointmentSeeder extends Seeder
                 ->where('notes', '[SEED] Initial visit')
                 ->first();
 
+            if ($seeded && $seeded->status !== Appointment::SCHEDULED) {
+                continue;
+            }
+
             if (! Appointment::isAvailable($doctor->id, $date, $time, $seeded?->id)
                 || ! Appointment::isPatientAvailable($patient->id, $date, $time, $seeded?->id)) {
                 continue;
@@ -68,6 +72,10 @@ class AppointmentSeeder extends Seeder
                 ->where('doctor_id', $doctor->id)
                 ->where('notes', $seedNote)
                 ->first();
+
+            if ($existing && $existing->status !== $status) {
+                continue;
+            }
 
             if (
                 $status === Appointment::COMPLETED
