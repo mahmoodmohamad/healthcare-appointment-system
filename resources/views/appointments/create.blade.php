@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', '@lang('site.book_new_appointment')')
+@section('title', __('site.book_new_appointment'))
 
 @section('content')
 
@@ -308,7 +308,7 @@
 
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.patient')</div>
-                    <div class="summary-value" id="summary@lang('site.patient')">
+                    <div class="summary-value" id="summaryPatient">
                         Not selected
                     </div>
                 </div>
@@ -322,7 +322,7 @@
 
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.specialty')</div>
-                    <div class="summary-value" id="summary@lang('site.specialty')">
+                    <div class="summary-value" id="summarySpecialty">
                         Not selected
                     </div>
                 </div>
@@ -366,9 +366,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const timeSelect = document.getElementById('appointment_time');
     const appointmentForm = document.getElementById('appointmentForm');
 
-    const summary@lang('site.patient') = document.getElementById('summary@lang('site.patient')');
+    const summaryPatient = document.getElementById('summaryPatient');
     const summaryDoctor = document.getElementById('summaryDoctor');
-    const summary@lang('site.specialty') = document.getElementById('summary@lang('site.specialty')');
+    const summarySpecialty = document.getElementById('summarySpecialty');
     const summaryDate = document.getElementById('summaryDate');
     const summaryTime = document.getElementById('summaryTime');
 
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const patientOption = selectedOption(patientSelect);
         const doctorOption = selectedOption(doctorSelect);
 
-        summary@lang('site.patient').textContent =
+        summaryPatient.textContent =
             patientSelect.value && patientOption
                 ? patientOption.dataset.name || patientOption.textContent.trim()
                 : 'Not selected';
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? 'Dr. ' + (doctorOption.dataset.name || doctorOption.textContent.trim())
                 : 'Not selected';
 
-        summary@lang('site.specialty').textContent =
+        summarySpecialty.textContent =
             doctorSelect.value && doctorOption
                 ? doctorOption.dataset.specialization || 'Not specified'
                 : 'Not selected';
