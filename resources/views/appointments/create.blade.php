@@ -136,7 +136,7 @@
                                             data-name="{{ $patient->user?->name ?? '' }}"
                                             data-national-id="{{ $patient->national_id ?? '' }}"
                                             @selected(old('patient_id') == $patient->id)>
-                                            {{ $patient->user?->name ?? '{{ $bookingCopy['unknown_patient'] }}' }}
+                                            {{ $patient->user?->name ?? $bookingCopy['unknown_patient'] }}
                                             - {{ $patient->national_id }}
                                         </option>
                                     @endforeach
@@ -179,7 +179,7 @@
                                             data-name="{{ $doctor->user?->name ?? '' }}"
                                             data-specialization="{{ $doctor->specialization ?? '' }}"
                                             @selected(old('doctor_id') == $doctor->id)>
-                                            Dr. {{ $doctor->user?->name ?? '{{ $bookingCopy['unknown_doctor'] }}' }}
+                                            Dr. {{ $doctor->user?->name ?? $bookingCopy['unknown_doctor'] }}
                                             - {{ $doctor->specialization }}
                                         </option>
                                     @endforeach
@@ -340,7 +340,7 @@
                 </div>
             </div>
 
-            {{-- {{ $bookingCopy['summary'] }} --}}
+            {{-- Booking Summary --}}
             <aside class="ui-card summary-card" aria-labelledby="summary-heading">
 
                 <div class="summary-placeholder">
@@ -348,7 +348,7 @@
                 </div>
 
                 <h2 class="summary-heading" id="summary-heading">
-                    Booking Summary
+                    {{ $bookingCopy['summary'] }}
                 </h2>
 
                 <p class="summary-description">
@@ -365,28 +365,28 @@
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.doctor')</div>
                     <div class="summary-value" id="summaryDoctor">
-                        Not selected
+                        {{ $bookingCopy['not_selected'] }}
                     </div>
                 </div>
 
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.specialty')</div>
                     <div class="summary-value" id="summarySpecialty">
-                        Not selected
+                        {{ $bookingCopy['not_selected'] }}
                     </div>
                 </div>
 
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.appointment_date')</div>
                     <div class="summary-value" id="summaryDate">
-                        Not selected
+                        {{ $bookingCopy['not_selected'] }}
                     </div>
                 </div>
 
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.appointment_time')</div>
                     <div class="summary-value" id="summaryTime">
-                        Not selected
+                        {{ $bookingCopy['not_selected'] }}
                     </div>
                 </div>
 
@@ -420,7 +420,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const summaryDate = document.getElementById('summaryDate');
     const summaryTime = document.getElementById('summaryTime');
     const copy = @json($bookingCopy);
-    const copy = @json($bookingCopy);
 
     function selectedOption(select) {
         return select.options[select.selectedIndex];
@@ -443,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function () {
         summarySpecialty.textContent =
             doctorSelect.value && doctorOption
                 ? doctorOption.dataset.specialization || copy.not_specified
-                : 'Not selected';
+                : copy.not_selected;
 
         if (dateInput.value) {
             const date = new Date(dateInput.value + 'T00:00:00');
@@ -455,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 day: 'numeric'
             });
         } else {
-            summaryDate.textContent = 'Not selected';
+            summaryDate.textContent = copy.not_selected;
         }
 
         if (timeSelect.value) {
@@ -469,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 minute: '2-digit'
             });
         } else {
-            summaryTime.textContent = 'Not selected';
+            summaryTime.textContent = copy.not_selected;
         }
     }
 
