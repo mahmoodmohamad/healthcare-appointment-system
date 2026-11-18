@@ -9,7 +9,7 @@
                     </script>
                     , made with ❤️ by
                     <a href="https://themeselection.com" target="_blank" class="footer-link fw-medium"
-                      >ThemeSelection</a
+                      >@lang('site.theme_selection')</a
                     >
                   </div>
                   <div class="d-none d-lg-inline-block">
@@ -17,29 +17,29 @@
                       href="https://themeselection.com/item/category/admin-templates/"
                       target="_blank"
                       class="footer-link me-4"
-                      >Admin Templates</a
+                      >@lang('site.admin_templates')</a
                     >
 
-                    <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                    <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">@lang('site.license')</a>
 
                     <a
                       href="https://themeselection.com/item/category/bootstrap-templates/"
                       target="_blank"
                       class="footer-link me-4"
-                      >Bootstrap Templates</a
+                      >@lang('site.bootstrap_templates')</a
                     >
                     <a
                       href="https://demos.themeselection.com/materio-bootstrap-html-admin-template/documentation/"
                       target="_blank"
                       class="footer-link me-4"
-                      >Documentation</a
+                      >@lang('site.documentation')</a
                     >
 
                     <a
                       href="https://github.com/themeselection/materio-bootstrap-html-admin-template-free/issues"
                       target="_blank"
                       class="footer-link"
-                      >Support</a
+                      >@lang('site.support')</a
                     >
                   </div>
                 </div>
