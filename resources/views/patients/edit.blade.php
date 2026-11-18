@@ -123,7 +123,7 @@
                                    name="birth_date" 
                                    id="birth_date" 
                                    class="form-control @error('birth_date') is-invalid @enderror"
-                                   value="{{ old('birth_date', optional(\Carbon\Carbon::parse($patient->birth_date))->format('Y-m-d')) }}"
+                                   value="{{ old('birth_date', $patient->birth_date?->format('Y-m-d')) }}"
                                    >
                             @error('birth_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
