@@ -44,7 +44,7 @@
     @endif
 
     {{-- Search & filter --}}
-    <div class="ui-card p-3 p-md-4 mb-4 pt-filters">
+    <div class="ui-card p-3 p-md-4 mb-4">
         <form method="GET" action="{{ route('patients.index') }}" class="row g-3 align-items-end" role="search">
             <div class="col-12 col-md-6 col-lg-5">
                 <label for="search" class="form-label">Search patients</label>
@@ -67,7 +67,7 @@
             <div class="col-12 col-lg-3 d-flex gap-2">
                 <button type="submit" class="btn ui-btn ui-btn-primary flex-grow-1">Search</button>
                 @if(request('search') || request('city_id'))
-                    <a href="{{ route('patients.index') }}" class="btn btn-outline-secondary d-inline-flex align-items-center" style="min-height:2.75rem">Clear</a>
+                    <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost">Clear</a>
                 @endif
             </div>
         </form>
@@ -105,8 +105,8 @@
                         <tr>
                             <th scope="col">Patient</th>
                             <th scope="col">Contact</th>
-                            <th scope="col" class="pt-hide-sm">City</th>
-                            <th scope="col" class="pt-hide-sm">Registered</th>
+                            <th scope="col" >City</th>
+                            <th scope="col" >Registered</th>
                             <th scope="col" class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -129,7 +129,7 @@
                                     </div>
                                 </td>
 
-                                <td class="pt-contact" data-label="Contact">
+                                <td  data-label="Contact">
                                     @if($patient->phone)
                                         <div class="d-flex align-items-center gap-2">
                                             <svg class="ui-icon ui-meta" aria-hidden="true"><use href="#i-phone"/></svg>
@@ -147,7 +147,7 @@
                                     @endunless
                                 </td>
 
-                                <td class="pt-hide-sm" data-label="City">
+                                <td  data-label="City">
                                     @if($patient->city)
                                         <span class="ui-chip">
                                             <svg class="ui-icon" aria-hidden="true"><use href="#i-pin"/></svg>
@@ -158,7 +158,7 @@
                                     @endif
                                 </td>
 
-                                <td class="pt-hide-sm" data-label="Registered">
+                                <td  data-label="Registered">
                                     <time class="ui-meta" datetime="{{ $patient->created_at->toDateString() }}"
                                           title="{{ $patient->created_at->format('d M Y, H:i') }}">
                                         {{ $patient->created_at->format('d M Y') }}
