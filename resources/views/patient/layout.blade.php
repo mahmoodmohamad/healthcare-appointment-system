@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $title ?? 'Patient Portal' }} · Healthcare</title>
+    <title>{{ $title ?? '@lang('site.patient_portal')' }} · @lang('site.brand_healthcare')</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <style>
         :root { --patient-primary: #2563eb; --patient-ink: #172033; --patient-muted: #64748b; --patient-bg: #f5f8fc; }
@@ -34,22 +34,22 @@
 <body>
 <div class="patient-shell">
     <aside class="patient-sidebar">
-        <div class="patient-brand">Healthcare Portal<small>Patient space</small></div>
-        <nav class="patient-nav" aria-label="Patient navigation">
-            <a class="active" href="{{ route('patient.dashboard') }}">Overview</a>
-            <a href="#appointments">My appointments</a>
-            <a href="#medical-history">Medical history</a>
-            <a href="#profile">My profile</a>
+        <div class="patient-brand">@lang('site.patient_portal')<small>@lang('site.patient_space')</small></div>
+        <nav class="patient-nav" aria-label="@lang('site.patient_navigation')">
+            <a class="active" href="{{ route('patient.dashboard') }}">@lang('site.patient_overview')</a>
+            <a href="#appointments">@lang('site.my_appointments')</a>
+            <a href="#medical-history">@lang('site.medical_history')</a>
+            <a href="#profile">@lang('site.my_profile')</a>
             <form method="POST" action="{{ route('logout') }}" style="margin-top: 26px;">
                 @csrf
-                <button type="submit" style="background: transparent; border: 0; color: #d9e2ec; padding: 12px 14px; cursor: pointer; font: inherit;">Sign out</button>
+                <button type="submit" style="background: transparent; border: 0; color: #d9e2ec; padding: 12px 14px; cursor: pointer; font: inherit;">@lang('site.sign_out')</button>
             </form>
         </nav>
     </aside>
     <main class="patient-main">
         <header class="patient-topbar">
             <div>
-                <h1>{{ $heading ?? 'Your healthcare overview' }}</h1>
+                <h1>{{ $heading ?? '@lang('site.your_healthcare_overview')' }}</h1>
                 <div class="patient-user">{{ auth()->user()->name }}</div>
             </div>
             <div class="patient-user">{{ now()->format('l, F j, Y') }}</div>
@@ -58,7 +58,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         @if ($errors->any())
-            <div class="alert alert-danger">Please review the highlighted information.</div>
+            <div class="alert alert-danger">@lang('site.review_highlighted_information')</div>
         @endif
         @yield('content')
     </main>
