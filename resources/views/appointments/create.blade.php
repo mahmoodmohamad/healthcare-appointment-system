@@ -314,7 +314,7 @@
                 </div>
 
                 <div class="summary-item">
-                    <div class="summary-label">Doctor</div>
+                    <div class="summary-label">@lang('site.doctor')</div>
                     <div class="summary-value" id="summaryDoctor">
                         Not selected
                     </div>
