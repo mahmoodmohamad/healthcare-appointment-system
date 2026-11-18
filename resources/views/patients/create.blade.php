@@ -292,7 +292,7 @@
                             </div>
 
                             <span class="field-hint">
-                                Use at least 6 characters.
+                                Use at least 10 characters.
                             </span>
 
                             @error('password')
