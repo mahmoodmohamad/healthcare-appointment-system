@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
 
-    <title>@yield('title', 'Appointment System')</title>
+    <title>@yield('title', '{{ __('site.app_name') }}')</title>
     <meta name="description" content="" />
 
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
