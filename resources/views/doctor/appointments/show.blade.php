@@ -78,7 +78,7 @@
             @if($appointment->diagnosis)
             <div class="card mb-4">
                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Diagnosis</h5>
+                    <h5 class="mb-0">@lang('site.diagnosis')</h5>
                     <a href="{{ route('doctor.diagnosis.edit', $appointment) }}" class="btn btn-sm btn-light">
                         ✏️ Edit
                     </a>

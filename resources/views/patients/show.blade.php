@@ -91,11 +91,11 @@
                         </div>
                         <div class="col-6 mb-3">
                             <h3 class="text-success">{{ $stats['upcoming_appointments'] }}</h3>
-                            <small class="text-muted">Upcoming</small>
+                            <small class="text-muted">@lang('site.upcoming')</small>
                         </div>
                         <div class="col-6">
                             <h3 class="text-warning">{{ $stats['completed_appointments'] }}</h3>
-                            <small class="text-muted">Completed</small>
+                            <small class="text-muted">@lang('site.completed')</small>
                         </div>
                         <div class="col-6">
                             <h3 class="text-danger">{{ $stats['total_diagnoses'] }}</h3>
@@ -123,7 +123,7 @@
                                     <tr>
                                         <th>Date & Time</th>
                                         <th>Doctor</th>
-                                        <th>Status</th>
+                                        <th>@lang('site.status')</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -147,7 +147,7 @@
                                         </td>
                                         <td data-label="Action">
                                             <a href="{{ route('appointments.show', $appointment) }}" class="ui-btn ui-btn-ghost ui-btn-sm">
-                                                View
+                                                @lang('site.view')
                                             </a>
                                         </td>
                                     </tr>
