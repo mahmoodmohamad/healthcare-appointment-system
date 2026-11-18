@@ -7,7 +7,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="mb-0">👩‍💼 Add New Receptionist</h4>
+                    <h4 class="mb-0">@lang('site.add_receptionist')</h4>
                 </div>
                 <div class="card-body">
                     @if($errors->any())
@@ -24,7 +24,7 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label class="form-label">Full Name *</label>
+                            <label class="form-label">@lang('site.full_name_required')</label>
                             <input type="text" name="name"
                                    class="form-control @error('name') is-invalid @enderror"
                                    value="{{ old('name') }}" required>
@@ -32,7 +32,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Email *</label>
+                            <label class="form-label">@lang('site.email_required')</label>
                             <input type="email" name="email"
                                    class="form-control @error('email') is-invalid @enderror"
                                    value="{{ old('email') }}" required>
@@ -41,22 +41,22 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Password *</label>
+                                <label class="form-label">@lang('site.password_required')</label>
                                 <input type="password" name="password"
                                        class="form-control @error('password') is-invalid @enderror"
                                        required>
-                                <small class="text-muted">Minimum 10 characters</small>
+                                <small class="text-muted">@lang('site.minimum_10_characters')</small>
                                 @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Confirm Password *</label>
+                                <label class="form-label">Confirm @lang('site.password_required')</label>
                                 <input type="password" name="password_confirmation"
                                        class="form-control" required>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Phone *</label>
+                            <label class="form-label">@lang('site.phone_required')</label>
                             <input type="text" name="phone"
                                    class="form-control @error('phone') is-invalid @enderror"
                                    value="{{ old('phone') }}" required>
@@ -64,10 +64,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">City *</label>
+                            <label class="form-label">@lang('site.city_required')</label>
                             <select name="city_id"
                                     class="form-select @error('city_id') is-invalid @enderror" required>
-                                <option value="">Select city</option>
+                                <option value="">@lang('site.select_city')</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}"
                                         {{ old('city_id') == $city->id ? 'selected' : '' }}>
