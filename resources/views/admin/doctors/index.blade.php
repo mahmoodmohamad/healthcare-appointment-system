@@ -6,8 +6,8 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-0">Doctors</h2>
-            <p class="text-muted mb-0">All registered doctors in the system.</p>
+            <h2 class="mb-0">@lang('site.doctors')</h2>
+            <p class="text-muted mb-0">@lang('site.all_doctors_description')</p>
         </div>
         <a href="{{ route('admin.doctors.create') }}" class="btn btn-primary">
             ➕ Add Doctor
@@ -25,15 +25,15 @@
         <div class="card-body">
             <form method="GET" action="{{ route('admin.doctors.index') }}" class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Search</label>
+                    <label class="form-label">@lang('site.search')</label>
                     <input type="text" name="search" class="form-control"
                            placeholder="Name, email, specialization, phone..."
                            value="{{ $filters['search'] ?? '' }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">City</label>
+                    <label class="form-label">@lang('site.city')</label>
                     <select name="city_id" class="form-select">
-                        <option value="">All Cities</option>
+                        <option value="">@lang('site.all_cities')</option>
                         @foreach($cities as $city)
                             <option value="{{ $city->id }}"
                                 {{ ($filters['city_id'] ?? '') == $city->id ? 'selected' : '' }}>
@@ -43,8 +43,8 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end gap-2">
-                    <button class="btn btn-primary flex-grow-1">Filter</button>
-                    <a href="{{ route('admin.doctors.index') }}" class="btn btn-outline-secondary">Clear</a>
+                    <button class="btn btn-primary flex-grow-1">@lang('site.filter')</button>
+                    <a href="{{ route('admin.doctors.index') }}" class="btn btn-outline-secondary">@lang('site.clear')</a>
                 </div>
             </form>
         </div>
@@ -57,13 +57,13 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Specialization</th>
-                                <th>Phone</th>
-                                <th>City</th>
-                                <th>Appointments</th>
+                                <th>@lang('site.id')</th>
+                                <th>@lang('site.name')</th>
+                                <th>@lang('site.email')</th>
+                                <th>@lang('site.specialty')</th>
+                                <th>@lang('site.phone')</th>
+                                <th>@lang('site.city')</th>
+                                <th>@lang('site.appointments')</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -81,7 +81,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('admin.doctors.show', $doctor) }}"
-                                           class="btn btn-sm btn-info">View</a>
+                                           class="btn btn-sm btn-info">@lang('site.view')</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -93,7 +93,7 @@
                     {{ $doctors->links() }}
                 </div>
             @else
-                <p class="text-center text-muted py-5 mb-0">No doctors found.</p>
+                <p class="text-center text-muted py-5 mb-0">@lang('site.no_doctors_found')</p>
             @endif
         </div>
     </div>
