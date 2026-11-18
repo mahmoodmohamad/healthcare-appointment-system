@@ -204,6 +204,24 @@ class AppointmentController extends Controller
     }
 
     /**
+     * Show the rescheduling form.
+     */
+    public function edit(Appointment $appointment): View
+    {
+        $this->authorize('reschedule', $appointment);
+
+        abort_unless($appointment->status === Appointment::SCHEDULED, 403);
+
+        $doctors = Doctor::query()
+            ->whereHas('user', fn ($query) => $query->active())
+            ->with('user')
+            ->orderBy('id')
+            ->get();
+
+        return view('appointments.edit', compact('appointment', 'doctors'));
+    }
+
+    /**
      * Update appointment.
      */
     public function update(
