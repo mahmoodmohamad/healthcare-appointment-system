@@ -290,9 +290,7 @@ class AppointmentController extends Controller
         ];
 
         if (Arr::hasAny($data, $rescheduleFields)) {
-            if ($isDoctor) {
-                abort(403, 'Doctors cannot reschedule appointments.');
-            }
+            $this->authorize('reschedule', $appointment);
 
             $doctorId = (int) (
                 $data['doctor_id'] ?? $appointment->doctor_id
