@@ -473,4 +473,6 @@ return [
     'open_appointments' => 'Open appointments',
     'view_statistics' => 'View statistics',
     'admin_dashboard_welcome' => 'Monitor clinic activity, people and appointments from one place.',
+    'matching_filters' => 'matching the selected filters',
+    'view_details' => 'View details',
 ];
