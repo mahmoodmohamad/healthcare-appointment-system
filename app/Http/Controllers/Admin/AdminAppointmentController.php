@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Receptionist;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -53,10 +54,14 @@ class AdminAppointmentController extends Controller
     {
         $this->authorize('viewAny', Appointment::class);
 
-        $month = (int) $request->input('month', now()->month);
-        $year  = (int) $request->input('year', now()->year);
+        $calendar = $request->validate([
+            'month' => ['sometimes', 'integer', 'between:1,12'],
+            'year' => ['sometimes', 'integer', 'between:2000,2100'],
+        ]);
+        $month = (int) ($calendar['month'] ?? now()->month);
+        $year = (int) ($calendar['year'] ?? now()->year);
 
-        $date = now()->setYear($year)->setMonth($month)->startOfMonth();
+        $date = Carbon::create($year, $month, 1)->startOfMonth();
 
         $query = Appointment::query()
             ->with(['patient.user', 'doctor.user', 'receptionist.user'])
