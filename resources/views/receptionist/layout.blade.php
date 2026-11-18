@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->isLocale('ar') ? 'rtl' : 'ltr' }}">
 
 <head>
     @include('admin.layouts.includes.header')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="text-end px-3 py-2"><a href="{{ route('language.switch', ['locale' => 'ar']) }}">@lang('site.arabic')</a> | <a href="{{ route('language.switch', ['locale' => 'en']) }}">@lang('site.english')</a></div>
     <div class="wrapper">
         <!-- Navbar -->
         @include('receptionist.layouts.navebar')
