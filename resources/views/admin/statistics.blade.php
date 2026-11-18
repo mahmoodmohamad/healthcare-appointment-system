@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', '@lang('site.system_statistics')')
+@section('title', __('site.system_statistics'))
 
 <style>
     :root {
@@ -188,7 +188,7 @@
         border-radius: 8px;
     }
 
-    /* Top @lang('site.doctor')s */
+    /* Top doctors */
     .rank-card {
         background: white;
         border-radius: 16px;
@@ -414,7 +414,7 @@
                 ];
             @endphp
             
-            @foreach(['admins'=>'Admins','doctors'=>'@lang('site.doctor')s','receptionists'=>'@lang('site.receptionists')','patients'=>'Patients'] as $key=>$label)
+            @foreach(['admins' => __('site.admin'), 'doctors' => __('site.doctors'), 'receptionists' => __('site.receptionists'), 'patients' => __('site.patients')] as $key=>$label)
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stat-card {{ $roleConfig[$key]['class'] }}">
                     <div class="stat-card-header">
@@ -435,7 +435,7 @@
             @endforeach
         </div>
 
-        <!-- Charts & Top @lang('site.doctor')s -->
+        <!-- Charts and top doctors -->
         <div class="row mb-4">
             <!-- Appointments Chart -->
             <div class="col-xl-8 col-lg-7 mb-4 fade-in-up" style="animation-delay: 0.2s">
@@ -453,12 +453,12 @@
                 </div>
             </div>
 
-            <!-- Top @lang('site.doctor')s -->
+            <!-- Top doctors -->
             <div class="col-xl-4 col-lg-5 mb-4 fade-in-up" style="animation-delay: 0.4s">
                 <div class="rank-card">
                     <div class="chart-card-header">
                         <div>
-                            <h3 class="chart-title">Top @lang('site.doctor')s</h3>
+                            <h3 class="chart-title">@lang('site.top_doctors')</h3>
                             <p class="text-muted mb-0">@lang('site.most_active_doctors')</p>
                         </div>
                         <div class="chart-period">@lang('site.this_month')</div>
