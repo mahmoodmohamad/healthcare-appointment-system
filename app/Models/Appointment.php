@@ -188,6 +188,7 @@ class Appointment extends Model
     {
         return $query
             ->withExists('diagnosis')
+            ->orderByRaw("CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END")
             ->orderBy('diagnosis_exists')
             ->orderBy('appointment_date')
             ->orderBy('appointment_time');
