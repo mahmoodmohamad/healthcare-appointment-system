@@ -453,4 +453,5 @@ return [
     'patient_name' => 'Patient Name',
     'showing' => 'Showing',
     'of' => 'of',
+    'enter_email' => 'Enter email',
 ];
