@@ -20,22 +20,22 @@
     $statusConfig = match ($status) {
         'scheduled' => [
             'label' => 'Scheduled',
-            'class' => 'status-scheduled',
+            'class' => 'ui-badge-scheduled status-scheduled',
             'icon' => 'bi-calendar-check',
         ],
         'completed' => [
             'label' => 'Completed',
-            'class' => 'status-completed',
+            'class' => 'ui-badge-completed status-completed',
             'icon' => 'bi-check-circle',
         ],
         'cancelled' => [
             'label' => 'Cancelled',
-            'class' => 'status-cancelled',
+            'class' => 'ui-badge-cancelled status-cancelled',
             'icon' => 'bi-x-circle',
         ],
         default => [
             'label' => ucfirst($status ?? 'Unknown'),
-            'class' => 'status-unknown',
+            'class' => 'ui-badge-pending status-unknown',
             'icon' => 'bi-info-circle',
         ],
     };
@@ -57,13 +57,13 @@
     );
 @endphp
 
-<div class="appointment-details container-fluid py-4">
+<div class="ui-page appointment-details container-fluid py-4">
 
     {{-- Page Header --}}
-    <div class="page-header">
+    <div class="ui-page-head page-header">
         <div>
-            <h1 class="page-title">Appointment Details</h1>
-            <p class="page-subtitle">
+            <h1 class="ui-title page-title">Appointment Details</h1>
+            <p class="ui-sub page-subtitle">
                 View appointment information and related records.
             </p>
         </div>
@@ -75,7 +75,7 @@
     </div>
 
     {{-- Appointment Overview --}}
-    <section class="panel hero-card">
+    <section class="ui-card panel hero-card">
 
         <div class="hero-top">
             <div>
@@ -91,7 +91,7 @@
                 </p>
             </div>
 
-            <span class="status-badge {{ $statusConfig['class'] }}">
+            <span class="ui-badge {{ $statusConfig['class'] }}">
                 <i class="bi {{ $statusConfig['icon'] }}" aria-hidden="true"></i>
                 {{ $statusConfig['label'] }}
             </span>
@@ -103,7 +103,7 @@
                 <div class="stat-label">Appointment Date</div>
                 <div class="stat-value">
                     <i class="bi bi-calendar3" aria-hidden="true"></i>
-                    {{ $appointmentDate?->format('D, M d, Y') ?? 'Not set' }}
+                    {{ $appointmentDate?->translatedFormat('D, M d, Y') ?? 'Not set' }}
                 </div>
             </div>
 
@@ -113,7 +113,7 @@
                     <i class="bi bi-clock" aria-hidden="true"></i>
 
                     @if($appointmentTime)
-                        {{ \Illuminate\Support\Carbon::parse($appointmentTime)->format('h:i A') }}
+                        {{ \Illuminate\Support\Carbon::parse($appointmentTime)->translatedFormat('h:i A') }}
                     @else
                         {{ $appointmentDate?->format('h:i A') ?? 'Not set' }}
                     @endif
@@ -124,7 +124,7 @@
                 <div class="stat-label">Booking Created</div>
                 <div class="stat-value">
                     <i class="bi bi-calendar-plus" aria-hidden="true"></i>
-                    {{ $appointment->created_at?->format('M d, Y') ?? '—' }}
+                    {{ $appointment->created_at?->translatedFormat('M d, Y') ?? '—' }}
                 </div>
             </div>
 
@@ -136,7 +136,7 @@
 
         {{-- Patient --}}
         <div class="col-12 col-lg-6">
-            <section class="panel section-card">
+            <section class="ui-card panel section-card">
 
                 <div class="section-header">
                     <div class="section-icon">
@@ -206,7 +206,7 @@
 
         {{-- Doctor --}}
         <div class="col-12 col-lg-6">
-            <section class="panel section-card">
+            <section class="ui-card panel section-card">
 
                 <div class="section-header">
                     <div class="section-icon">
@@ -272,7 +272,7 @@
     </div>
 
     {{-- Booking Information --}}
-    <section class="panel section-card">
+    <section class="ui-card panel section-card">
 
         <div class="section-header">
             <div class="section-icon">
@@ -307,14 +307,14 @@
                     <div class="detail-row">
                         <span class="detail-label">Created At</span>
                         <span class="detail-value">
-                            {{ $appointment->created_at?->format('M d, Y - h:i A') ?? '—' }}
+                            {{ $appointment->created_at?->translatedFormat('M d, Y - h:i A') ?? '—' }}
                         </span>
                     </div>
 
                     <div class="detail-row">
                         <span class="detail-label">Last Updated</span>
                         <span class="detail-value">
-                            {{ $appointment->updated_at?->format('M d, Y - h:i A') ?? '—' }}
+                            {{ $appointment->updated_at?->translatedFormat('M d, Y - h:i A') ?? '—' }}
                         </span>
                     </div>
                 </div>
@@ -338,7 +338,7 @@
     @if($canViewMedicalData)
 
         @if($diagnosis)
-            <section class="panel section-card medical-card">
+            <section class="ui-card panel section-card medical-card">
 
                 <div class="section-header">
                     <div class="section-icon">
@@ -391,7 +391,7 @@
                     <div class="metadata">
                         <i class="bi bi-clock-history me-1" aria-hidden="true"></i>
                         Recorded on
-                        {{ $diagnosis->created_at?->format('M d, Y - h:i A') ?? 'Unknown date' }}
+                        {{ $diagnosis->created_at?->translatedFormat('M d, Y - h:i A') ?? 'Unknown date' }}
                     </div>
 
                 </div>
@@ -417,7 +417,7 @@
     {{-- Appointment Actions --}}
     @if($canCancel)
 
-        <section class="panel actions-card">
+        <section class="ui-card panel actions-card">
 
             <h3 class="actions-title">Appointment Actions</h3>
 
@@ -432,7 +432,7 @@
                 @csrf
                 @method('DELETE')
 
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="ui-btn btn btn-danger">
                     <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
                     Cancel Appointment
                 </button>
