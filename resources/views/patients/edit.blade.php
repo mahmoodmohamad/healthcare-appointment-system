@@ -108,8 +108,8 @@
                                     class="form-select @error('gender') is-invalid @enderror"
                                     >
                                 <option value="">Select Gender</option>
-                                <option value="male" {{ old('gender', $patient->gender) == 'male' ? 'selected' : '' }}>Male</option>
-                                <option value="female" {{ old('gender', $patient->gender) == 'female' ? 'selected' : '' }}>Female</option>
+                                <option value="male" {{ old('gender', $patient->gender) == 'male' ? 'selected' : '' }}>@lang('site.male')</option>
+                                <option value="female" {{ old('gender', $patient->gender) == 'female' ? 'selected' : '' }}>@lang('site.female')</option>
                             </select>
                             @error('gender')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -135,7 +135,7 @@
                         <!-- Submit Button -->
                         <div class="mt-4">
                             <button type="submit" class="ui-btn ui-btn-primary">Update Patient</button>
-                            <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost ms-2">Cancel</a>
+                            <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost ms-2">@lang('site.cancel')</a>
                         </div>
 
                     </form>

@@ -22,7 +22,7 @@
     {{-- Header --}}
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
         <div>
-            <h1 class="ui-title">Patients</h1>
+            <h1 class="ui-title">@lang('site.patients')</h1>
             <p class="ui-sub">
                 {{ number_format($patients->total()) }}
                 {{ \Illuminate\Support\Str::plural('patient', $patients->total()) }}
@@ -65,7 +65,7 @@
                 </select>
             </div>
             <div class="col-12 col-lg-3 d-flex gap-2">
-                <button type="submit" class="btn ui-btn ui-btn-primary flex-grow-1">Search</button>
+                <button type="submit" class="btn ui-btn ui-btn-primary flex-grow-1">@lang('site.search')</button>
                 @if(request('search') || request('city_id'))
                     <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost">Clear</a>
                 @endif

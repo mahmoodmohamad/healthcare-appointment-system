@@ -12,7 +12,7 @@
     <div class="page-heading">
         <div>
             <div class="breadcrumb-line">
-                <a href="{{ route('patients.index') }}">Patients</a>
+                <a href="{{ route('patients.index') }}">@lang('site.patients')</a>
                 <i class="bi bi-chevron-right" aria-hidden="true"></i>
                 <span>Register New Patient</span>
             </div>
@@ -116,7 +116,7 @@
 
                         <div class="field-group full-width">
                             <label for="national_id" class="form-label">
-                                National ID <span class="required-mark">*</span>
+                                @lang('site.national_id') <span class="required-mark">*</span>
                             </label>
 
                             <div class="input-wrap">
@@ -343,7 +343,7 @@
 
                     <div class="footer-actions">
                         <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost btn-cancel">
-                            Cancel
+                            @lang('site.cancel')
                         </a>
 
                         <button type="submit" class="ui-btn ui-btn-primary btn-submit">
