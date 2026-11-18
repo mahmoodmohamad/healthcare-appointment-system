@@ -66,20 +66,6 @@
                             @enderror
                         </div>
 
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">@lang('site.email_required')</label>
-                            <input type="email" 
-                                   name="email" 
-                                   id="email" 
-                                   class="form-control @error('email') is-invalid @enderror"
-                                   value="{{ old('email', $patient->user->email) }}"
-                                   required>
-                            @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
                         <!-- City -->
                         <div class="mb-3">
                             <label for="city_id" class="form-label">@lang('site.city_required')</label>
