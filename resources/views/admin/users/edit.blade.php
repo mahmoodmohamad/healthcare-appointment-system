@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Edit User')
+@section('title', '@lang('site.edit_user')')
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
 
-    <h4 class="fw-bold py-3 mb-4">Edit User</h4>
+    <h4 class="fw-bold py-3 mb-4">@lang('site.edit_user')</h4>
 
     <div class="card">
-        <h5 class="card-header">User Information</h5>
+        <h5 class="card-header">@lang('site.user_information')</h5>
         <div class="card-body">
 
             <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
@@ -41,7 +41,7 @@
 
                 {{-- Password --}}
                 <div class="mb-3">
-                    <label class="form-label">New Password (optional)</label>
+                    <label class="form-label">@lang('site.new_password_optional')</label>
                     <input
                         type="password"
                         name="password"
