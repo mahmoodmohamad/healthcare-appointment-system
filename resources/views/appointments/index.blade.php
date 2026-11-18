@@ -166,10 +166,10 @@
                                 };
 
                                 $statusLabel = match ($status) {
-                                    'scheduled' => '__('site.scheduled'),
-                                    'completed' => 'Completed',
+                                    'scheduled' => __('site.scheduled'),
+                                    'completed' => __('site.completed'),
                                     'cancelled' => __('site.cancelled'),
-                                    default => ucfirst($status ?? 'Unknown'),
+                                    default => ucfirst($status ?? __('site.unknown')),
                                 };
                             @endphp
 
