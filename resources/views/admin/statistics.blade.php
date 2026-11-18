@@ -496,8 +496,8 @@
                             <thead>
                                 <tr>
                                     <th>City</th>
-                                    <th>Patients</th>
-                                    <th>Doctors</th>
+                                    <th>@lang('site.patients')</th>
+                                    <th>@lang('site.doctors')</th>
                                     <th>Receptionists</th>
                                     <th>Total</th>
                                 </tr>

@@ -78,9 +78,9 @@
                                     <th width="150">Status:</th>
                                     <td>
                                         @if($user->activation)
-                                            <span class="badge bg-success">Active</span>
+                                            <span class="badge bg-success">@lang('site.active')</span>
                                         @else
-                                            <span class="badge bg-secondary">Inactive</span>
+                                            <span class="badge bg-secondary">@lang('site.inactive')</span>
                                         @endif
                                     </td>
                                 </tr>

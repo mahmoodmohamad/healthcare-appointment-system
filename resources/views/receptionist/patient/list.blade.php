@@ -84,7 +84,7 @@
 
 {{--     <form class="btn btn-xs" action="{{ route('admin.receptionist.destroy',$patient->user) }}"
                                          method="POST">@csrf @method('DELETE')
-                                            <button type="submit" class="btn  btn-xs btn-danger" onclick="return confirm('Are You Sure ?')">Delete</button>
+                                            <button type="submit" class="btn  btn-xs btn-danger" onclick="return confirm('Are You Sure ?')">@lang('site.delete')</button>
                                         </form> --}}
 
                                     </td>
