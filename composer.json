@@ -54,7 +54,9 @@
             "@php artisan key:generate --ansi"
         ],
         "format": "pint",
-        "format:check": "pint --test"
+        "format:check": "pint --test",
+        "format:controllers": "pint app/Http/Controllers",
+        "format:controllers:check": "pint --test app/Http/Controllers"
     },
     "extra": {
         "laravel": {
