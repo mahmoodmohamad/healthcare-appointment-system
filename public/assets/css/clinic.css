@@ -747,3 +747,50 @@ a.ui-row:hover {
 @media (prefers-reduced-motion: reduce) {
     .ui-sidebar .menu-link { transition: none; }
 }
+
+/* Patient index icon sizing: SVG sprite symbols need an explicit viewport and dimensions. */
+.ui-page .ui-icon {
+    display: inline-block !important;
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    min-width: 1.15rem;
+    min-height: 1.15rem;
+    max-width: 1.15rem;
+    max-height: 1.15rem;
+    flex: 0 0 1.15rem;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.ui-page .ui-search .ui-icon {
+    position: absolute;
+    inset-inline-start: .85rem;
+    inset-block-start: 50%;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    max-width: 1.1rem;
+    max-height: 1.1rem;
+    transform: translateY(-50%);
+    color: var(--ui-muted);
+    pointer-events: none;
+}
+.ui-page .ui-empty-icon .ui-icon {
+    width: 1.65rem !important;
+    height: 1.65rem !important;
+    min-width: 1.65rem;
+    min-height: 1.65rem;
+    max-width: 1.65rem;
+    max-height: 1.65rem;
+    flex-basis: 1.65rem;
+}
+.ui-page .ui-btn .ui-icon,
+.ui-page .ui-row-actions .ui-icon {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+    min-width: 1.05rem;
+    min-height: 1.05rem;
+    max-width: 1.05rem;
+    max-height: 1.05rem;
+    flex-basis: 1.05rem;
+}
