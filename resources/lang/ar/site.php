@@ -437,4 +437,5 @@ return [
     'appointments_today' => 'مواعيد اليوم',
     'view_appointment_for' => 'عرض موعد المريض :name',
     'not_available' => 'غير متاح',
+    'all_receptionists' => 'جميع موظفي الاستقبال',
 ];
