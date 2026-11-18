@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'User Details')
+@section('title', '@lang('site.user_details')')
 
 @section('content')
 <div class="container py-4">
@@ -7,7 +7,7 @@
         <div class="col-md-10">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>User Details</h2>
+                <h2>@lang('site.user_details')</h2>
                 <div>
                     @if($user->id !== auth()->id())
                         <form action="{{ route('admin.users.toggle-activation', $user) }}" 
@@ -36,7 +36,7 @@
             <!-- User Info Card -->
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Basic Information</h5>
+                    <h5 class="mb-0">@lang('site.basic_information')</h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -47,15 +47,15 @@
                                     <td>#{{ $user->id }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Name:</th>
+                                    <th>@lang('site.name_label')</th>
                                     <td><strong>{{ $user->name }}</strong></td>
                                 </tr>
                                 <tr>
-                                    <th>Email:</th>
+                                    <th>@lang('site.email_label')</th>
                                     <td>{{ $user->email }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Role:</th>
+                                    <th>@lang('site.role_label')</th>
                                     <td>
                                         @php
                                             $roleBadge = [
@@ -75,7 +75,7 @@
                         <div class="col-md-6">
                             <table class="table table-borderless">
                                 <tr>
-                                    <th width="150">Status:</th>
+                                    <th width="150">@lang('site.status_label')</th>
                                     <td>
                                         @if($user->activation)
                                             <span class="badge bg-success">@lang('site.active')</span>
@@ -85,11 +85,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Registered:</th>
+                                    <th>@lang('site.registered_label')</th>
                                     <td>{{ $user->created_at->format('F j, Y') }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Last Updated:</th>
+                                    <th>@lang('site.updated_label')</th>
                                     <td>{{ $user->updated_at->diffForHumans() }}</td>
                                 </tr>
                             </table>
@@ -102,17 +102,17 @@
             @if($user->isDoctor() && $user->doctor)
                 <div class="card mb-4">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0">Doctor Information</h5>
+                        <h5 class="mb-0">@lang('site.doctor_information')</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Specialization:</strong> {{ $user->doctor->specialization }}</p>
-                                <p><strong>Phone:</strong> {{ $user->doctor->phone }}</p>
+                                <p><strong>@lang('site.specialization_label')</strong> {{ $user->doctor->specialization }}</p>
+                                <p><strong>@lang('site.phone_label')</strong> {{ $user->doctor->phone }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>City:</strong> {{ $user->doctor->city->name ?? 'N/A' }}</p>
-                                <p><strong>Total Appointments:</strong> {{ $user->doctor->appointments()->count() }}</p>
+                                <p><strong>@lang('site.city_label')</strong> {{ $user->doctor->city->name ?? 'N/A' }}</p>
+                                <p><strong>@lang('site.total_appointments_label')</strong> {{ $user->doctor->appointments()->count() }}</p>
                             </div>
                         </div>
                     </div>
@@ -122,17 +122,17 @@
             @if($user->isReceptionist() && $user->receptionist)
                 <div class="card mb-4">
                     <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">Receptionist Information</h5>
+                        <h5 class="mb-0">@lang('site.receptionist_information')</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Phone:</strong> {{ $user->receptionist->phone }}</p>
-                                <p><strong>City:</strong> {{ $user->receptionist->city->name ?? 'N/A' }}</p>
+                                <p><strong>@lang('site.phone_label')</strong> {{ $user->receptionist->phone }}</p>
+                                <p><strong>@lang('site.city_label')</strong> {{ $user->receptionist->city->name ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Patients Registered:</strong> {{ $user->receptionist->patients()->count() }}</p>
-                                <p><strong>Appointments Created:</strong> {{ $user->receptionist->appointments()->count() }}</p>
+                                <p><strong>Patients @lang('site.registered_label')</strong> {{ $user->receptionist->patients()->count() }}</p>
+                                <p><strong>@lang('site.appointments_created_label')</strong> {{ $user->receptionist->appointments()->count() }}</p>
                             </div>
                         </div>
                     </div>
@@ -142,17 +142,17 @@
             @if($user->isPatient() && $user->patient)
                 <div class="card mb-4">
                     <div class="card-header bg-warning">
-                        <h5 class="mb-0">Patient Information</h5>
+                        <h5 class="mb-0">@lang('site.patient_information')</h5>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>National ID:</strong> {{ $user->patient->national_id }}</p>
-                                <p><strong>Phone:</strong> {{ $user->patient->phone }}</p>
+                                <p><strong>@lang('site.national_id_label')</strong> {{ $user->patient->national_id }}</p>
+                                <p><strong>@lang('site.phone_label')</strong> {{ $user->patient->phone }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>City:</strong> {{ $user->patient->city->name ?? 'N/A' }}</p>
-                                <p><strong>Total Appointments:</strong> {{ $user->patient->appointments()->count() }}</p>
+                                <p><strong>@lang('site.city_label')</strong> {{ $user->patient->city->name ?? 'N/A' }}</p>
+                                <p><strong>@lang('site.total_appointments_label')</strong> {{ $user->patient->appointments()->count() }}</p>
                             </div>
                         </div>
                     </div>
