@@ -64,7 +64,22 @@ class AppointmentResource extends JsonResource
             // Diagnosis is only returned to authorized medical roles.
             'diagnosis' => $this->when(
                 $canViewMedicalData && $this->resource->relationLoaded('diagnosis'),
-                fn () => $this->diagnosis
+                function () use ($user) {
+                    $diagnosis = $this->diagnosis;
+                    $data = [
+                        'symptoms' => $diagnosis->symptoms,
+                        'diagnosis' => $diagnosis->diagnosis,
+                        'prescription' => $diagnosis->prescription,
+                        'created_at' => optional($diagnosis->created_at)->toISOString(),
+                    ];
+
+                    if ($user->isAdmin() || $user->isDoctor()) {
+                        $data['description'] = $diagnosis->description;
+                        $data['notes'] = $diagnosis->notes;
+                    }
+
+                    return $data;
+                }
             ),
 
             'created_at' => optional($this->created_at)->toISOString(),
