@@ -24,14 +24,13 @@
         <div>
             <h1 class="ui-title">@lang('site.patients')</h1>
             <p class="ui-sub">
-                {{ number_format($patients->total()) }}
-                {{ \Illuminate\Support\Str::plural('patient', $patients->total()) }}
-                @if(request('search') || request('city_id')) match your filters @else registered @endif
+                {{ number_format($patients->total()) }} @lang('site.patients')
+                @if(request('search') || request('city_id')) @lang('site.matching_filters') @else @lang('site.registered') @endif
             </p>
         </div>
         <a href="{{ route('patients.create') }}" class="btn ui-btn ui-btn-primary d-inline-flex align-items-center gap-2 px-3 py-2">
             <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg>
-            Register patient
+            @lang('site.register_patient')
         </a>
     </div>
 
@@ -171,14 +170,14 @@
                                            class="btn ui-btn ui-btn-ghost btn-sm d-inline-flex align-items-center gap-2 px-3 py-2"
                                            aria-label="Book appointment for {{ $name }}">
                                             <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>
-                                            Book
+                                            @lang('site.book_appointment')
                                         </a>
                                         <a href="{{ route('patients.show', $patient) }}" class="ui-btn ui-btn-ghost ui-btn-sm"
-                                           title="View details" aria-label="View details for {{ $name }}">
+                                           title="@lang('site.view_details')" aria-label="@lang('site.view_details') — {{ $name }}">
                                             <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg>
                                         </a>
                                         <a href="{{ route('patients.edit', $patient) }}" class="ui-btn ui-btn-ghost ui-btn-sm"
-                                           title="Edit patient" aria-label="Edit {{ $name }}">
+                                           title="@lang('site.edit_patient')" aria-label="@lang('site.edit_patient') — {{ $name }}">
                                             <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-edit"/></svg>
                                         </a>
                                     </div>
@@ -192,10 +191,10 @@
             {{-- Footer: result count + pagination --}}
             <div class="ui-card-foot ui-pagination">
                 <span class="ui-meta">
-                    Showing {{ $patients->firstItem() }}–{{ $patients->lastItem() }} of {{ number_format($patients->total()) }}
+                    @lang('site.showing') {{ $patients->firstItem() }}–{{ $patients->lastItem() }} @lang('site.of') {{ number_format($patients->total()) }}
                 </span>
                 @if($patients->hasPages())
-                    <nav aria-label="@lang('site.patient')s pagination">
+                    <nav aria-label="@lang('site.patients') pagination">
                         {{ $patients->appends(request()->query())->links() }}
                     </nav>
                 @endif
@@ -209,7 +208,7 @@
                 @if(request('search') || request('city_id'))
                     <h3>@lang('site.no_patients_match_filters')</h3>
                     <p>@lang('site.patient_filter_help')</p>
-                    <a href="{{ route('patients.index') }}" class="btn btn-outline-secondary">@lang('site.clear') filters</a>
+                    <a href="{{ route('patients.index') }}" class="btn btn-outline-secondary">@lang('site.clear_filters')</a>
                 @else
                     <h3>@lang('site.no_patients_yet')</h3>
                     <p>@lang('site.register_first_patient')</p>
