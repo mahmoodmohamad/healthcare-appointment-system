@@ -12,8 +12,8 @@
                 <div class="form-card">
                     <!-- Header -->
                     <div class="form-header">
-                        <h4>👤 Create New User</h4>
-                        <p>Add a new user to the healthcare system</p>
+                        <h4>@lang('site.create_new_user')</h4>
+                        <p>@lang('site.add_user_description')</p>
                     </div>
 
                     <div class="form-body">
@@ -27,7 +27,7 @@
                         <!-- Error Messages -->
                         @if($errors->any())
                             <div class="alert alert-danger">
-                                <strong>⚠️ Please fix the following errors:</strong>
+                                <strong>@lang('site.fix_validation_errors')</strong>
                                 <ul class="mb-0 mt-2">
                                     @foreach($errors->all() as $error)
                                         <li>{{ $error }}</li>
@@ -72,7 +72,7 @@
                             </div>
 
                             <div class="section-divider">
-                                <span>Basic Information</span>
+                                <span>@lang('site.basic_information')</span>
                             </div>
 
                             <!-- Step 2: Basic Info -->
@@ -135,7 +135,7 @@
                                     <div class="password-strength" id="password-strength">
                                         <div class="password-strength-bar"></div>
                                     </div>
-                                    <small class="form-text">Minimum 6 characters</small>
+                                    <small class="form-text">@lang('site.minimum_6_characters')</small>
                                     @error('password')
                                         <div class="invalid-feedback d-block">{{ $message }}</div>
                                     @enderror
@@ -163,7 +163,7 @@
                             <!-- Step 3: Role-Specific Fields -->
                             <div id="roleSpecificFields" style="display: none;">
                                 <div class="section-divider">
-                                    <span id="roleSpecificTitle">Role-Specific Information</span>
+                                    <span id="roleSpecificTitle">@lang('site.role_specific_information')</span>
                                 </div>
 
                                 <div class="row">
@@ -196,7 +196,7 @@
                                             <select name="city_id" 
                                                     id="city_id" 
                                                     class="form-select input-with-icon @error('city_id') is-invalid @enderror">
-                                                <option value="">Select City</option>
+                                                <option value="">@lang('site.select_city')</option>
                                                 @foreach($cities as $city)
                                                     <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>
                                                         {{ $city->name }}
