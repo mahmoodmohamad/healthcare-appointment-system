@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Patient @lang('site.medical_history')')
+@section('title', __('site.patient') . ' - ' . __('site.medical_history'))
 
 @section('content')
 <div class="container py-4">
