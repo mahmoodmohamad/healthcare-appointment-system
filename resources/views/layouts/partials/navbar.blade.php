@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="flex-grow-1">
                                         <h6 class="mb-0">{{ auth()->user()->name }}</h6>
-                                        <small class="text-body-secondary">{{ __('site.' . strtolower(auth()->user()->role ?? 'user')) }}</small>
+                                        <small class="text-body-secondary">{{ __('site.role_' . strtolower(auth()->user()->getRoleName() ?? 'user')) }}</small>
                                     </div>
                                 </div>
                             </div>
