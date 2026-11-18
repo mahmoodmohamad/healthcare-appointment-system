@@ -367,4 +367,5 @@ return [
     'bootstrap_templates' => 'Bootstrap Templates',
     'documentation' => 'Documentation',
     'support' => 'Support',
+    'diagnosis_label' => 'Diagnosis:',
 ];
