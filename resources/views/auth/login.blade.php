@@ -29,6 +29,7 @@
 <div class="position-relative">
     <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner py-6 mx-4">
+            <div class="text-end mb-3"><a href="{{ route('language.switch', ['locale' => 'ar']) }}">@lang('site.arabic')</a> | <a href="{{ route('language.switch', ['locale' => 'en']) }}">@lang('site.english')</a></div>
             <!-- Login -->
             <div class="card p-sm-7 p-2">
                 <div class="app-brand justify-content-center mt-5">
@@ -53,7 +54,7 @@
                     <form action="{{ route('login.custom') }}" method="POST" class="mb-5">
                         @csrf
                         <div class="form-floating form-floating-outline mb-5">
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" value="{{ old('email') }}" required autofocus>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="@lang('site.enter_email')" value="{{ old('email') }}" required autofocus>
                             <label for="email">@lang('site.email')</label>
                             @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                         </div>
