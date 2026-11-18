@@ -9,8 +9,7 @@
     </div>
 
     <div class="alert alert-info">
-        Read-only view. To change this appointment, contact the receptionist who booked it
-        or the assigned doctor.
+        @lang('site.read_only_view_notice')
     </div>
 
     <div class="card mb-4">
@@ -68,7 +67,7 @@
             <div class="card-header bg-warning"><h5 class="mb-0">@lang('site.diagnosis')</h5></div>
             <div class="card-body">
                 <p><strong>@lang('site.symptoms_label')</strong> {{ $appointment->diagnosis->symptoms }}</p>
-                <p><strong>Diagnosis:</strong> {{ $appointment->diagnosis->diagnosis }}</p>
+                <p><strong>@lang('site.diagnosis_label')</strong> {{ $appointment->diagnosis->diagnosis }}</p>
                 @if($appointment->diagnosis->prescription)
                     <p><strong>@lang('site.prescription_label')</strong> {{ $appointment->diagnosis->prescription }}</p>
                 @endif
