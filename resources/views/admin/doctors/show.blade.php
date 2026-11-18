@@ -9,7 +9,7 @@
             <h2 class="mb-0">{{ $doctor->user->name }}</h2>
             <p class="text-muted mb-0">{{ $doctor->specialization }}</p>
         </div>
-        <a href="{{ route('admin.doctors.index') }}" class="btn btn-secondary">← Back to Doctors</a>
+        <a href="{{ route('admin.doctors.index') }}" class="btn btn-secondary">{{ __('site.back') }} to {{ __('site.doctor') }}s</a>
     </div>
 
     <div class="row mb-4">
@@ -17,7 +17,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['total_appointments'] }}</h3>
-                    <small>Total Appointments</small>
+                    <small>Total {{ __('site.appointment') }}s</small>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['completed'] }}</h3>
-                    <small>Completed</small>
+                    <small>{{ __('site.completed') }}</small>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['scheduled'] }}</h3>
-                    <small>Scheduled</small>
+                    <small>{{ __('site.scheduled') }}</small>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
             <div class="card bg-info text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['total_patients'] }}</h3>
-                    <small>Distinct Patients</small>
+                    <small>Distinct {{ __('site.patient') }}s</small>
                 </div>
             </div>
         </div>
@@ -50,18 +50,18 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white"><h5 class="mb-0">Profile</h5></div>
+                <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ __('site.profile') }}</h5></div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> {{ $doctor->user->name }}</p>
-                    <p><strong>Email:</strong> {{ $doctor->user->email }}</p>
-                    <p><strong>Specialization:</strong> {{ $doctor->specialization }}</p>
-                    <p><strong>Phone:</strong> {{ $doctor->phone }}</p>
-                    <p><strong>City:</strong> {{ $doctor->city->name ?? '—' }}</p>
-                    <p class="mb-0"><strong>Account:</strong>
+                    <p><strong>{{ __('site.name_label') }}</strong> {{ $doctor->user->name }}</p>
+                    <p><strong>{{ __('site.email_label') }}</strong> {{ $doctor->user->email }}</p>
+                    <p><strong>{{ __('site.specialization_label') }}</strong> {{ $doctor->specialization }}</p>
+                    <p><strong>{{ __('site.phone_label') }}</strong> {{ $doctor->phone }}</p>
+                    <p><strong>{{ __('site.city') }}:</strong> {{ $doctor->city->name ?? '—' }}</p>
+                    <p class="mb-0"><strong>{{ __('site.account_label') }}</strong>
                         @if($doctor->user->activation)
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">{{ __('site.active') }}</span>
                         @else
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary">{{ __('site.inactive') }}</span>
                         @endif
                     </p>
                 </div>
@@ -71,7 +71,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Appointment History</h5>
+                    <h5 class="mb-0">{{ __('site.appointment') }} History</h5>
                 </div>
                 <div class="card-body">
                     @if($appointments->count() > 0)
@@ -79,10 +79,10 @@
                             <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Patient</th>
-                                        <th>Status</th>
-                                        <th>Diagnosis</th>
+                                        <th>{{ __('site.date') }}</th>
+                                        <th>{{ __('site.patient') }}</th>
+                                        <th>{{ __('site.status') }}</th>
+                                        <th>{{ __('site.diagnosis') }}</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -118,7 +118,7 @@
                                             </td>
                                             <td>
                                                 <a href="{{ route('admin.appointments.show', $appointment) }}"
-                                                   class="btn btn-sm btn-outline-primary">Open</a>
+                                                   class="btn btn-sm btn-outline-primary">{{ __('site.open') }}</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -130,7 +130,7 @@
                             {{ $appointments->links() }}
                         </div>
                     @else
-                        <p class="text-center text-muted py-4 mb-0">No appointments yet.</p>
+                        <p class="text-center text-muted py-4 mb-0">{{ __('site.no_appointments_yet') }}</p>
                     @endif
                 </div>
             </div>
