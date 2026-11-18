@@ -17,7 +17,7 @@
 
                 {{-- Name --}}
                 <div class="mb-3">
-                    <label class="form-label">Full Name</label>
+                    <label class="form-label">@lang('site.full_name')</label>
                     <input
                         type="text"
                         name="name"
