@@ -26,26 +26,32 @@ class AppointmentSeeder extends Seeder
         foreach (Patient::query()->orderBy('id')->get() as $index => $patient) {
             $time = now()->startOfDay()->addHours(9)->addMinutes($index * 30)->format('H:i:s');
 
-            $alreadySeeded = Appointment::query()
+            $seeded = Appointment::query()
                 ->where('patient_id', $patient->id)
                 ->where('doctor_id', $doctor->id)
-                ->whereDate('appointment_date', $date)
-                ->where('appointment_time', $time)
-                ->exists();
+                ->where('notes', '[SEED] Initial visit')
+                ->first();
 
-            if ($alreadySeeded || ! Appointment::isAvailable($doctor->id, $date, $time)) {
+            if (! Appointment::isAvailable($doctor->id, $date, $time, $seeded?->id)
+                || ! Appointment::isPatientAvailable($patient->id, $date, $time, $seeded?->id)) {
                 continue;
             }
 
-            Appointment::create([
+            $attributes = [
                 'patient_id' => $patient->id,
                 'doctor_id' => $doctor->id,
                 'receptionist_id' => $receptionistId,
                 'appointment_date' => $date . ' ' . $time,
                 'appointment_time' => $time,
                 'status' => Appointment::SCHEDULED,
-                'notes' => 'Initial visit',
-            ]);
+                'notes' => '[SEED] Initial visit',
+            ];
+
+            if ($seeded) {
+                $seeded->update($attributes);
+            } else {
+                Appointment::create($attributes);
+            }
         }
     }
 }
