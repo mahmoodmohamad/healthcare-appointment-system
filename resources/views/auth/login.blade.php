@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="card-body mt-1">
-                    <h4 class="mb-1">@lang('site.welcome_login') + ' 👋🏻'</h4>
+                    <h4 class="mb-1">@lang('site.welcome_login') 👋🏻</h4>
                     <p class="mb-5">@lang('site.login_subtitle')</p>
 
                     @if(session('error'))
