@@ -41,7 +41,7 @@
                 <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>Dashboard</div>
+                        <div>{{ __('Dashboard') }}</div>
                     </a>
                 </li>
 
@@ -49,17 +49,17 @@
                 <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon icon-base ri-user-settings-line"></i>
-                        <div>User Management</div>
+                        <div>{{ __('User Management') }}</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
                             <a href="{{ route('admin.users.index') }}" class="menu-link">
-                                <div>All Users</div>
+                                <div>{{ __('All Users') }}</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
                             <a href="{{ route('admin.users.create') }}" class="menu-link">
-                                <div>Add New User</div>
+                                <div>{{ __('Add New User') }}</div>
                             </a>
                         </li>
                     </ul>
@@ -68,17 +68,17 @@
 <li class="menu-item {{ request()->routeIs('admin.appointments.*') ? 'active open' : '' }}">
     <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon icon-base ri-calendar-line"></i>
-        <div>Appointments</div>
+        <div>{{ __('Appointments') }}</div>
     </a>
     <ul class="menu-sub">
         <li class="menu-item {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}">
             <a href="{{ route('admin.appointments.index') }}" class="menu-link">
-                <div>All Appointments</div>
+                <div>{{ __('All Appointments') }}</div>
             </a>
         </li>
         <li class="menu-item {{ request()->routeIs('admin.appointments.calendar') ? 'active' : '' }}">
             <a href="{{ route('admin.appointments.calendar') }}" class="menu-link">
-                <div>Calendar View</div>
+                <div>{{ __('Calendar View') }}</div>
             </a>
         </li>
     </ul>
@@ -87,7 +87,7 @@
 <li class="menu-item {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}">
     <a href="{{ route('admin.doctors.index') }}" class="menu-link">
         <i class="menu-icon icon-base ri-stethoscope-line"></i>
-        <div>Doctors</div>
+        <div>{{ __('Doctors') }}</div>
     </a>
 </li>
 
@@ -95,33 +95,33 @@
 <li class="menu-item {{ request()->routeIs('admin.receptionists.*') ? 'active' : '' }}">
     <a href="{{ route('admin.receptionists.index') }}" class="menu-link">
         <i class="menu-icon icon-base ri-user-star-line"></i>
-        <div>Receptionists</div>
+        <div>{{ __('Receptionists') }}</div>
     </a>
 </li><!-- Patients -->
 <li class="menu-item {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}">
     <a href="{{ route('admin.patients.index') }}" class="menu-link">
         <i class="menu-icon icon-base ri-user-heart-line"></i>
-        <div>Patients</div>
+        <div>{{ __('Patients') }}</div>
     </a>
 </li>
                 <!-- Statistics -->
                 <li class="menu-item {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
                     <a href="{{ route('admin.statistics') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-bar-chart-line"></i>
-                        <div>Statistics</div>
+                        <div>{{ __('Statistics') }}</div>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">System</span>
+                    <span class="menu-header-text">{{ __('System') }}</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>Logout</div>
+                        <div>{{ __('Logout') }}</div>
                     </a>
                 </li>
             @endif
@@ -132,7 +132,7 @@
                 <li class="menu-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('doctor.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>Dashboard</div>
+                        <div>{{ __('Dashboard') }}</div>
                     </a>
                 </li>
 
@@ -140,20 +140,20 @@
                 <li class="menu-item {{ request()->routeIs('doctor.appointments.*') ? 'active' : '' }}">
                     <a href="{{ route('doctor.appointments.index') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-calendar-check-line"></i>
-                        <div>My Appointments</div>
+                        <div>{{ __('My Appointments') }}</div>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">Account</span>
+                    <span class="menu-header-text">{{ __('Account') }}</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>Logout</div>
+                        <div>{{ __('Logout') }}</div>
                     </a>
                 </li>
             @endif
@@ -164,7 +164,7 @@
                 <li class="menu-item {{ request()->routeIs('receptionist.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('receptionist.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>Dashboard</div>
+                        <div>{{ __('Dashboard') }}</div>
                     </a>
                 </li>
 
@@ -172,7 +172,7 @@
                 <li class="menu-item {{ request()->routeIs('patients.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon icon-base ri-user-heart-line"></i>
-                        <div>Patients</div>
+                        <div>{{ __('Patients') }}</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('patients.index') ? 'active' : '' }}">
@@ -182,7 +182,7 @@
                         </li>
                         <li class="menu-item {{ request()->routeIs('patients.create') ? 'active' : '' }}">
                             <a href="{{ route('patients.create') }}" class="menu-link">
-                                <div>Register New Patient</div>
+                                <div>{{ __('Register New Patient') }}</div>
                             </a>
                         </li>
                     </ul>
@@ -192,22 +192,22 @@
                 <li class="menu-item {{ request()->routeIs('appointments.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon icon-base ri-calendar-line"></i>
-                        <div>Appointments</div>
+                        <div>{{ __('Appointments') }}</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('appointments.index') ? 'active' : '' }}">
                             <a href="{{ route('appointments.index') }}" class="menu-link">
-                                <div>All Appointments</div>
+                                <div>{{ __('All Appointments') }}</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('appointments.create') ? 'active' : '' }}">
                             <a href="{{ route('appointments.create') }}" class="menu-link">
-                                <div>Book Appointment</div>
+                                <div>{{ __('Book Appointment') }}</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('appointments.calendar') ? 'active' : '' }}">
                             <a href="{{ route('appointments.calendar') }}" class="menu-link">
-                                <div>Calendar View</div>
+                                <div>{{ __('Calendar View') }}</div>
                             </a>
                         </li>
                     </ul>
@@ -215,14 +215,14 @@
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">Account</span>
+                    <span class="menu-header-text">{{ __('Account') }}</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>Logout</div>
+                        <div>{{ __('Logout') }}</div>
                     </a>
                 </li>
             @endif
@@ -233,7 +233,7 @@
                 <li class="menu-item {{ request()->routeIs('patient.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('patient.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>Dashboard</div>
+                        <div>{{ __('Dashboard') }}</div>
                     </a>
                 </li>
 
@@ -241,7 +241,7 @@
                 <li class="menu-item">
                     <a href="#" class="menu-link">
                         <i class="menu-icon icon-base ri-calendar-line"></i>
-                        <div>My Appointments</div>
+                        <div>{{ __('My Appointments') }}</div>
                     </a>
                 </li>
 
@@ -249,20 +249,20 @@
                 <li class="menu-item">
                     <a href="#" class="menu-link">
                         <i class="menu-icon icon-base ri-file-list-line"></i>
-                        <div>Medical History</div>
+                        <div>{{ __('Medical History') }}</div>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">Account</span>
+                    <span class="menu-header-text">{{ __('Account') }}</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>Logout</div>
+                        <div>{{ __('Logout') }}</div>
                     </a>
                 </li>
             @endif
