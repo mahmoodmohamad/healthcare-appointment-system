@@ -79,11 +79,13 @@ class AppointmentController extends Controller
         $this->authorize('create', Appointment::class);
 
         $patients = Patient::query()
+            ->whereHas('user', fn ($query) => $query->active())
             ->with('user')
             ->orderBy('id')
             ->get();
 
         $doctors = Doctor::query()
+            ->whereHas('user', fn ($query) => $query->active())
             ->with('user')
             ->orderBy('id')
             ->get();
@@ -127,6 +129,21 @@ class AppointmentController extends Controller
                 'max:5000',
             ],
         ]);
+
+        $patientIsActive = Patient::query()
+            ->whereKey($data['patient_id'])
+            ->whereHas('user', fn ($query) => $query->active())
+            ->exists();
+        $doctorIsActive = Doctor::query()
+            ->whereKey($data['doctor_id'])
+            ->whereHas('user', fn ($query) => $query->active())
+            ->exists();
+
+        if (! $patientIsActive || ! $doctorIsActive) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'doctor_id' => 'The selected doctor or patient account is inactive.',
+            ]);
+        }
 
         $user = $request->user();
 
@@ -268,6 +285,17 @@ class AppointmentController extends Controller
 
             $time = $data['appointment_time']
                 ?? substr($appointment->appointment_time, 0, 5);
+
+            $doctorIsActive = Doctor::query()
+                ->whereKey($doctorId)
+                ->whereHas('user', fn ($query) => $query->active())
+                ->exists();
+
+            if (! $doctorIsActive) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'doctor_id' => 'The selected doctor account is inactive.',
+                ]);
+            }
 
             $appointment->reschedule(
                 $doctorId,
