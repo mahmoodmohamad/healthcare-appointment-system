@@ -38,7 +38,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['scheduled'] }}</h3>
-                    <small>Scheduled</small>
+                    <small>@lang('site.scheduled')</small>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
             <div class="card bg-danger text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['cancelled'] }}</h3>
-                    <small>Cancelled</small>
+                    <small>@lang('site.cancelled')</small>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
             <div class="card bg-info text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['total_diagnoses'] }}</h3>
-                    <small>Diagnoses</small>
+                    <small>@lang('site.diagnoses')</small>
                 </div>
             </div>
         </div>
@@ -69,25 +69,25 @@
     </div>
 
     <div class="row">
-        <!-- Profile -->
+        <!-- @lang('site.profile') -->
         <div class="col-md-4">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white"><h5 class="mb-0">Personal Information</h5></div>
+                <div class="card-header bg-primary text-white"><h5 class="mb-0">@lang('site.personal_information')</h5></div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> {{ $patient->user->name }}</p>
-                    <p><strong>Email:</strong> {{ $patient->user->email }}</p>
-                    <p><strong>National ID:</strong> {{ $patient->national_id }}</p>
-                    <p><strong>Phone:</strong> {{ $patient->phone }}</p>
-                    <p><strong>Gender:</strong> {{ $patient->gender ? ucfirst($patient->gender) : '—' }}</p>
-                    <p><strong>Birth Date:</strong>
+                    <p><strong>@lang('site.name_label')</strong> {{ $patient->user->name }}</p>
+                    <p><strong>@lang('site.email_label')</strong> {{ $patient->user->email }}</p>
+                    <p><strong>@lang('site.national_id_label')</strong> {{ $patient->national_id }}</p>
+                    <p><strong>@lang('site.phone_label')</strong> {{ $patient->phone }}</p>
+                    <p><strong>@lang('site.gender_label')</strong> {{ $patient->gender ? ucfirst($patient->gender) : '—' }}</p>
+                    <p><strong>@lang('site.birth_date_label')</strong>
                         {{ $patient->birth_date ? \Carbon\Carbon::parse($patient->birth_date)->format('M j, Y') : '—' }}
                     </p>
-                    <p><strong>City:</strong> {{ $patient->city->name ?? '—' }}</p>
-                    <p><strong>Country:</strong> {{ $patient->city->country->name ?? '—' }}</p>
-                    <p><strong>Registered by:</strong>
+                    <p><strong>@lang('site.city_label')</strong> {{ $patient->city->name ?? '—' }}</p>
+                    <p><strong>@lang('site.country_label')</strong> {{ $patient->city->country->name ?? '—' }}</p>
+                    <p><strong>@lang('site.registered_by')</strong>
                         {{ $patient->receptionist->user->name ?? 'Self / System' }}
                     </p>
-                    <p class="mb-0"><strong>Account:</strong>
+                    <p class="mb-0"><strong>@lang('site.account_label')</strong>
                         @if($patient->user->activation)
                             <span class="badge bg-success">@lang('site.active')</span>
                         @else
@@ -111,7 +111,7 @@
                                 <thead>
                                     <tr>
                                         <th>@lang('site.date')</th>
-                                        <th>Doctor</th>
+                                        <th>@lang('site.doctor')</th>
                                         <th>@lang('site.status')</th>
                                         <th>@lang('site.diagnosis')</th>
                                         <th></th>
@@ -148,14 +148,14 @@
                                             </td>
                                             <td>
                                                 @if($appointment->diagnosis)
-                                                    <span class="badge bg-success">✓ Recorded</span>
+                                                    <span class="badge bg-success">@lang('site.recorded')</span>
                                                 @else
                                                     <span class="badge bg-secondary">—</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 <a href="{{ route('admin.appointments.show', $appointment) }}"
-                                                   class="btn btn-sm btn-outline-primary">Open</a>
+                                                   class="btn btn-sm btn-outline-primary">@lang('site.open')</a>
                                             </td>
                                         </tr>
                                     @endforeach
