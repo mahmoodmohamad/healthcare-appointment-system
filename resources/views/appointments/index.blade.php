@@ -189,8 +189,8 @@
                                         <i class="bi bi-clock me-1" aria-hidden="true"></i>
 
                                         {{ $appointment->appointment_time
-                                            ? \Illuminate\Support\Carbon::parse($appointment->appointment_time)->format('h:i A')
-                                            : ($appointment->appointment_date?->format('h:i A') ?? '—') }}
+                                            ? \Illuminate\Support\Carbon::parse($appointment->appointment_time)->locale(app()->getLocale())->translatedFormat('h:i A')
+                                            : ($appointment->appointment_date?->locale(app()->getLocale())->translatedFormat('h:i A') ?? '—') }}
                                     </div>
                                 </td>
 
@@ -206,8 +206,13 @@
 
                                 <td data-label="{{ __('site.doctor') }}">
                                     <div class="person-name">
-                                        {{ $appointment->doctor?->user?->name
-                                            ? __('site.dr_prefix') . ' ' . $appointment->doctor->user->name
+                                        @php
+                                            $doctorName = $appointment->doctor?->user?->name;
+                                        @endphp
+                                        {{ $doctorName
+                                            ? (str_starts_with($doctorName, 'Dr. ') || str_starts_with($doctorName, 'د. ')
+                                                ? $doctorName
+                                                : __('site.dr_prefix') . ' ' . $doctorName)
                                             : __('site.unknown_doctor') }}
                                     </div>
 
