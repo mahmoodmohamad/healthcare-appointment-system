@@ -2,20 +2,20 @@
 @section('title', 'Patient Details')
 
 @section('content')
-<div class="container py-4">
+<div class="ui-page container-fluid py-4">
     <div class="row">
         <!-- Header -->
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Patient Profile</h2>
+            <div class="ui-page-head d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div><h1 class="ui-title">Patient Profile</h1><p class="ui-sub mb-0">{{ $patient->user->name }}</p></div>
                 <div>
-                    <a href="{{ route('patients.edit', $patient) }}" class="btn btn-warning me-2">
+                    <a href="{{ route('patients.edit', $patient) }}" class="ui-btn ui-btn-ghost me-2">
                         ✏️ Edit
                     </a>
-                    <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="btn btn-success me-2">
+                    <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="ui-btn ui-btn-primary me-2">
                         📅 Book Appointment
                     </a>
-                    <a href="{{ route('patients.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost">
                         ← Back
                     </a>
                 </div>
@@ -34,12 +34,12 @@
 
         <!-- Patient Info Card -->
         <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+            <div class="ui-card card mb-4">
+                <div class="ui-card-head card-header">
                     <h5 class="mb-0">Personal Information</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table table-borderless mb-0">
+                    <table class="ui-table table-borderless mb-0">
                         <tr>
                             <th>Name:</th>
                             <td>{{ $patient->user->name }}</td>
@@ -66,7 +66,7 @@
                         </tr>
                         <tr>
                             <th>Registered:</th>
-                            <td>{{ $patient->created_at->format('Y-m-d') }}</td>
+                            <td>{{ $patient->created_at->translatedFormat('Y-m-d') }}</td>
                         </tr>
                         @if($patient->receptionist)
                         <tr>
@@ -79,8 +79,8 @@
             </div>
 
             <!-- Statistics Card -->
-            <div class="card">
-                <div class="card-header bg-info text-white">
+            <div class="ui-card card">
+                <div class="ui-card-head card-header">
                     <h5 class="mb-0">Statistics</h5>
                 </div>
                 <div class="card-body">
@@ -108,17 +108,17 @@
 
         <!-- Upcoming Appointments -->
         <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <div class="ui-card card mb-4">
+                <div class="ui-card-head card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Upcoming Appointments</h5>
-                    <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="btn btn-light btn-sm">
+                    <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}" class="ui-btn ui-btn-ghost ui-btn-sm">
                         + New
                     </a>
                 </div>
                 <div class="card-body">
                     @if($upcomingAppointments->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-sm">
+                        <div class="ui-table-wrap">
+                            <table class="ui-table">
                                 <thead>
                                     <tr>
                                         <th>Date & Time</th>
@@ -130,23 +130,23 @@
                                 <tbody>
                                     @foreach($upcomingAppointments as $appointment)
                                     <tr>
-                                        <td>
-                                            {{ $appointment->appointment_date->format('Y-m-d') }}
+                                        <td data-label="Date & Time">
+                                            {{ $appointment->appointment_date->translatedFormat('Y-m-d') }}
                                             <br>
                                             <small class="text-muted">
                                                 {{ $appointment->appointment_time ?? $appointment->appointment_date->format('H:i') }}
                                             </small>
                                         </td>
-                                        <td>
+                                        <td data-label="Doctor">
                                             Dr. {{ $appointment->doctor->user->name }}
                                             <br>
                                             <small class="text-muted">{{ $appointment->doctor->specialization }}</small>
                                         </td>
-                                        <td>
-                                            <span class="badge bg-primary">{{ ucfirst($appointment->status) }}</span>
+                                        <td data-label="Status">
+                                            <span class="ui-badge ui-badge-scheduled">{{ ucfirst($appointment->status) }}</span>
                                         </td>
-                                        <td>
-                                            <a href="{{ route('appointments.show', $appointment) }}" class="btn btn-sm btn-info">
+                                        <td data-label="Action">
+                                            <a href="{{ route('appointments.show', $appointment) }}" class="ui-btn ui-btn-ghost ui-btn-sm">
                                                 View
                                             </a>
                                         </td>
