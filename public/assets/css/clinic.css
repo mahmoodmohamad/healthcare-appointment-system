@@ -820,3 +820,349 @@ html[lang="ar"] .navbar-nav .dropdown-menu {
     gap: .45rem;
     white-space: nowrap;
 }
+
+
+/* Admin dashboard — scoped components */
+.admin-dashboard {
+    --admin-panel-gap: 1.25rem;
+}
+
+.admin-dashboard-head {
+    align-items: center;
+}
+
+.admin-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    color: var(--ui-accent-dark);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-block-end: .45rem;
+}
+
+.admin-date-line {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    color: var(--ui-muted);
+    font-size: .84rem;
+    margin-block-start: .7rem;
+}
+
+.admin-dashboard-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem;
+}
+
+.admin-stat-card {
+    position: relative;
+    min-width: 0;
+    min-height: 6.3rem;
+    padding: 1rem;
+    border-radius: var(--ui-radius);
+    background: #fff;
+}
+
+.admin-stat-card:hover {
+    border-color: #bcd0d6;
+    box-shadow: 0 5px 18px rgba(23, 49, 59, .07);
+    color: inherit;
+}
+
+.admin-stat-copy {
+    display: grid;
+    gap: .35rem;
+    min-width: 0;
+}
+
+.admin-stat-copy .ui-stat-label {
+    color: var(--ui-muted);
+    line-height: 1.25;
+}
+
+.admin-stat-copy .ui-stat-number {
+    color: var(--ui-ink);
+}
+
+.admin-stat-arrow {
+    color: #9aadb3;
+    font-size: .8rem;
+    margin-inline-start: auto;
+    align-self: flex-start;
+}
+
+.admin-activity-section,
+.admin-insights-grid,
+.admin-leaderboards,
+.admin-recent-grid {
+    margin-block-start: 1.6rem;
+}
+
+.admin-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-end: .85rem;
+}
+
+.admin-section-heading h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.admin-section-heading p {
+    color: var(--ui-muted);
+    font-size: .84rem;
+    margin: .2rem 0 0;
+}
+
+.admin-live-dot {
+    width: .48rem;
+    height: .48rem;
+    border-radius: 50%;
+    background: var(--ui-green);
+}
+
+.admin-activity-card {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    height: 100%;
+    padding: 1rem 1.1rem;
+}
+
+.admin-activity-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.65rem;
+    height: 2.65rem;
+    border-radius: .75rem;
+    flex: none;
+    font-size: 1.1rem;
+}
+
+.admin-activity-card > div {
+    display: grid;
+    gap: .15rem;
+    min-width: 0;
+}
+
+.admin-activity-card > div span {
+    color: var(--ui-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.admin-activity-card strong {
+    color: var(--ui-ink);
+    font-size: 1.35rem;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-panel {
+    overflow: hidden;
+}
+
+.admin-panel .ui-card-head {
+    align-items: center;
+    padding-block-end: .75rem;
+}
+
+.admin-panel-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: .7rem;
+    background: var(--ui-accent-soft);
+    color: var(--ui-accent-dark);
+    flex: none;
+}
+
+.admin-chart-wrap {
+    position: relative;
+    height: 270px;
+    padding: .5rem 1.25rem 1.25rem;
+}
+
+.admin-status-chart-wrap {
+    position: relative;
+    height: 270px;
+    max-width: 390px;
+    margin-inline: auto;
+    padding: .5rem 1rem 1rem;
+}
+
+.admin-chart-empty {
+    border-block-start: 0;
+}
+
+.admin-list {
+    padding-block-end: .25rem;
+}
+
+.admin-person-row {
+    min-width: 0;
+}
+
+.admin-person-row:last-child {
+    border-block-end: 0;
+}
+
+.admin-person-row .ui-avatar {
+    font-size: 1rem;
+}
+
+.admin-avatar-blue {
+    background: var(--ui-blue-soft);
+    color: var(--ui-blue);
+}
+
+.admin-count-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    min-height: 2rem;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    background: var(--ui-accent-soft);
+    color: var(--ui-accent-dark);
+    font-size: .8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-row-chevron {
+    color: #9aadb3;
+    font-size: .8rem;
+}
+
+.admin-recent-table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: #f8fbfb;
+    min-width: 650px;
+}
+
+.admin-recent-table thead th {
+    padding: .8rem 1rem;
+    border-block-end: 1px solid var(--ui-line);
+    background: #f8fafb;
+    color: var(--ui-muted);
+    font-size: .76rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.admin-recent-table tbody td {
+    padding: .85rem 1rem;
+    border-color: var(--ui-line);
+    color: var(--ui-ink);
+    font-size: .86rem;
+}
+
+.admin-table-date,
+.admin-table-time {
+    display: block;
+    white-space: nowrap;
+}
+
+.admin-table-date {
+    font-weight: 700;
+}
+
+.admin-table-time {
+    color: var(--ui-muted);
+    font-size: .78rem;
+    margin-block-start: .15rem;
+}
+
+.admin-table-person {
+    display: inline-block;
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.admin-dashboard .ui-badge {
+    font-size: .74rem;
+}
+
+@media (max-width: 767.98px) {
+    .admin-dashboard-head {
+        align-items: flex-start;
+    }
+
+    .admin-dashboard-actions {
+        width: 100%;
+    }
+
+    .admin-dashboard-actions .ui-btn {
+        flex: 1 1 auto;
+    }
+
+    .admin-stat-card {
+        gap: .7rem;
+        padding: .85rem;
+    }
+
+    .admin-stat-card .ui-stat-icon {
+        width: 2.55rem;
+        height: 2.55rem;
+        font-size: 1.05rem;
+    }
+
+    .admin-stat-copy .ui-stat-number {
+        font-size: 1.45rem;
+    }
+
+    .admin-activity-card {
+        gap: .6rem;
+        padding: .8rem;
+    }
+
+    .admin-activity-icon {
+        width: 2.3rem;
+        height: 2.3rem;
+    }
+
+    .admin-activity-card strong {
+        font-size: 1.15rem;
+    }
+
+    .admin-chart-wrap,
+    .admin-status-chart-wrap {
+        height: 235px;
+    }
+}
+
+@media (max-width: 420px) {
+    .admin-dashboard .ui-stats {
+        gap: .65rem;
+    }
+
+    .admin-stat-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-stat-arrow {
+        display: none;
+    }
+
+    .admin-dashboard-actions .ui-btn {
+        font-size: .8rem;
+        padding-inline: .65rem;
+    }
+}
