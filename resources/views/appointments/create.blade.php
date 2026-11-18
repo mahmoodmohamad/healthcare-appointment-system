@@ -6,13 +6,13 @@
 @section('content')
 
 
-<div class="booking-page container-fluid py-4">
+<div class="ui-page booking-page container-fluid py-4">
 
     {{-- Header --}}
-    <div class="booking-header">
+    <div class="ui-page-head booking-header">
         <div>
-            <h1 class="page-title">Book New Appointment</h1>
-            <p class="page-subtitle">
+            <h1 class="ui-title page-title">Book New Appointment</h1>
+            <p class="ui-sub page-subtitle">
                 Schedule a patient visit by selecting a doctor, date and time.
             </p>
         </div>
@@ -51,7 +51,7 @@
         <div class="booking-layout">
 
             {{-- Main Form --}}
-            <div class="booking-card">
+            <div class="ui-card booking-card">
 
                 <div class="card-top">
                     <h2>Appointment Information</h2>
@@ -77,7 +77,7 @@
 
                                 <select name="patient_id"
                                         id="patient_id"
-                                        class="form-select @error('patient_id') is-invalid @enderror"
+                                        class="ui-input form-select @error('patient_id') is-invalid @enderror"
                                         required>
                                     <option value="">Choose a patient</option>
 
@@ -120,7 +120,7 @@
 
                                 <select name="doctor_id"
                                         id="doctor_id"
-                                        class="form-select @error('doctor_id') is-invalid @enderror"
+                                        class="ui-input form-select @error('doctor_id') is-invalid @enderror"
                                         required>
                                     <option value="">Select a doctor</option>
 
@@ -166,7 +166,7 @@
                                     <input type="date"
                                            name="appointment_date"
                                            id="appointment_date"
-                                           class="form-control @error('appointment_date') is-invalid @enderror"
+                                           class="ui-input form-control @error('appointment_date') is-invalid @enderror"
                                            value="{{ old('appointment_date') }}"
                                            min="{{ now()->toDateString() }}"
                                            required>
@@ -187,7 +187,7 @@
 
                                     <select name="appointment_time"
                                             id="appointment_time"
-                                            class="form-select @error('appointment_time') is-invalid @enderror"
+                                            class="ui-input form-select @error('appointment_time') is-invalid @enderror"
                                             required>
 
                                         <option value="">Select a time</option>
@@ -260,7 +260,7 @@
                                   id="notes"
                                   rows="3"
                                   maxlength="1000"
-                                  class="form-control @error('notes') is-invalid @enderror"
+                                  class="ui-input form-control @error('notes') is-invalid @enderror"
                                   placeholder="Add any relevant administrative notes...">{{ old('notes') }}</textarea>
 
                         @error('notes')
@@ -275,12 +275,12 @@
                     {{-- Actions --}}
                     <div class="form-actions">
                         <a href="{{ route('appointments.index') }}"
-                           class="btn btn-light">
+                           class="ui-btn ui-btn-ghost btn btn-light">
                             Cancel
                         </a>
 
                         <button type="submit"
-                                class="btn btn-primary"
+                                class="ui-btn ui-btn-primary btn btn-primary"
                                 id="submitAppointment">
                             <i class="bi bi-calendar-check me-2"
                                aria-hidden="true"></i>
@@ -292,7 +292,7 @@
             </div>
 
             {{-- Booking Summary --}}
-            <aside class="summary-card" aria-labelledby="summary-heading">
+            <aside class="ui-card summary-card" aria-labelledby="summary-heading">
 
                 <div class="summary-placeholder">
                     <i class="bi bi-calendar2-check" aria-hidden="true"></i>
