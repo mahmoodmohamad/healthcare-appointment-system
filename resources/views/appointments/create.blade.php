@@ -30,26 +30,26 @@
         'review' => 'يرجى مراجعة تفاصيل الموعد قبل التأكيد. سيتحقق النظام من الوقت المحدد.',
         'booking' => 'جارٍ الحجز...',
     ] : [
-        'intro' => '{{ $bookingCopy['intro'] }}',
-        'back' => '{{ $bookingCopy['back'] }}',
-        'unknown_patient' => '{{ $bookingCopy['unknown_patient'] }}',
-        'unknown_doctor' => '{{ $bookingCopy['unknown_doctor'] }}',
-        'patient_hint' => '{{ $bookingCopy['patient_hint'] }}',
-        'doctor_section' => '{{ $bookingCopy['doctor_section'] }}',
-        'choose_doctor' => '{{ $bookingCopy['choose_doctor'] }}',
-        'doctor_hint' => '{{ $bookingCopy['doctor_hint'] }}',
-        'date_time' => '{{ $bookingCopy['date_time'] }}',
-        'morning' => '{{ $bookingCopy['morning'] }}',
-        'afternoon' => '{{ $bookingCopy['afternoon'] }}',
+        'intro' => 'Schedule a patient visit by selecting a doctor, date and time.',
+        'back' => 'Back to Appointments',
+        'unknown_patient' => 'Unknown patient',
+        'unknown_doctor' => 'Unknown doctor',
+        'patient_hint' => 'Select the patient who will attend this appointment.',
+        'doctor_section' => 'Doctor Selection',
+        'choose_doctor' => 'Choose Doctor',
+        'doctor_hint' => 'Choose the doctor responsible for this visit.',
+        'date_time' => 'Date & Time',
+        'morning' => 'Morning',
+        'afternoon' => 'Afternoon',
         'availability_hint' => 'Available times depend on the doctor schedule. The booking will be validated when submitted.',
-        'additional' => '{{ $bookingCopy['additional'] }}',
-        'notes_label' => '{{ $bookingCopy['notes_label'] }}',
-        'notes_hint' => '{{ $bookingCopy['notes_hint'] }}',
-        'confirm' => '{{ $bookingCopy['confirm'] }}',
-        'summary' => '{{ $bookingCopy['summary'] }}',
-        'summary_intro' => '{{ $bookingCopy['summary_intro'] }}',
-        'not_selected' => '{{ $bookingCopy['not_selected'] }}',
-        'not_specified' => '{{ $bookingCopy['not_specified'] }}',
+        'additional' => 'Additional Information',
+        'notes_label' => 'Appointment Notes',
+        'notes_hint' => 'Keep notes relevant to scheduling and appointment administration.',
+        'confirm' => 'Confirm Appointment',
+        'summary' => 'Booking Summary',
+        'summary_intro' => 'Your appointment details will appear here as you complete the form.',
+        'not_selected' => 'Not selected',
+        'not_specified' => 'Not specified',
         'review' => 'Please review the appointment details before confirming. The system will validate the selected time slot.',
         'booking' => 'Booking...',
     ];
@@ -63,13 +63,13 @@
         <div>
             <h1 class="ui-title page-title">@lang('site.book_new_appointment')</h1>
             <p class="ui-sub page-subtitle">
-                Schedule a patient visit by selecting a doctor, date and time.
+                {{ $bookingCopy['intro'] }}
             </p>
         </div>
 
         <a href="{{ route('appointments.index') }}" class="back-link">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            Back to Appointments
+            {{ $bookingCopy['back'] }}
         </a>
     </div>
 
@@ -136,7 +136,7 @@
                                             data-name="{{ $patient->user?->name ?? '' }}"
                                             data-national-id="{{ $patient->national_id ?? '' }}"
                                             @selected(old('patient_id') == $patient->id)>
-                                            {{ $patient->user?->name ?? 'Unknown patient' }}
+                                            {{ $patient->user?->name ?? '{{ $bookingCopy['unknown_patient'] }}' }}
                                             - {{ $patient->national_id }}
                                         </option>
                                     @endforeach
@@ -148,7 +148,7 @@
                             @enderror
 
                             <div class="form-hint">
-                                Select the patient who will attend this appointment.
+                                {{ $bookingCopy['patient_hint'] }}
                             </div>
                         </div>
                     </section>
@@ -157,12 +157,12 @@
                     <section class="form-section">
                         <h3 class="section-title">
                             <span class="section-number">02</span>
-                            Doctor Selection
+                            {{ $bookingCopy['doctor_section'] }}
                         </h3>
 
                         <div>
                             <label for="doctor_id" class="form-label">
-                                Choose Doctor <span class="required-mark">*</span>
+                                {{ $bookingCopy['choose_doctor'] }} <span class="required-mark">*</span>
                             </label>
 
                             <div class="field-icon">
@@ -179,7 +179,7 @@
                                             data-name="{{ $doctor->user?->name ?? '' }}"
                                             data-specialization="{{ $doctor->specialization ?? '' }}"
                                             @selected(old('doctor_id') == $doctor->id)>
-                                            Dr. {{ $doctor->user?->name ?? 'Unknown doctor' }}
+                                            Dr. {{ $doctor->user?->name ?? '{{ $bookingCopy['unknown_doctor'] }}' }}
                                             - {{ $doctor->specialization }}
                                         </option>
                                     @endforeach
@@ -191,7 +191,7 @@
                             @enderror
 
                             <div class="form-hint">
-                                Choose the doctor responsible for this visit.
+                                {{ $bookingCopy['doctor_hint'] }}
                             </div>
                         </div>
                     </section>
@@ -200,7 +200,7 @@
                     <section class="form-section">
                         <h3 class="section-title">
                             <span class="section-number">03</span>
-                            Date & Time
+                            {{ $bookingCopy['date_time'] }}
                         </h3>
 
                         <div class="row g-3">
@@ -242,7 +242,7 @@
 
                                         <option value="">@lang('site.select_time')</option>
 
-                                        <optgroup label="Morning">
+                                        <optgroup label="{{ $bookingCopy['morning'] }}">
                                             @for($hour = 9; $hour < 12; $hour++)
                                                 @foreach(['00', '30'] as $minute)
                                                     @php
@@ -257,7 +257,7 @@
                                             @endfor
                                         </optgroup>
 
-                                        <optgroup label="Afternoon">
+                                        <optgroup label="{{ $bookingCopy['afternoon'] }}">
                                             @for($hour = 14; $hour < 17; $hour++)
                                                 @foreach(['00', '30'] as $minute)
                                                     @php
@@ -287,8 +287,7 @@
                             <div>
                                 <strong>@lang('site.appointment_availability')</strong>
                                 <span>
-                                    Available times depend on the doctor's schedule.
-                                    The booking will be validated when submitted.
+                                    {{ $bookingCopy['availability_hint'] }}
                                 </span>
                             </div>
                         </div>
@@ -298,12 +297,12 @@
                     <section class="form-section">
                         <h3 class="section-title">
                             <span class="section-number">04</span>
-                            Additional Information
+                            {{ $bookingCopy['additional'] }}
                             <span class="text-muted fw-normal small">@lang('site.optional_parenthetical')</span>
                         </h3>
 
                         <label for="notes" class="form-label">
-                            Appointment Notes
+                            {{ $bookingCopy['notes_label'] }}
                         </label>
 
                         <textarea name="notes"
@@ -318,7 +317,7 @@
                         @enderror
 
                         <div class="form-hint">
-                            Keep notes relevant to scheduling and appointment administration.
+                            {{ $bookingCopy['notes_hint'] }}
                         </div>
                     </section>
 
@@ -334,14 +333,14 @@
                                 id="submitAppointment">
                             <i class="bi bi-calendar-check me-2"
                                aria-hidden="true"></i>
-                            Confirm Appointment
+                            {{ $bookingCopy['confirm'] }}
                         </button>
                     </div>
 
                 </div>
             </div>
 
-            {{-- Booking Summary --}}
+            {{-- {{ $bookingCopy['summary'] }} --}}
             <aside class="ui-card summary-card" aria-labelledby="summary-heading">
 
                 <div class="summary-placeholder">
@@ -353,13 +352,13 @@
                 </h2>
 
                 <p class="summary-description">
-                    Your appointment details will appear here as you complete the form.
+                    {{ $bookingCopy['summary_intro'] }}
                 </p>
 
                 <div class="summary-item">
                     <div class="summary-label">@lang('site.patient')</div>
                     <div class="summary-value" id="summaryPatient">
-                        Not selected
+                        {{ $bookingCopy['not_selected'] }}
                     </div>
                 </div>
 
@@ -394,8 +393,7 @@
                 <div class="summary-footer">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
                     <p>
-                        Please review the appointment details before confirming.
-                        The system will validate the selected time slot.
+                        {{ $bookingCopy['review'] }}
                     </p>
                 </div>
 
@@ -422,6 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const summaryDate = document.getElementById('summaryDate');
     const summaryTime = document.getElementById('summaryTime');
     const copy = @json($bookingCopy);
+    const copy = @json($bookingCopy);
 
     function selectedOption(select) {
         return select.options[select.selectedIndex];
@@ -438,8 +437,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         summaryDoctor.textContent =
             doctorSelect.value && doctorOption
-                ? 'Dr. ' + (doctorOption.dataset.name || doctorOption.textContent.trim())
-                : 'Not selected';
+                ? '{{ __('site.doctor') }} ' + (doctorOption.dataset.name || doctorOption.textContent.trim())
+                : copy.not_selected;
 
         summarySpecialty.textContent =
             doctorSelect.value && doctorOption
