@@ -47,14 +47,12 @@
     $doctor = $appointment->doctor;
     $diagnosis = $appointment->diagnosis;
 
-    $canCancel = $status === 'scheduled' && (
-        $user?->isAdmin()
-        || (
-            $user?->isReceptionist()
-            && $user->receptionist !== null
-            && (int) $appointment->receptionist_id === (int) $user->receptionist->id
-        )
-    );
+    $canReschedule = $status === 'scheduled'
+        && $user?->isReceptionist()
+        && $user->receptionist !== null
+        && (int) $appointment->receptionist_id === (int) $user->receptionist->id;
+
+    $canCancel = $canReschedule;
 @endphp
 
 <div class="ui-page appointment-details container-fluid py-4">
@@ -415,7 +413,7 @@
     @endif
 
     {{-- @lang('site.appointment_actions') --}}
-    @if($canCancel)
+    @if($canCancel || $canReschedule)
 
         <section class="ui-card panel actions-card">
 
@@ -425,6 +423,14 @@
                 Manage this appointment. Cancellation cannot be treated as a normal edit.
             </p>
 
+            @if($canReschedule)
+                <a href="{{ route('appointments.edit', $appointment) }}" class="ui-btn ui-btn-primary mb-3">
+                    <i class="bi bi-calendar2-week me-2" aria-hidden="true"></i>
+                    @lang('site.reschedule_appointment')
+                </a>
+            @endif
+
+            @if($canCancel)
             <form action="{{ route('appointments.destroy', $appointment) }}"
                   method="POST"
                   onsubmit="return confirm('Are you sure you want to cancel appointment #{{ $appointment->id }}? This action cannot be undone.')">
@@ -438,6 +444,7 @@
                 </button>
 
             </form>
+            @endif
 
             <div class="metadata">
                 <i class="bi bi-shield-lock me-1" aria-hidden="true"></i>
