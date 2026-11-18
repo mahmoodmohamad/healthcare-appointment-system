@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Appointment Details')
+@section('title', __('site.appointment_details'))
 
 @section('content')
 @php
@@ -19,22 +19,22 @@
 
     $statusConfig = match ($status) {
         'scheduled' => [
-            'label' => 'Scheduled',
+            'label' => __('site.scheduled'),
             'class' => 'ui-badge-scheduled status-scheduled',
             'icon' => 'bi-calendar-check',
         ],
         'completed' => [
-            'label' => 'Completed',
+            'label' => __('site.completed'),
             'class' => 'ui-badge-completed status-completed',
             'icon' => 'bi-check-circle',
         ],
         'cancelled' => [
-            'label' => 'Cancelled',
+            'label' => __('site.cancelled'),
             'class' => 'ui-badge-cancelled status-cancelled',
             'icon' => 'bi-x-circle',
         ],
         default => [
-            'label' => ucfirst($status ?? 'Unknown'),
+            'label' => __('site.unknown'),
             'class' => 'ui-badge-pending status-unknown',
             'icon' => 'bi-info-circle',
         ],
