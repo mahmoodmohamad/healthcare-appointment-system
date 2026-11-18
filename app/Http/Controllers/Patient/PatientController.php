@@ -139,7 +139,6 @@ class PatientController extends Controller
             'upcoming_appointments' => $own()->where('status', 'scheduled')
                                              ->whereDate('appointment_date', '>=', today())->count(),
             'completed_appointments' => $own()->where('status', 'completed')->count(),
-            'total_diagnoses' => $patient->diagnoses()->count(),
         ];
 
         $upcomingAppointments = $own()
