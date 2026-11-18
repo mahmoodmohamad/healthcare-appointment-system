@@ -21,13 +21,7 @@ return new class () extends Migration {
             default => "IF(status = 'cancelled', NULL, CONCAT(doctor_id, '-', DATE(appointment_date), '-', appointment_time))",
         };
 
-        $patientSlotExpression = match ($driver) {
-            'sqlite' => "CASE WHEN status = 'cancelled' THEN NULL ELSE CAST(patient_id AS TEXT) || '-' || date(appointment_date) || '-' || time(appointment_time) END",
-            'pgsql' => "CASE WHEN status = 'cancelled' THEN NULL ELSE patient_id::text || '-' || appointment_date::date::text || '-' || appointment_time::text END",
-            default => "IF(status = 'cancelled', NULL, CONCAT(patient_id, '-', DATE(appointment_date), '-', appointment_time))",
-        };
-
-        Schema::create('appointments', function (Blueprint $table) use ($slotExpression, $patientSlotExpression) {
+        Schema::create('appointments', function (Blueprint $table) use ($slotExpression) {
             $table->id();
             $table->foreignId('patient_id')->constrained()->restrictOnDelete();
             $table->foreignId('doctor_id')->constrained()->restrictOnDelete();
@@ -42,8 +36,6 @@ return new class () extends Migration {
             $table->text('notes')->nullable();
             $table->string('slot_lock', 80)->nullable()->unique()
                    ->storedAs($slotExpression);
-            $table->string('patient_slot_lock', 80)->nullable()->unique()
-                   ->storedAs($patientSlotExpression);
             $table->index(['doctor_id', 'appointment_date']);
             $table->index('patient_id');
             $table->index('receptionist_id');
