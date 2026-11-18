@@ -11,6 +11,7 @@
         'back' => 'العودة إلى المواعيد',
         'unknown_patient' => 'مريض غير معروف',
         'unknown_doctor' => 'طبيب غير معروف',
+        'doctor_prefix' => 'د.',
         'patient_hint' => 'اختر المريض الذي سيحضر هذا الموعد.',
         'doctor_section' => 'اختيار الطبيب',
         'choose_doctor' => 'اختر الطبيب',
@@ -34,6 +35,7 @@
         'back' => 'Back to Appointments',
         'unknown_patient' => 'Unknown patient',
         'unknown_doctor' => 'Unknown doctor',
+        'doctor_prefix' => 'Dr.',
         'patient_hint' => 'Select the patient who will attend this appointment.',
         'doctor_section' => 'Doctor Selection',
         'choose_doctor' => 'Choose Doctor',
@@ -179,7 +181,7 @@
                                             data-name="{{ $doctor->user?->name ?? '' }}"
                                             data-specialization="{{ $doctor->specialization ?? '' }}"
                                             @selected(old('doctor_id') == $doctor->id)>
-                                            Dr. {{ $doctor->user?->name ?? $bookingCopy['unknown_doctor'] }}
+                                            {{ $bookingCopy['doctor_prefix'] }} {{ $doctor->user?->name ?? $bookingCopy['unknown_doctor'] }}
                                             - {{ $doctor->specialization }}
                                         </option>
                                     @endforeach
@@ -436,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         summaryDoctor.textContent =
             doctorSelect.value && doctorOption
-                ? '{{ __('site.doctor') }} ' + (doctorOption.dataset.name || doctorOption.textContent.trim())
+                ? copy.doctor_prefix + ' ' + (doctorOption.dataset.name || doctorOption.textContent.trim())
                 : copy.not_selected;
 
         summarySpecialty.textContent =
@@ -447,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (dateInput.value) {
             const date = new Date(dateInput.value + 'T00:00:00');
 
-            summaryDate.textContent = date.toLocaleDateString(undefined, {
+            summaryDate.textContent = date.toLocaleDateString(document.documentElement.lang || 'en', {
                 weekday: 'short',
                 year: 'numeric',
                 month: 'short',
@@ -463,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             time.setHours(Number(hours), Number(minutes), 0, 0);
 
-            summaryTime.textContent = time.toLocaleTimeString(undefined, {
+            summaryTime.textContent = time.toLocaleTimeString(document.documentElement.lang || 'en', {
                 hour: '2-digit',
                 minute: '2-digit'
             });
