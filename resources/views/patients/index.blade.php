@@ -30,7 +30,7 @@
             </p>
         </div>
         <a href="{{ route('patients.create') }}" class="btn ui-btn ui-btn-primary d-inline-flex align-items-center gap-2 px-3 py-2">
-            <svg class="ui-icon" aria-hidden="true"><use href="#i-plus"/></svg>
+            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg>
             Register patient
         </a>
     </div>
@@ -49,7 +49,7 @@
             <div class="col-12 col-md-6 col-lg-5">
                 <label for="search" class="form-label">Search patients</label>
                 <div class="ui-search">
-                    <svg class="ui-icon" aria-hidden="true"><use href="#i-search"/></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
                     <input type="search" id="search" name="search" class="form-control ui-input"
                            placeholder="Name, national ID, phone or email"
                            value="{{ request('search') }}" autocomplete="off">
@@ -80,7 +80,7 @@
                     <a class="ui-tab" href="{{ route('patients.index', request()->except('search', 'page')) }}"
                        aria-label="Remove search filter: {{ request('search') }}">
                         “{{ \Illuminate\Support\Str::limit(request('search'), 24) }}”
-                        <svg class="ui-icon" aria-hidden="true"><use href="#i-x"/></svg>
+                        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
                     </a>
                 @endif
                 @if(request('city_id'))
@@ -88,7 +88,7 @@
                     <a class="ui-tab" href="{{ route('patients.index', request()->except('city_id', 'page')) }}"
                        aria-label="Remove city filter">
                         {{ $activeCity->name ?? 'City' }}
-                        <svg class="ui-icon" aria-hidden="true"><use href="#i-x"/></svg>
+                        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
                     </a>
                 @endif
             </div>
@@ -132,13 +132,13 @@
                                 <td  data-label="Contact">
                                     @if($patient->phone)
                                         <div class="d-flex align-items-center gap-2">
-                                            <svg class="ui-icon ui-meta" aria-hidden="true"><use href="#i-phone"/></svg>
+                                            <svg class="ui-icon ui-meta" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
                                             <a href="tel:{{ $patient->phone }}">{{ $patient->phone }}</a>
                                         </div>
                                     @endif
                                     @if($email)
                                         <div class="d-flex align-items-center gap-2 ui-meta">
-                                            <svg class="ui-icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                                            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>
                                             <a href="mailto:{{ $email }}">{{ $email }}</a>
                                         </div>
                                     @endif
@@ -150,7 +150,7 @@
                                 <td  data-label="City">
                                     @if($patient->city)
                                         <span class="ui-chip">
-                                            <svg class="ui-icon" aria-hidden="true"><use href="#i-pin"/></svg>
+                                            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
                                             {{ $patient->city->name }}
                                         </span>
                                     @else
@@ -170,16 +170,16 @@
                                         <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}"
                                            class="btn ui-btn ui-btn-ghost btn-sm d-inline-flex align-items-center gap-2 px-3 py-2"
                                            aria-label="Book appointment for {{ $name }}">
-                                            <svg class="ui-icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+                                            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>
                                             Book
                                         </a>
                                         <a href="{{ route('patients.show', $patient) }}" class="ui-btn ui-btn-ghost ui-btn-sm"
                                            title="View details" aria-label="View details for {{ $name }}">
-                                            <svg class="ui-icon" aria-hidden="true"><use href="#i-eye"/></svg>
+                                            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg>
                                         </a>
                                         <a href="{{ route('patients.edit', $patient) }}" class="ui-btn ui-btn-ghost ui-btn-sm"
                                            title="Edit patient" aria-label="Edit {{ $name }}">
-                                            <svg class="ui-icon" aria-hidden="true"><use href="#i-edit"/></svg>
+                                            <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-edit"/></svg>
                                         </a>
                                     </div>
                                 </td>
@@ -204,7 +204,7 @@
             {{-- Empty state --}}
             <div class="ui-empty">
                 <div class="ui-empty-icon ui-tone-teal" aria-hidden="true">
-                    <svg class="ui-icon"><use href="#i-users"/></svg>
+                    <svg class="ui-icon" viewBox="0 0 24 24"><use href="#i-users"/></svg>
                 </div>
                 @if(request('search') || request('city_id'))
                     <h3>No patients match your filters</h3>
@@ -214,7 +214,7 @@
                     <h3>No patients yet</h3>
                     <p>Register your first patient to start booking appointments.</p>
                     <a href="{{ route('patients.create') }}" class="btn ui-btn ui-btn-primary d-inline-flex align-items-center gap-2">
-                        <svg class="ui-icon" aria-hidden="true"><use href="#i-plus"/></svg>
+                        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg>
                         Register first patient
                     </a>
                 @endif
