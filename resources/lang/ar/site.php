@@ -473,4 +473,6 @@ return [
     'open_appointments' => 'فتح المواعيد',
     'view_statistics' => 'عرض الإحصائيات',
     'admin_dashboard_welcome' => 'تابع نشاط العيادة والمستخدمين والمواعيد من مكان واحد.',
+    'matching_filters' => 'مطابقة للفلاتر المحددة',
+    'view_details' => 'عرض التفاصيل',
 ];
