@@ -166,21 +166,21 @@
                                 };
 
                                 $statusLabel = match ($status) {
-                                    'scheduled' => '@lang('site.scheduled')',
+                                    'scheduled' => '__('site.scheduled'),
                                     'completed' => 'Completed',
-                                    'cancelled' => '@lang('site.cancelled')',
+                                    'cancelled' => __('site.cancelled'),
                                     default => ucfirst($status ?? 'Unknown'),
                                 };
                             @endphp
 
                             <tr>
-                                <td data-label="{{ __('@lang('site.id')') }}">
+                                <td data-label="{{ __('site.id') }}">
                                     <span class="appointment-id">
                                         #{{ $appointment->id }}
                                     </span>
                                 </td>
 
-                                <td data-label="{{ __('@lang('site.date_time')') }}">
+                                <td data-label="{{ __('site.date_time') }}">
                                     <div class="date-main">
                                         {{ $appointment->appointment_date?->locale(app()->getLocale())->translatedFormat('M d, Y') ?? '—' }}
                                     </div>
@@ -194,35 +194,35 @@
                                     </div>
                                 </td>
 
-                                <td data-label="{{ __('@lang('site.patient')') }}">
+                                <td data-label="{{ __('site.patient') }}">
                                     <div class="person-name">
-                                        {{ $appointment->patient?->user?->name ?? '@lang('site.unknown_patient')' }}
+                                        {{ $appointment->patient?->user?->name ?? __('site.unknown_patient') }}
                                     </div>
 
                                     <div class="person-meta">
-                                        @lang('site.patient') @lang('site.id'): {{ $appointment->patient_id }}
+                                        @lang('site.patient_id'): {{ $appointment->patient_id }}
                                     </div>
                                 </td>
 
-                                <td data-label="{{ __('@lang('site.doctor')') }}">
+                                <td data-label="{{ __('site.doctor') }}">
                                     <div class="person-name">
                                         {{ $appointment->doctor?->user?->name
-                                            ? 'Dr. ' . $appointment->doctor->user->name
-                                            : '@lang('site.unknown_doctor')' }}
+                                            ? __('site.dr_prefix') . ' ' . $appointment->doctor->user->name
+                                            : __('site.unknown_doctor') }}
                                     </div>
 
                                     <div class="person-meta">
-                                        {{ $appointment->doctor?->specialization ?? '@lang('site.no_specialization')' }}
+                                        {{ $appointment->doctor?->specialization ?? __('site.no_specialization') }}
                                     </div>
                                 </td>
 
-                                <td data-label="{{ __('Status') }}">
+                                <td data-label="{{ __('site.status') }}">
                                     <span class="ui-badge ui-badge-{{ $status }} status-badge {{ $statusClass }}">
                                         {{ $statusLabel }}
                                     </span>
                                 </td>
 
-                                <td data-label="{{ __('@lang('site.actions')') }}">
+                                <td data-label="{{ __('site.actions') }}">
                                     <div class="action-group">
                                         <a href="{{ route('appointments.show', $appointment) }}"
                                            class="action-btn action-view"
