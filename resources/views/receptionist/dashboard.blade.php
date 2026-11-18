@@ -208,7 +208,7 @@
             <section class="ui-card" aria-labelledby="ui-row">
                 <div class="ui-card-head">
                     <div>
-                        <h2 class="ui-card-title" id="ui-row">Today at a glance</h2>
+                        <h2 class="ui-card-title" id="rd-overview">Today at a glance</h2>
                         <p class="ui-meta mb-0">Your appointment activity</p>
                     </div>
                 </div>
