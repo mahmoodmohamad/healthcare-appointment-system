@@ -78,6 +78,12 @@ class DoctorController extends Controller
 
     public function createDiagnosis(Appointment $appointment): View|RedirectResponse
     {
+        abort_unless($appointment->status === Appointment::SCHEDULED, 403);
+
+        if ($appointment->full_date_time?->isFuture()) {
+            abort(422, 'A diagnosis cannot be recorded before the appointment time.');
+        }
+
         if ($appointment->diagnosis) {
             return redirect()
                 ->route('doctor.appointments.show', $appointment)
@@ -93,6 +99,12 @@ class DoctorController extends Controller
         Request $request,
         Appointment $appointment
     ): RedirectResponse {
+        abort_unless($appointment->status === Appointment::SCHEDULED, 403);
+
+        if ($appointment->full_date_time?->isFuture()) {
+            abort(422, 'A diagnosis cannot be recorded before the appointment time.');
+        }
+
         $data = $request->validate([
             'symptoms' => ['required', 'string'],
             'diagnosis' => ['required', 'string'],
