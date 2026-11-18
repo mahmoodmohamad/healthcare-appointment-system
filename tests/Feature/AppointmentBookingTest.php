@@ -178,4 +178,18 @@ class AppointmentBookingTest extends TestCase
         $this->assertSame($originalDoctorId, $appointment->fresh()->doctor_id);
     }
 
+
+    public function test_appointment_seeder_is_idempotent_when_run_twice(): void
+    {
+        Doctor::factory()->create();
+        Patient::factory()->count(2)->create();
+
+        $this->seed(AppointmentSeeder::class);
+        $countAfterFirstRun = Appointment::query()->count();
+
+        $this->seed(AppointmentSeeder::class);
+
+        $this->assertSame($countAfterFirstRun, Appointment::query()->count());
+    }
+
 }
