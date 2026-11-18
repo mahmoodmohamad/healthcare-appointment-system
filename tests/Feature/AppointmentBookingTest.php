@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Receptionist;
 use App\Models\User;
+use Database\Seeders\AppointmentSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
