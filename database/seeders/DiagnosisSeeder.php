@@ -1,4 +1,3 @@
-
 <?php
 
 namespace Database\Seeders;
@@ -11,17 +10,21 @@ class DiagnosisSeeder extends Seeder
 {
     public function run(): void
     {
-        $appointments = Appointment::all();
+        $appointments = Appointment::query()
+            ->where('status', Appointment::COMPLETED)
+            ->get();
 
         foreach ($appointments as $appointment) {
-            Diagnosis::create([
-    'appointment_id' => $appointment->id,
-    'symptoms'       => 'Headache and mild fever',
-    'diagnosis'      => 'Viral infection',
-    'description'    => 'Rest and fluids recommended.',
-    'prescription'   => 'Paracetamol 500mg',
-    'notes'          => null,
-]);
+            Diagnosis::updateOrCreate(
+                ['appointment_id' => $appointment->id],
+                [
+                    'symptoms' => 'Headache and mild fever',
+                    'diagnosis' => 'Viral infection',
+                    'description' => 'Rest and fluids recommended.',
+                    'prescription' => 'Paracetamol 500mg',
+                    'notes' => null,
+                ]
+            );
         }
     }
 }
