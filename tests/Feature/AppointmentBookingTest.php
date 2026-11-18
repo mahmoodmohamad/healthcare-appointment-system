@@ -123,4 +123,59 @@ class AppointmentBookingTest extends TestCase
         $this->assertSame($originalPasswordHash, $patient->user->fresh()->password);
     }
 
+
+    public function test_receptionist_can_reschedule_their_own_appointment(): void
+    {
+        $receptionistUser = User::factory()->create();
+        $receptionist = Receptionist::factory()->for($receptionistUser)->create();
+        $appointment = Appointment::factory()->create([
+            'receptionist_id' => $receptionist->id,
+            'appointment_date' => now()->addDays(2)->startOfDay(),
+            'appointment_time' => '10:00:00',
+            'status' => Appointment::SCHEDULED,
+        ]);
+        $newDoctor = Doctor::factory()->create();
+        $newDate = now()->addDays(4)->toDateString();
+
+        $this->actingAs($receptionistUser)
+            ->put(route('appointments.update', $appointment), [
+                'doctor_id' => $newDoctor->id,
+                'appointment_date' => $newDate,
+                'appointment_time' => '11:30',
+                'notes' => 'Rescheduled by receptionist',
+            ])
+            ->assertRedirect(route('appointments.show', $appointment));
+
+        $appointment->refresh();
+
+        $this->assertSame($newDoctor->id, $appointment->doctor_id);
+        $this->assertSame($newDate, $appointment->appointment_date->toDateString());
+        $this->assertSame('11:30:00', substr((string) $appointment->appointment_time, 0, 8));
+        $this->assertSame('Rescheduled by receptionist', $appointment->notes);
+    }
+
+    public function test_receptionist_cannot_reschedule_another_receptionists_appointment(): void
+    {
+        $ownerUser = User::factory()->create();
+        $owner = Receptionist::factory()->for($ownerUser)->create();
+        $otherUser = User::factory()->create();
+        Receptionist::factory()->for($otherUser)->create();
+        $appointment = Appointment::factory()->create([
+            'receptionist_id' => $owner->id,
+            'status' => Appointment::SCHEDULED,
+        ]);
+        $originalDoctorId = $appointment->doctor_id;
+        $newDoctor = Doctor::factory()->create();
+
+        $this->actingAs($otherUser)
+            ->put(route('appointments.update', $appointment), [
+                'doctor_id' => $newDoctor->id,
+                'appointment_date' => now()->addDays(5)->toDateString(),
+                'appointment_time' => '12:00',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame($originalDoctorId, $appointment->fresh()->doctor_id);
+    }
+
 }
