@@ -161,7 +161,7 @@ Route::middleware(['auth', 'active', 'role:receptionist'])
             ->name('appointments.calendar');
 
         Route::resource('appointments', AppointmentController::class)
-            ->only(['index', 'create', 'store', 'show', 'update', 'destroy']);
+            ->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
 
         // Patients (no destroy, no medical history for receptionists).
         // Authorization is enforced by PatientPolicy via authorizeResource().
