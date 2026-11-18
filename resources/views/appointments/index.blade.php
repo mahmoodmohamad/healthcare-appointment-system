@@ -5,26 +5,26 @@
 
 @section('content')
 
-<div class="appointments-page container-fluid py-4">
+<div class="ui-page appointments-page container-fluid py-4">
 
     {{-- Page Header --}}
-    <div class="page-header">
+    <div class="ui-page-head page-header">
         <div>
-            <h1 class="page-title">Appointments</h1>
-            <p class="page-subtitle">
+            <h1 class="ui-title page-title">Appointments</h1>
+            <p class="ui-sub page-subtitle">
                 Manage patient appointments and track their status.
             </p>
         </div>
 
         <div class="header-actions d-flex align-items-center gap-2">
             <a href="{{ route('appointments.calendar') }}"
-               class="btn btn-light">
+               class="ui-btn ui-btn-ghost btn btn-light">
                 <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
                 Calendar View
             </a>
 
             <a href="{{ route('appointments.create') }}"
-               class="btn btn-primary">
+               class="ui-btn ui-btn-primary btn btn-primary">
                 <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
                 New Appointment
             </a>
@@ -58,7 +58,7 @@
     @endif
 
     {{-- Filters --}}
-    <section class="panel filter-panel" aria-labelledby="filters-heading">
+    <section class="ui-card panel filter-panel" aria-labelledby="filters-heading">
         <h2 class="section-heading" id="filters-heading">
             <i class="bi bi-funnel me-2 text-primary" aria-hidden="true"></i>
             Filter Appointments
@@ -70,7 +70,7 @@
                 <div class="col-12 col-md-4 col-lg-3">
                     <label for="status" class="form-label">Appointment Status</label>
 
-                    <select name="status" id="status" class="form-select">
+                    <select name="status" id="status" class="ui-input form-select">
                         <option value="">All statuses</option>
 
                         <option value="scheduled"
@@ -96,7 +96,7 @@
                     <input type="date"
                            name="date"
                            id="date"
-                           class="form-control"
+                           class="ui-input form-control"
                            value="{{ request('date') }}">
                 </div>
 
@@ -121,7 +121,7 @@
     </section>
 
     {{-- Appointments Table --}}
-    <section class="panel table-panel" aria-labelledby="appointments-heading">
+    <section class="ui-card panel table-panel" aria-labelledby="appointments-heading">
 
         <div class="table-heading">
             <div>
@@ -139,8 +139,8 @@
 
         @if($appointments->count() > 0)
 
-            <div class="table-responsive">
-                <table class="table">
+            <div class="ui-table-wrap table-responsive">
+                <table class="ui-table table">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
@@ -174,15 +174,15 @@
                             @endphp
 
                             <tr>
-                                <td>
+                                <td data-label="{{ __('ID') }}">
                                     <span class="appointment-id">
                                         #{{ $appointment->id }}
                                     </span>
                                 </td>
 
-                                <td>
+                                <td data-label="{{ __('Date & Time') }}">
                                     <div class="date-main">
-                                        {{ $appointment->appointment_date?->format('M d, Y') ?? '—' }}
+                                        {{ $appointment->appointment_date?->translatedFormat('M d, Y') ?? '—' }}
                                     </div>
 
                                     <div class="date-meta">
@@ -194,7 +194,7 @@
                                     </div>
                                 </td>
 
-                                <td>
+                                <td data-label="{{ __('Patient') }}">
                                     <div class="person-name">
                                         {{ $appointment->patient?->user?->name ?? 'Unknown patient' }}
                                     </div>
@@ -204,7 +204,7 @@
                                     </div>
                                 </td>
 
-                                <td>
+                                <td data-label="{{ __('Doctor') }}">
                                     <div class="person-name">
                                         {{ $appointment->doctor?->user?->name
                                             ? 'Dr. ' . $appointment->doctor->user->name
@@ -216,13 +216,13 @@
                                     </div>
                                 </td>
 
-                                <td>
-                                    <span class="status-badge {{ $statusClass }}">
+                                <td data-label="{{ __('Status') }}">
+                                    <span class="ui-badge ui-badge-{{ $status }} status-badge {{ $statusClass }}">
                                         {{ $statusLabel }}
                                     </span>
                                 </td>
 
-                                <td>
+                                <td data-label="{{ __('Actions') }}">
                                     <div class="action-group">
                                         <a href="{{ route('appointments.show', $appointment) }}"
                                            class="action-btn action-view"
@@ -257,14 +257,14 @@
             </div>
 
             {{-- Pagination --}}
-            <div class="pagination-wrapper">
+            <div class="ui-pagination pagination-wrapper">
                 {{ $appointments->withQueryString()->links() }}
             </div>
 
         @else
 
             {{-- Empty State --}}
-            <div class="empty-state">
+            <div class="ui-empty empty-state">
                 <div class="empty-icon">
                     <i class="bi bi-calendar2-x" aria-hidden="true"></i>
                 </div>
@@ -278,7 +278,7 @@
                     </p>
 
                     <a href="{{ route('appointments.index') }}"
-                       class="btn btn-light">
+                       class="ui-btn ui-btn-ghost btn btn-light">
                         <i class="bi bi-arrow-counterclockwise me-1"
                            aria-hidden="true"></i>
                         Clear Filters
@@ -290,7 +290,7 @@
                     </p>
 
                     <a href="{{ route('appointments.create') }}"
-                       class="btn btn-primary">
+                       class="ui-btn ui-btn-primary btn btn-primary">
                         <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
                         Create Appointment
                     </a>
