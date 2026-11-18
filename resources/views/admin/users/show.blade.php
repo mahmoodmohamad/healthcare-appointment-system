@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', '@lang('site.user_details')')
+@section('title', __('site.user_details'))
 
 @section('content')
 <div class="container py-4">
