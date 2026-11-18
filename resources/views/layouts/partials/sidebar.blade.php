@@ -25,7 +25,7 @@
         <span class="ui-sidebar-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name ?? "U", 0, 1)) }}</span>
         <span class="ui-sidebar-profile-copy">
             <strong>{{ auth()->user()->name }}</strong>
-            <small>{{ __(ucfirst(auth()->user()->role ?? "User")) }}</small>
+         
         </span>
         <span class="ui-sidebar-online" title="{{ __("Active account") }}"></span>
     </div>
@@ -33,7 +33,7 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
-        
+
         @auth
             {{-- ADMIN SIDEBAR --}}
             @if(auth()->user()->isAdmin())
@@ -41,7 +41,7 @@
                 <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('admin.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>{{ @lang('site.dashboard') }}</div>
+                        <div> @lang('site.dashboard') </div>
                     </a>
                 </li>
 
@@ -49,79 +49,84 @@
                 <li class="menu-item {{ request()->routeIs('admin.users.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon icon-base ri-user-settings-line"></i>
-                        <div>{{ @lang('site.user_management') }}</div>
+                        <div>@lang('site.user_management')</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
                             <a href="{{ route('admin.users.index') }}" class="menu-link">
-                                <div>{{ @lang('site.all_users') }}</div>
+                                <div>@lang('site.all_users')</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
                             <a href="{{ route('admin.users.create') }}" class="menu-link">
-                                <div>{{ @lang('site.add_user') }}</div>
+                                <div>@lang('site.add_user')</div>
                             </a>
                         </li>
                     </ul>
                 </li>
-<!-- Appointments -->
-<li class="menu-item {{ request()->routeIs('admin.appointments.*') ? 'active open' : '' }}">
-    <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri-calendar-line"></i>
-        <div>{{ @lang('site.appointments') }}</div>
-    </a>
-    <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}">
-            <a href="{{ route('admin.appointments.index') }}" class="menu-link">
-                <div>{{ @lang('site.all_appointments') }}</div>
-            </a>
-        </li>
-        <li class="menu-item {{ request()->routeIs('admin.appointments.calendar') ? 'active' : '' }}">
-            <a href="{{ route('admin.appointments.calendar') }}" class="menu-link">
-                <div>{{ @lang('site.calendar_view') }}</div>
-            </a>
-        </li>
-    </ul>
-</li>
-<!-- Doctors -->
-<li class="menu-item {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}">
-    <a href="{{ route('admin.doctors.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri-stethoscope-line"></i>
-        <div>{{ @lang('site.doctors') }}</div>
-    </a>
-</li>
 
-<!-- Receptionists -->
-<li class="menu-item {{ request()->routeIs('admin.receptionists.*') ? 'active' : '' }}">
-    <a href="{{ route('admin.receptionists.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri-user-star-line"></i>
-        <div>{{ @lang('site.receptionists') }}</div>
-    </a>
-</li><!-- Patients -->
-<li class="menu-item {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}">
-    <a href="{{ route('admin.patients.index') }}" class="menu-link">
-        <i class="menu-icon icon-base ri-user-heart-line"></i>
-        <div>{{ @lang('site.patients') }}</div>
-    </a>
-</li>
+                <!-- Appointments -->
+                <li class="menu-item {{ request()->routeIs('admin.appointments.*') ? 'active open' : '' }}">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon icon-base ri-calendar-line"></i>
+                        <div>@lang('site.appointments')</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item {{ request()->routeIs('admin.appointments.index') ? 'active' : '' }}">
+                            <a href="{{ route('admin.appointments.index') }}" class="menu-link">
+                                <div>@lang('site.all_appointments')</div>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->routeIs('admin.appointments.calendar') ? 'active' : '' }}">
+                            <a href="{{ route('admin.appointments.calendar') }}" class="menu-link">
+                                <div>@lang('site.calendar_view')</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Doctors -->
+                <li class="menu-item {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.doctors.index') }}" class="menu-link">
+                        <i class="menu-icon icon-base ri-stethoscope-line"></i>
+                        <div>@lang('site.doctors')</div>
+                    </a>
+                </li>
+
+                <!-- Receptionists -->
+                <li class="menu-item {{ request()->routeIs('admin.receptionists.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.receptionists.index') }}" class="menu-link">
+                        <i class="menu-icon icon-base ri-user-star-line"></i>
+                        <div>@lang('site.receptionists')</div>
+                    </a>
+                </li>
+
+                <!-- Patients -->
+                <li class="menu-item {{ request()->routeIs('admin.patients.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.patients.index') }}" class="menu-link">
+                        <i class="menu-icon icon-base ri-user-heart-line"></i>
+                        <div>@lang('site.patients')</div>
+                    </a>
+                </li>
+
                 <!-- Statistics -->
                 <li class="menu-item {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
                     <a href="{{ route('admin.statistics') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-bar-chart-line"></i>
-                        <div>{{ @lang('site.statistics') }}</div>
+                        <div>@lang('site.statistics')</div>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">{{ @lang('site.system') }}</span>
+                    <span class="menu-header-text">@lang('site.system')</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>{{ @lang('site.logout') }}</div>
+                        <div>@lang('site.logout')</div>
                     </a>
                 </li>
             @endif
@@ -132,7 +137,7 @@
                 <li class="menu-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('doctor.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>{{ @lang('site.dashboard') }}</div>
+                        <div>@lang('site.dashboard')</div>
                     </a>
                 </li>
 
@@ -140,20 +145,20 @@
                 <li class="menu-item {{ request()->routeIs('doctor.appointments.*') ? 'active' : '' }}">
                     <a href="{{ route('doctor.appointments.index') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-calendar-check-line"></i>
-                        <div>{{ @lang('site.my_appointments') }}</div>
+                        <div>@lang('site.my_appointments')</div>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">{{ @lang('site.account') }}</span>
+                    <span class="menu-header-text">@lang('site.account')</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>{{ @lang('site.logout') }}</div>
+                        <div>@lang('site.logout')</div>
                     </a>
                 </li>
             @endif
@@ -164,7 +169,7 @@
                 <li class="menu-item {{ request()->routeIs('receptionist.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('receptionist.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>{{ @lang('site.dashboard') }}</div>
+                        <div>@lang('site.dashboard')</div>
                     </a>
                 </li>
 
@@ -172,7 +177,7 @@
                 <li class="menu-item {{ request()->routeIs('patients.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon icon-base ri-user-heart-line"></i>
-                        <div>{{ @lang('site.patients') }}</div>
+                        <div>@lang('site.patients')</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('patients.index') ? 'active' : '' }}">
@@ -182,7 +187,7 @@
                         </li>
                         <li class="menu-item {{ request()->routeIs('patients.create') ? 'active' : '' }}">
                             <a href="{{ route('patients.create') }}" class="menu-link">
-                                <div>{{ @lang('site.new_patient') }}</div>
+                                <div>@lang('site.new_patient')</div>
                             </a>
                         </li>
                     </ul>
@@ -192,22 +197,22 @@
                 <li class="menu-item {{ request()->routeIs('appointments.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class="menu-icon icon-base ri-calendar-line"></i>
-                        <div>{{ @lang('site.appointments') }}</div>
+                        <div>@lang('site.appointments')</div>
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('appointments.index') ? 'active' : '' }}">
                             <a href="{{ route('appointments.index') }}" class="menu-link">
-                                <div>{{ @lang('site.all_appointments') }}</div>
+                                <div>@lang('site.all_appointments')</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('appointments.create') ? 'active' : '' }}">
                             <a href="{{ route('appointments.create') }}" class="menu-link">
-                                <div>{{ @lang('site.add_appointment') }}</div>
+                                <div>@lang('site.add_appointment')</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('appointments.calendar') ? 'active' : '' }}">
                             <a href="{{ route('appointments.calendar') }}" class="menu-link">
-                                <div>{{ @lang('site.calendar_view') }}</div>
+                                <div>@lang('site.calendar_view')</div>
                             </a>
                         </li>
                     </ul>
@@ -215,14 +220,14 @@
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">{{ @lang('site.account') }}</span>
+                    <span class="menu-header-text">@lang('site.account')</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>{{ @lang('site.logout') }}</div>
+                        <div>@lang('site.logout')</div>
                     </a>
                 </li>
             @endif
@@ -233,7 +238,7 @@
                 <li class="menu-item {{ request()->routeIs('patient.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('patient.dashboard') }}" class="menu-link">
                         <i class="menu-icon icon-base ri-dashboard-line"></i>
-                        <div>{{ @lang('site.dashboard') }}</div>
+                        <div>@lang('site.dashboard')</div>
                     </a>
                 </li>
 
@@ -241,7 +246,7 @@
                 <li class="menu-item">
                     <a href="#" class="menu-link">
                         <i class="menu-icon icon-base ri-calendar-line"></i>
-                        <div>{{ @lang('site.my_appointments') }}</div>
+                        <div>@lang('site.my_appointments')</div>
                     </a>
                 </li>
 
@@ -249,20 +254,20 @@
                 <li class="menu-item">
                     <a href="#" class="menu-link">
                         <i class="menu-icon icon-base ri-file-list-line"></i>
-                        <div>{{ @lang('site.medical_history') }}</div>
+                        <div>@lang('site.medical_history')</div>
                     </a>
                 </li>
 
                 <!-- Divider -->
                 <li class="menu-header mt-7">
-                    <span class="menu-header-text">{{ @lang('site.account') }}</span>
+                    <span class="menu-header-text">@lang('site.account')</span>
                 </li>
 
                 <!-- Logout -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="menu-link">
                         <i class="menu-icon icon-base ri-logout-box-line"></i>
-                        <div>{{ @lang('site.logout') }}</div>
+                        <div>@lang('site.logout')</div>
                     </a>
                 </li>
             @endif
