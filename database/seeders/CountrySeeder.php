@@ -2,25 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Country;
+use Illuminate\Database\Seeder;
 
 class CountrySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //
-        $countries = ['Egypt', 'Saudi Arabia', 'UAE'];
-
-        foreach ($countries as $country) {
-            Country::create([
-                'name' => $country
-            ]);
+        foreach (['Egypt', 'Saudi Arabia', 'UAE'] as $name) {
+            Country::firstOrCreate(['name' => $name]);
         }
     }
 }
