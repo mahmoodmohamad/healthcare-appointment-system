@@ -2,29 +2,24 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
 use App\Models\Admin;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //
-        $user = User::create([
-    'name'     => 'System Admin',
-    'email'    => 'admin@clinic.com',
-    'password' => Hash::make('password'),
-]);
+        $user = User::firstOrCreate(
+            ['email' => 'admin@clinic.com'],
+            [
+                'name' => 'System Admin',
+                'password' => Hash::make('password'),
+                'activation' => true,
+            ]
+        );
 
-        Admin::create([
-            'user_id' => $user->id
-        ]);
+        Admin::firstOrCreate(['user_id' => $user->id]);
     }
 }
