@@ -74,7 +74,7 @@
         </a>
     </div>
 
-    {{-- Appointment Overview --}}
+    {{-- @lang('site.appointment_overview') --}}
     <section class="ui-card panel hero-card">
 
         <div class="hero-top">
@@ -84,7 +84,7 @@
                     <strong>#{{ $appointment->id }}</strong>
                 </div>
 
-                <h2 class="hero-title">Appointment Overview</h2>
+                <h2 class="hero-title">@lang('site.appointment_overview')</h2>
 
                 <p class="hero-description">
                     Review the current appointment schedule and status.
@@ -100,7 +100,7 @@
         <div class="hero-stats">
 
             <div class="hero-stat">
-                <div class="stat-label">Appointment Date</div>
+                <div class="stat-label">@lang('site.appointment_date')</div>
                 <div class="stat-value">
                     <i class="bi bi-calendar3" aria-hidden="true"></i>
                     {{ $appointmentDate?->translatedFormat('D, M d, Y') ?? 'Not set' }}
@@ -108,7 +108,7 @@
             </div>
 
             <div class="hero-stat">
-                <div class="stat-label">Appointment Time</div>
+                <div class="stat-label">@lang('site.appointment_time')</div>
                 <div class="stat-value">
                     <i class="bi bi-clock" aria-hidden="true"></i>
 
@@ -121,7 +121,7 @@
             </div>
 
             <div class="hero-stat">
-                <div class="stat-label">Booking Created</div>
+                <div class="stat-label">@lang('site.booking_created')</div>
                 <div class="stat-value">
                     <i class="bi bi-calendar-plus" aria-hidden="true"></i>
                     {{ $appointment->created_at?->translatedFormat('M d, Y') ?? '—' }}
@@ -144,8 +144,8 @@
                     </div>
 
                     <div>
-                        <h3>Patient Information</h3>
-                        <p>Patient contact and identification details</p>
+                        <h3>@lang('site.patient_information')</h3>
+                        <p>@lang('site.patient_contact_description')</p>
                     </div>
                 </div>
 
@@ -161,19 +161,19 @@
                                 {{ $patient?->user?->name ?? 'Unknown patient' }}
                             </div>
 
-                            <div class="person-role">Registered Patient</div>
+                            <div class="person-role">@lang('site.registered_patient')</div>
                         </div>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Patient ID</span>
+                        <span class="detail-label">@lang('site.patient_id')</span>
                         <span class="detail-value">
                             #{{ $appointment->patient_id }}
                         </span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">National ID</span>
+                        <span class="detail-label">@lang('site.national_id')</span>
                         <span class="detail-value">
                             {{ $patient?->national_id ?? 'Not available' }}
                         </span>
@@ -194,7 +194,7 @@
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">City</span>
+                        <span class="detail-label">@lang('site.city')</span>
                         <span class="detail-value">
                             {{ $patient?->city?->name ?? 'Not available' }}
                         </span>
@@ -214,8 +214,8 @@
                     </div>
 
                     <div>
-                        <h3>Doctor Information</h3>
-                        <p>Assigned healthcare professional</p>
+                        <h3>@lang('site.doctor_information')</h3>
+                        <p>@lang('site.assigned_healthcare_professional')</p>
                     </div>
                 </div>
 
@@ -232,20 +232,20 @@
                             </div>
 
                             <div class="person-role">
-                                {{ $doctor?->specialization ?? 'Specialization not available' }}
+                                {{ $doctor?->specialization ?? '@lang('site.specialty') not available' }}
                             </div>
                         </div>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Doctor ID</span>
+                        <span class="detail-label">@lang('site.doctor_id')</span>
                         <span class="detail-value">
                             #{{ $appointment->doctor_id }}
                         </span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Specialization</span>
+                        <span class="detail-label">@lang('site.specialty')</span>
                         <span class="detail-value">
                             {{ $doctor?->specialization ?? 'Not available' }}
                         </span>
@@ -259,7 +259,7 @@
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">City</span>
+                        <span class="detail-label">@lang('site.city')</span>
                         <span class="detail-value">
                             {{ $doctor?->city?->name ?? 'Not available' }}
                         </span>
@@ -271,7 +271,7 @@
 
     </div>
 
-    {{-- Booking Information --}}
+    {{-- @lang('site.booking_information') --}}
     <section class="ui-card panel section-card">
 
         <div class="section-header">
@@ -280,8 +280,8 @@
             </div>
 
             <div>
-                <h3>Booking Information</h3>
-                <p>Administrative details about this appointment</p>
+                <h3>@lang('site.booking_information')</h3>
+                <p>@lang('site.booking_admin_description')</p>
             </div>
         </div>
 
@@ -291,12 +291,12 @@
 
                 <div class="col-12 col-md-6">
                     <div class="detail-row">
-                        <span class="detail-label">Appointment ID</span>
+                        <span class="detail-label">@lang('site.appointment_id')</span>
                         <span class="detail-value">#{{ $appointment->id }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Booked By</span>
+                        <span class="detail-label">@lang('site.booked_by')</span>
                         <span class="detail-value">
                             {{ $appointment->receptionist?->user?->name ?? 'System' }}
                         </span>
@@ -305,14 +305,14 @@
 
                 <div class="col-12 col-md-6">
                     <div class="detail-row">
-                        <span class="detail-label">Created At</span>
+                        <span class="detail-label">@lang('site.created_at')</span>
                         <span class="detail-value">
                             {{ $appointment->created_at?->translatedFormat('M d, Y - h:i A') ?? '—' }}
                         </span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Last Updated</span>
+                        <span class="detail-label">@lang('site.updated_at')</span>
                         <span class="detail-value">
                             {{ $appointment->updated_at?->translatedFormat('M d, Y - h:i A') ?? '—' }}
                         </span>
@@ -324,7 +324,7 @@
             @if(! $isReceptionist && $appointment->notes)
                 <div class="mt-4">
                     <div class="detail-label fw-bold mb-2">
-                        Appointment Notes
+                        @lang('site.appointment_notes')
                     </div>
 
                     <div class="notes-content">{{ $appointment->notes }}</div>
@@ -346,8 +346,8 @@
                     </div>
 
                     <div>
-                        <h3>Medical Assessment</h3>
-                        <p>Clinical information recorded for this appointment</p>
+                        <h3>@lang('site.medical_assessment')</h3>
+                        <p>@lang('site.clinical_information')</p>
                     </div>
                 </div>
 
@@ -356,11 +356,11 @@
                     <div class="medical-field">
                         <div class="medical-field-label">
                             <i class="bi bi-activity" aria-hidden="true"></i>
-                            Reported Symptoms
+                            @lang('site.reported_symptoms')
                         </div>
 
                         <div class="medical-field-content">
-                            {{ $diagnosis->symptoms ?: 'No symptoms recorded.' }}
+                            {{ $diagnosis->symptoms ?: '@lang('site.no_symptoms_recorded')' }}
                         </div>
                     </div>
 
@@ -371,7 +371,7 @@
                         </div>
 
                         <div class="medical-field-content">
-                            {{ $diagnosis->diagnosis ?: 'No diagnosis recorded.' }}
+                            {{ $diagnosis->diagnosis ?: '@lang('site.no_diagnosis_recorded')' }}
                         </div>
                     </div>
 
@@ -390,7 +390,7 @@
 
                     <div class="metadata">
                         <i class="bi bi-clock-history me-1" aria-hidden="true"></i>
-                        Recorded on
+                        @lang('site.recorded_on')
                         {{ $diagnosis->created_at?->translatedFormat('M d, Y - h:i A') ?? 'Unknown date' }}
                     </div>
 
@@ -402,7 +402,7 @@
             <div class="empty-medical mb-4">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                 <div>
-                    <strong>No medical assessment recorded</strong>
+                    <strong>@lang('site.no_medical_assessment')</strong>
                     <p>
                         This appointment is marked as completed,
                         but no diagnosis has been recorded yet.
@@ -414,12 +414,12 @@
 
     @endif
 
-    {{-- Appointment Actions --}}
+    {{-- @lang('site.appointment_actions') --}}
     @if($canCancel)
 
         <section class="ui-card panel actions-card">
 
-            <h3 class="actions-title">Appointment Actions</h3>
+            <h3 class="actions-title">@lang('site.appointment_actions')</h3>
 
             <p class="actions-description">
                 Manage this appointment. Cancellation cannot be treated as a normal edit.
@@ -434,14 +434,14 @@
 
                 <button type="submit" class="ui-btn btn btn-danger">
                     <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
-                    Cancel Appointment
+                    @lang('site.cancel_appointment')
                 </button>
 
             </form>
 
             <div class="metadata">
                 <i class="bi bi-shield-lock me-1" aria-hidden="true"></i>
-                Only authorized users can perform this action.
+                @lang('site.authorized_users_only')
             </div>
 
         </section>
