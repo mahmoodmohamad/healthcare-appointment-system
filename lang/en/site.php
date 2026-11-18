@@ -202,4 +202,13 @@ return [
     'patient_registry_description' => 'System-wide patient registry.',
     'national_id' => 'National ID',
     'no_patients_filter' => 'No patients match your filters.',
+    'remember_me' => 'Remember Me',
+    'forgot_password' => 'Forgot your password?',
+    'reset_password' => 'Reset Password',
+    'send_reset_link' => 'Send Password Reset Link',
+    'verify_email' => 'Verify Your Email Address',
+    'verify_email_notice' => 'Before proceeding, please check your email for a verification link.',
+    'verification_link_sent' => 'A fresh verification link has been sent to your email address.',
+    'request_another_link' => 'Click here to request another',
+    'full_name' => 'Full Name',
 ];

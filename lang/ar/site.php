@@ -200,4 +200,13 @@ return [
     'patient_registry_description' => 'سجل شامل لجميع المرضى.',
     'national_id' => 'الرقم القومي',
     'no_patients_filter' => 'لا يوجد مرضى يطابقون عوامل التصفية.',
+    'remember_me' => 'تذكرني',
+    'forgot_password' => 'هل نسيت كلمة المرور؟',
+    'reset_password' => 'إعادة تعيين كلمة المرور',
+    'send_reset_link' => 'إرسال رابط إعادة تعيين كلمة المرور',
+    'verify_email' => 'تحقق من بريدك الإلكتروني',
+    'verify_email_notice' => 'قبل المتابعة، يرجى التحقق من بريدك الإلكتروني لوجود رابط التحقق.',
+    'verification_link_sent' => 'تم إرسال رابط تحقق جديد إلى بريدك الإلكتروني.',
+    'request_another_link' => 'اضغط هنا لطلب رابط آخر',
+    'full_name' => 'الاسم الكامل',
 ];
