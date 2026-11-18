@@ -238,7 +238,7 @@
                                 </span>
 
                                 @if($isToday)
-                                    <span class="today-label">TODAY</span>
+                                    <span class="today-label">@lang('site.today')</span>
                                 @endif
                             </div>
 
