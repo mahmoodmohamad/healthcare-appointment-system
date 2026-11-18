@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'System Statistics')
+@section('title', '@lang('site.system_statistics')')
 
 <style>
     :root {
@@ -188,7 +188,7 @@
         border-radius: 8px;
     }
 
-    /* Top Doctors */
+    /* Top @lang('site.doctor')s */
     .rank-card {
         background: white;
         border-radius: 16px;
@@ -394,8 +394,8 @@
         <!-- Page Header -->
         <div class="page-header">
             <div>
-                <h1>System Statistics</h1>
-                <p class="text-muted mb-0">Real-time analytics and insights about your healthcare system</p>
+                <h1>@lang('site.system_statistics')</h1>
+                <p class="text-muted mb-0">@lang('site.statistics_description')</p>
             </div>
             <button class="refresh-btn" onclick="refreshData()">
                 <i class="fas fa-sync-alt"></i>
@@ -414,7 +414,7 @@
                 ];
             @endphp
             
-            @foreach(['admins'=>'Admins','doctors'=>'Doctors','receptionists'=>'Receptionists','patients'=>'Patients'] as $key=>$label)
+            @foreach(['admins'=>'Admins','doctors'=>'@lang('site.doctor')s','receptionists'=>'@lang('site.receptionists')','patients'=>'Patients'] as $key=>$label)
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="stat-card {{ $roleConfig[$key]['class'] }}">
                     <div class="stat-card-header">
@@ -435,17 +435,17 @@
             @endforeach
         </div>
 
-        <!-- Charts & Top Doctors -->
+        <!-- Charts & Top @lang('site.doctor')s -->
         <div class="row mb-4">
             <!-- Appointments Chart -->
             <div class="col-xl-8 col-lg-7 mb-4 fade-in-up" style="animation-delay: 0.2s">
                 <div class="chart-card">
                     <div class="chart-card-header">
                         <div>
-                            <h3 class="chart-title">Appointments Overview</h3>
-                            <p class="text-muted mb-0">Monthly appointment trends</p>
+                            <h3 class="chart-title">@lang('site.appointments_overview')</h3>
+                            <p class="text-muted mb-0">@lang('site.monthly_appointment_trends')</p>
                         </div>
-                        <div class="chart-period">Last 12 Months</div>
+                        <div class="chart-period">@lang('site.last_12_months')</div>
                     </div>
                     <div class="chart-container" style="position: relative; height: 300px;">
                         <canvas id="monthlyAppointments"></canvas>
@@ -453,15 +453,15 @@
                 </div>
             </div>
 
-            <!-- Top Doctors -->
+            <!-- Top @lang('site.doctor')s -->
             <div class="col-xl-4 col-lg-5 mb-4 fade-in-up" style="animation-delay: 0.4s">
                 <div class="rank-card">
                     <div class="chart-card-header">
                         <div>
-                            <h3 class="chart-title">Top Doctors</h3>
-                            <p class="text-muted mb-0">Most active doctors</p>
+                            <h3 class="chart-title">Top @lang('site.doctor')s</h3>
+                            <p class="text-muted mb-0">@lang('site.most_active_doctors')</p>
                         </div>
-                        <div class="chart-period">This Month</div>
+                        <div class="chart-period">@lang('site.this_month')</div>
                     </div>
                     <div class="rank-list">
                         @foreach($stats['appointments_by_doctor']->take(5) as $index => $doctor)
@@ -488,18 +488,18 @@
             <div class="col-12">
                 <div class="table-container">
                     <div class="table-header">
-                        <h4 class="table-title">Geographic Distribution</h4>
-                        <p class="text-muted mb-0">User distribution across cities</p>
+                        <h4 class="table-title">@lang('site.geographic_distribution')</h4>
+                        <p class="text-muted mb-0">@lang('site.user_distribution_cities')</p>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>City</th>
+                                    <th>@lang('site.city')</th>
                                     <th>@lang('site.patients')</th>
                                     <th>@lang('site.doctors')</th>
-                                    <th>Receptionists</th>
-                                    <th>Total</th>
+                                    <th>@lang('site.receptionists')</th>
+                                    <th>@lang('site.total')</th>
                                 </tr>
                             </thead>
                             <tbody>
