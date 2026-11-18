@@ -232,7 +232,7 @@
                             </div>
 
                             <div class="person-role">
-                                {{ $doctor?->specialization ?? '@lang('site.specialty') not available' }}
+                                {{ $doctor?->specialization ?? __('site.not_available') }}
                             </div>
                         </div>
                     </div>
@@ -360,7 +360,7 @@
                         </div>
 
                         <div class="medical-field-content">
-                            {{ $diagnosis->symptoms ?: '@lang('site.no_symptoms_recorded')' }}
+                            {{ $diagnosis->symptoms ?: __('site.no_symptoms_recorded') }}
                         </div>
                     </div>
 
@@ -371,7 +371,7 @@
                         </div>
 
                         <div class="medical-field-content">
-                            {{ $diagnosis->diagnosis ?: '@lang('site.no_diagnosis_recorded')' }}
+                            {{ $diagnosis->diagnosis ?: __('site.no_diagnosis_recorded') }}
                         </div>
                     </div>
 
