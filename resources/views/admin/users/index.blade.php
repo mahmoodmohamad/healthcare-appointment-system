@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', 'User Management')
+@section('title', '@lang('site.user_management')')
 
 @section('content')
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>User Management</h2>
+        <h2>@lang('site.user_management')</h2>
         <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
             ➕ Add New User
         </a>
@@ -35,13 +35,13 @@
                     <input type="text" 
                            name="search" 
                            class="form-control" 
-                           placeholder="Name, Email..."
+                           placeholder="@lang('site.search_name_email')"
                            value="{{ request('search') }}">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">@lang('site.role')</label>
                     <select name="role" class="form-select">
-                        <option value="">All Roles</option>
+                        <option value="">@lang('site.all_roles')</option>
                         <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                         <option value="doctor" {{ request('role') == 'doctor' ? 'selected' : '' }}>@lang('site.doctor')</option>
                         <option value="receptionist" {{ request('role') == 'receptionist' ? 'selected' : '' }}>@lang('site.receptionist')</option>
@@ -73,7 +73,7 @@
                                 <th>@lang('site.email')</th>
                                 <th>@lang('site.role')</th>
                                 <th>@lang('site.status')</th>
-                                <th>Registered</th>
+                                <th>@lang('site.registered')</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -112,7 +112,7 @@
                                     <div class="btn-group" role="group">
                                         <a href="{{ route('admin.users.show', $user) }}" 
                                            class="btn btn-sm btn-info"
-                                           title="View">
+                                           title="@lang('site.view')">
                                             👁️
                                         </a>
                                         
@@ -134,7 +134,7 @@
                                                   onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="@lang('site.delete')">
                                                     🗑️
                                                 </button>
                                             </form>
@@ -155,7 +155,7 @@
                 </div>
             @else
                 <div class="text-center py-5">
-                    <p class="text-muted">No users found.</p>
+                    <p class="text-muted">@lang('site.no_users_found')</p>
                 </div>
             @endif
         </div>
