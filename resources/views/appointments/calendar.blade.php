@@ -83,7 +83,7 @@
                 <i class="bi bi-check-circle" aria-hidden="true"></i>
             </div>
             <div>
-                <div class="stat-label">Completed</div>
+                <div class="stat-label">@lang('site.completed')</div>
                 <div class="stat-value">{{ $completedCount }}</div>
             </div>
         </div>
@@ -174,7 +174,7 @@
                 <button type="button"
                         class="nav-button today-button"
                         onclick="changeMonth(0)">
-                    Today
+                    @lang('site.today')
                 </button>
 
                 <button type="button"
@@ -323,7 +323,7 @@
 
                 <div class="legend-item">
                     <span class="legend-dot completed"></span>
-                    Completed
+                    @lang('site.completed')
                 </div>
 
                 <div class="legend-item">

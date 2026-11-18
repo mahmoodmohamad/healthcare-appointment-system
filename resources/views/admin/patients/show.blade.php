@@ -22,7 +22,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['total_appointments'] }}</h3>
-                    <small>Appointments</small>
+                    <small>@lang('site.appointments')</small>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['completed'] }}</h3>
-                    <small>Completed</small>
+                    <small>@lang('site.completed')</small>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@
             <div class="card bg-secondary text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['distinct_doctors'] }}</h3>
-                    <small>Doctors</small>
+                    <small>@lang('site.doctors')</small>
                 </div>
             </div>
         </div>
@@ -89,9 +89,9 @@
                     </p>
                     <p class="mb-0"><strong>Account:</strong>
                         @if($patient->user->activation)
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">@lang('site.active')</span>
                         @else
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary">@lang('site.inactive')</span>
                         @endif
                     </p>
                 </div>
@@ -102,7 +102,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Appointment History</h5>
+                    <h5 class="mb-0">@lang('site.appointment_history')</h5>
                 </div>
                 <div class="card-body">
                     @if($appointments->count() > 0)
@@ -110,10 +110,10 @@
                             <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
+                                        <th>@lang('site.date')</th>
                                         <th>Doctor</th>
-                                        <th>Status</th>
-                                        <th>Diagnosis</th>
+                                        <th>@lang('site.status')</th>
+                                        <th>@lang('site.diagnosis')</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -167,7 +167,7 @@
                             {{ $appointments->links() }}
                         </div>
                     @else
-                        <p class="text-center text-muted py-4 mb-0">No appointments yet.</p>
+                        <p class="text-center text-muted py-4 mb-0">@lang('site.no_appointments_yet')</p>
                     @endif
                 </div>
             </div>
