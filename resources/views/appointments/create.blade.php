@@ -64,7 +64,7 @@
                     <section class="form-section">
                         <h3 class="section-title">
                             <span class="section-number">01</span>
-                            @lang('site.patient') Information
+                            @lang('site.patient_information')
                         </h3>
 
                         <div>
