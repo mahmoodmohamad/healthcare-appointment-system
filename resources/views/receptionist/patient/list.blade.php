@@ -84,7 +84,7 @@
 
 {{--     <form class="btn btn-xs" action="{{ route('admin.receptionist.destroy',$patient->user) }}"
                                          method="POST">@csrf @method('DELETE')
-                                            <button type="submit" class="btn  btn-xs btn-danger" onclick="return confirm('Are You Sure ?')">@lang('site.delete')</button>
+                                            <button type="submit" class="btn  btn-xs btn-danger" onclick="return confirm(@js(__('site.confirm_delete')))">@lang('site.delete')</button>
                                         </form> --}}
 
                                     </td>
@@ -95,7 +95,7 @@
                     </div>
                     <div class="d-flex align-items-center justify-content-between flex-wrap">
                         <p class="mb-0">
-                          @lang('site.showing') {{min($patients->perPage(), $patients->total())}}،@lang('site.of'){{$patients->total()}}
+                          @lang('site.showing') {{ min($patients->perPage(), $patients->total()) }} — @lang('site.of') {{ $patients->total() }}
                         </p>
                         <nav>
                           {{ $patients->appends(request()->query())->links() }}
