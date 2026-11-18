@@ -115,7 +115,7 @@
 
                         <!-- Alert -->
                         <div class="alert alert-info">
-                            <strong>@lang('site.note_label')</strong> @lang('site.appointment_marked_as') <strong>completed</strong> once you save the diagnosis.
+                            <strong>@lang('site.note_label')</strong> @lang('site.appointment_marked_as') <strong>@lang('site.completed')</strong> once you save the diagnosis.
                         </div>
 
                         <!-- Buttons -->
