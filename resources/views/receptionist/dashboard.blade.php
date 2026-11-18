@@ -71,7 +71,7 @@
             <span class="ui-stat-icon ui-tone-teal"><i class="bi bi-clock-history" aria-hidden="true"></i></span>
             <span>
                 <span class="ui-stat-number d-block">{{ number_format($upcomingAppointments) }}</span>
-                <span class="ui-stat-label d-block">Upcoming</span>
+                <span class="ui-stat-label d-block">@lang('site.upcoming')</span>
                 <span class="ui-stat-note">Today or later</span>
             </span>
         </a>
@@ -107,7 +107,7 @@
                             <div class="ui-row-main">
                                 <strong>
                                     {{ $appointment->patient_name }}
-                                    @if($isToday)<span class="ui-badge ui-badge-scheduled">Today</span>@endif
+                                    @if($isToday)<span class="ui-badge ui-badge-scheduled">@lang('site.today')</span>@endif
                                 </strong>
                                 <div class="ui-meta">
                                     <span><i class="bi bi-clock me-1" aria-hidden="true"></i>{{ $appointment->time_label }}</span>
@@ -222,7 +222,7 @@
                     <strong>{{ $todayBookings }}</strong>
                 </div>
                 <div class="ui-row">
-                    <span><i class="bi bi-check-circle me-2" aria-hidden="true"></i>Completed</span>
+                    <span><i class="bi bi-check-circle me-2" aria-hidden="true"></i>@lang('site.completed')</span>
                     <strong>{{ $completedAppointments }}</strong>
                 </div>
             </section>

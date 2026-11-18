@@ -36,11 +36,11 @@
                 <table class="patient-table">
                     <thead>
                     <tr>
-                        <th>Date</th>
+                        <th>@lang('site.date')</th>
                         <th>Time</th>
                         <th>Doctor</th>
                         <th>Specialty</th>
-                        <th>Status</th>
+                        <th>@lang('site.status')</th>
                     </tr>
                     </thead>
                     <tbody>
