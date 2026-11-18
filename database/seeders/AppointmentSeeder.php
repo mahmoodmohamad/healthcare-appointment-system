@@ -53,5 +53,47 @@ class AppointmentSeeder extends Seeder
                 Appointment::create($attributes);
             }
         }
+
+        // Stable seed markers make these examples idempotent while dates can roll forward.
+        $samplePatients = Patient::query()->orderBy('id')->take(2)->get();
+
+        foreach ($samplePatients as $index => $patient) {
+            $status = $index === 0 ? Appointment::COMPLETED : Appointment::CANCELLED;
+            $seedNote = $index === 0 ? '[SEED] Completed visit' : '[SEED] Cancelled visit';
+            $sampleDate = now()->subDays(14 + $index)->toDateString();
+            $sampleTime = $index === 0 ? '10:00:00' : '11:00:00';
+
+            $existing = Appointment::query()
+                ->where('patient_id', $patient->id)
+                ->where('doctor_id', $doctor->id)
+                ->where('notes', $seedNote)
+                ->first();
+
+            if (
+                $status === Appointment::COMPLETED
+                && (
+                    ! Appointment::isAvailable($doctor->id, $sampleDate, $sampleTime, $existing?->id)
+                    || ! Appointment::isPatientAvailable($patient->id, $sampleDate, $sampleTime, $existing?->id)
+                )
+            ) {
+                continue;
+            }
+
+            $attributes = [
+                'patient_id' => $patient->id,
+                'doctor_id' => $doctor->id,
+                'receptionist_id' => $receptionistId,
+                'appointment_date' => $sampleDate . ' ' . $sampleTime,
+                'appointment_time' => $sampleTime,
+                'status' => $status,
+                'notes' => $seedNote,
+            ];
+
+            if ($existing) {
+                $existing->update($attributes);
+            } else {
+                Appointment::create($attributes);
+            }
+        }
     }
 }
