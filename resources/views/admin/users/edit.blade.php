@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', '@lang('site.edit_user')')
+@section('title', __('site.edit_user'))
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
