@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', '@lang('site.appointment_calendar')')
+@section('title', __('site.appointment_calendar'))
 
 @section('content')
 
