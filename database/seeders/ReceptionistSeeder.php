@@ -10,20 +10,30 @@ use Illuminate\Support\Facades\Hash;
 
 class ReceptionistSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        $city = City::firstOrFail();
+        $city = City::query()->orderBy('id')->first();
 
-        $user = User::create([
-            'name'     => 'Clinic Receptionist',
-            'email'    => 'receptionist@clinic.com',
-            'password' => Hash::make('password'),
-        ]);
+        if (! $city) {
+            $this->call([CountrySeeder::class, CitySeeder::class]);
+            $city = City::query()->orderBy('id')->firstOrFail();
+        }
 
-        Receptionist::create([
-            'user_id' => $user->id,
-            'phone'   => '01000000002',
-            'city_id' => $city->id,
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'receptionist@clinic.com'],
+            [
+                'name' => 'Clinic Receptionist',
+                'password' => Hash::make('password'),
+                'activation' => true,
+            ]
+        );
+
+        Receptionist::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'phone' => '01000000002',
+                'city_id' => $city->id,
+            ]
+        );
     }
 }
