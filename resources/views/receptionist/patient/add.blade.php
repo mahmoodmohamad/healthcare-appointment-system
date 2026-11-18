@@ -86,7 +86,7 @@
             var $city = $('#city');
             $city.empty();
             for (var i = 0; i < data.cities.length; i++) {
-                $city.append('<option id=' + data.cities[i].id + ' value=' + data.cities[i].id + '>' + data.cities[i].name_en + '</option>');
+                $city.append('<option id=' + data.cities[i].id + ' value=' + data.cities[i].id + '>' + (document.documentElement.lang === 'ar' ? (data.cities[i].name_ar || data.cities[i].name_en) : data.cities[i].name_en) + '</option>');
             }
         }
     });
