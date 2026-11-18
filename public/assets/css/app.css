@@ -1,6 +1,6 @@
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: inherit; }
         
         .calendar-header {
             display: flex;
@@ -128,8 +128,8 @@
             height: 20px;
             border-radius: 4px;
         }
- body { font-family: Arial; padding: 20px; background: #f5f5f5; }
-        .container { max-width: 1200px; margin: 0 auto; }
+ body { font-family: inherit; }
+        .legacy-container { max-width: 1200px; margin: 0 auto; }
         h1 { color: #333; margin-bottom: 30px; }
         
         .stats-grid {
@@ -170,32 +170,23 @@
             color: #333;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
+        .legacy-table { width: 100%; border-collapse: collapse; }
+        .legacy-table th, .legacy-table td {
             padding: 12px;
-            text-align: left;
+            text-align: start;
             border-bottom: 1px solid #ddd;
         }
+        .legacy-table th { background: #f8f9fa; font-weight: bold; }
         
-        th {
-            background: #f8f9fa;
-            font-weight: bold;
-        }
-        
-        .badge {
+        .legacy-badge {
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
         }
-        
-        .badge.scheduled { background: #007bff; color: white; }
-        .badge.completed { background: #28a745; color: white; }
-        .badge.cancelled { background: #dc3545; color: white; }
+        .legacy-badge.scheduled { background: #007bff; color: white; }
+        .legacy-badge.completed { background: #28a745; color: white; }
+        .legacy-badge.cancelled { background: #dc3545; color: white; }
 		
 		.calendar-header {
     display: flex;
@@ -258,7 +249,7 @@
     }
 
     /* Enhanced Form Controls */
-    .form-label {
+    .create-user-container .form-label {
         font-weight: 600;
         color: #2d3748;
         margin-bottom: 8px;
@@ -273,8 +264,8 @@
         font-size: 16px;
     }
 
-    .form-control,
-    .form-select {
+    .create-user-container .form-control,
+    .create-user-container .form-select {
         border: 2px solid #e2e8f0;
         border-radius: 10px;
         padding: 12px 16px;
@@ -283,16 +274,16 @@
         background: #f7fafc;
     }
 
-    .form-control:focus,
-    .form-select:focus {
+    .create-user-container .form-control:focus,
+    .create-user-container .form-select:focus {
         border-color: #667eea;
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         background: white;
         outline: none;
     }
 
-    .form-control.is-invalid,
-    .form-select.is-invalid {
+    .create-user-container .form-control.is-invalid,
+    .create-user-container .form-select.is-invalid {
         border-color: #e53e3e;
         background: #fff5f5;
     }
