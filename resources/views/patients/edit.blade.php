@@ -2,11 +2,11 @@
 @section('title', 'Edit Patient')
 
 @section('content')
-<div class="container py-4">
+<div class="ui-page container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
+            <div class="ui-card card">
+                <div class="ui-card-head card-header">
                     <h4 class="mb-0">Edit Patient Information</h4>
                 </div>
                 <div class="card-body">
@@ -30,7 +30,7 @@
                             <input type="text" 
                                    name="name" 
                                    id="name" 
-                                   class="form-control @error('name') is-invalid @enderror"
+                                   class="form-control ui-input @error('name') is-invalid @enderror"
                                    value="{{ old('name', $patient->user->name) }}"
                                    required>
                             @error('name')
@@ -85,7 +85,7 @@
                             <label for="city_id" class="form-label">City *</label>
                             <select name="city_id" 
                                     id="city_id" 
-                                    class="form-select @error('city_id') is-invalid @enderror"
+                                    class="form-select ui-input @error('city_id') is-invalid @enderror"
                                     required>
                                 <option value="">Select City</option>
                                 @foreach($cities as $city)
@@ -134,8 +134,8 @@
 
                         <!-- Submit Button -->
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">Update Patient</button>
-                            <a href="{{ route('patients.index') }}" class="btn btn-secondary ms-2">Cancel</a>
+                            <button type="submit" class="ui-btn ui-btn-primary">Update Patient</button>
+                            <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost ms-2">Cancel</a>
                         </div>
 
                     </form>
