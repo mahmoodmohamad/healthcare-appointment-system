@@ -42,18 +42,18 @@
     <div class="card">
         <div class="card-body">
             @php
-                $start = $date->copy()->startOfMonth()->startOfWeek();
-                $end   = $date->copy()->endOfMonth()->endOfWeek();
+                $start = $date->copy()->startOfMonth()->startOfWeek(\Carbon\Carbon::SUNDAY);
+                $end   = $date->copy()->endOfMonth()->endOfWeek(\Carbon\Carbon::SATURDAY);
                 $cursor = $start->copy();
             @endphp
 
-            <div class="row row-cols-7 g-0 text-center fw-bold border-bottom pb-2 mb-2">
+            <div class="admin-calendar-weekdays text-center fw-bold border-bottom pb-2 mb-2">
                 @foreach(['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $d)
                     <div class="col">{{ $d }}</div>
                 @endforeach
             </div>
 
-            <div class="row row-cols-7 g-0">
+            <div class="admin-calendar-grid">
                 @while($cursor <= $end)
                     @php
                         $key          = $cursor->format('Y-m-d');
@@ -61,7 +61,7 @@
                         $isToday      = $cursor->isToday();
                         $dayItems     = $appointments[$key] ?? collect();
                     @endphp
-                    <div class="col border p-2"
+                    <div class="admin-calendar-day border p-2"
                          style="min-height: 110px;
                                 {{ !$inMonth ? 'background:#f8f9fa;color:#adb5bd;' : '' }}
                                 {{ $isToday ? 'border:2px solid #0d6efd;' : '' }}">
