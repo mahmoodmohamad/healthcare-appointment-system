@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Appointment Calendar')
+@section('title', '@lang('site.appointment_calendar')')
 
 @section('content')
 
@@ -36,7 +36,7 @@
     {{-- Page Header --}}
     <div class="ui-page-head calendar-header">
         <div>
-            <h1 class="ui-title page-title">Appointment Calendar</h1>
+            <h1 class="ui-title page-title">@lang('site.appointment_calendar')</h1>
             <p class="ui-sub page-subtitle">
                 View and manage scheduled appointments across the month.
             </p>
@@ -63,7 +63,7 @@
                 <i class="bi bi-calendar3" aria-hidden="true"></i>
             </div>
             <div>
-                <div class="stat-label">Total Appointments</div>
+                <div class="stat-label">@lang('site.total_appointments')</div>
                 <div class="stat-value">{{ $totalAppointments }}</div>
             </div>
         </div>
@@ -73,7 +73,7 @@
                 <i class="bi bi-clock-history" aria-hidden="true"></i>
             </div>
             <div>
-                <div class="stat-label">Scheduled</div>
+                <div class="stat-label">@lang('site.scheduled')</div>
                 <div class="stat-value">{{ $scheduledCount }}</div>
             </div>
         </div>
@@ -93,7 +93,7 @@
                 <i class="bi bi-x-circle" aria-hidden="true"></i>
             </div>
             <div>
-                <div class="stat-label">Cancelled</div>
+                <div class="stat-label">@lang('site.cancelled')</div>
                 <div class="stat-value">{{ $cancelledCount }}</div>
             </div>
         </div>
@@ -118,7 +118,7 @@
                 <select name="doctor_id"
                         id="doctorFilter"
                         class="ui-input form-select">
-                    <option value="">All Doctors</option>
+                    <option value="">@lang('site.all_doctors')</option>
 
                     @foreach($doctors as $doctor)
                         <option value="{{ $doctor->id }}"
@@ -318,7 +318,7 @@
             <div class="legend">
                 <div class="legend-item">
                     <span class="legend-dot scheduled"></span>
-                    Scheduled
+                    @lang('site.scheduled')
                 </div>
 
                 <div class="legend-item">
@@ -328,7 +328,7 @@
 
                 <div class="legend-item">
                     <span class="legend-dot cancelled"></span>
-                    Cancelled
+                    @lang('site.cancelled')
                 </div>
             </div>
 
