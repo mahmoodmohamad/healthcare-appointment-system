@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Edit Patient')
+@section('title', __('site.edit_patient'))
 
 @section('content')
 <div class="ui-page container-fluid py-4">
@@ -7,7 +7,7 @@
         <div class="col-md-8">
             <div class="ui-card card">
                 <div class="ui-card-head card-header">
-                    <h4 class="mb-0">Edit Patient Information</h4>
+                    <h4 class="mb-0">@lang('site.edit_patient_information')</h4>
                 </div>
                 <div class="card-body">
                     @if($errors->any())
@@ -26,7 +26,7 @@
 
                         <!-- Full Name -->
                         <div class="mb-3">
-                            <label for="name" class="form-label">Full Name *</label>
+                            <label for="name" class="form-label">@lang('site.full_name_required')</label>
                             <input type="text" 
                                    name="name" 
                                    id="name" 
@@ -40,7 +40,7 @@
 
                         <!-- National ID -->
                         <div class="mb-3">
-                            <label for="national_id" class="form-label">National ID *</label>
+                            <label for="national_id" class="form-label">@lang('site.national_id_required')</label>
                             <input type="text" 
                                    name="national_id" 
                                    id="national_id" 
@@ -54,7 +54,7 @@
 
                         <!-- Phone -->
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Phone *</label>
+                            <label for="phone" class="form-label">@lang('site.phone_required')</label>
                             <input type="tel" 
                                    name="phone" 
                                    id="phone" 
@@ -68,7 +68,7 @@
 
                         <!-- Email -->
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
+                            <label for="email" class="form-label">@lang('site.email_required')</label>
                             <input type="email" 
                                    name="email" 
                                    id="email" 
@@ -82,12 +82,12 @@
 
                         <!-- City -->
                         <div class="mb-3">
-                            <label for="city_id" class="form-label">City *</label>
+                            <label for="city_id" class="form-label">@lang('site.city_required')</label>
                             <select name="city_id" 
                                     id="city_id" 
                                     class="form-select ui-input @error('city_id') is-invalid @enderror"
                                     required>
-                                <option value="">Select City</option>
+                                <option value="">@lang('site.select_city')</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}" 
                                         {{ old('city_id', $patient->city_id) == $city->id ? 'selected' : '' }}>
@@ -102,12 +102,12 @@
 
                         <!-- Gender -->
                         <div class="mb-3">
-                            <label for="gender" class="form-label">Gender *</label>
+                            <label for="gender" class="form-label">@lang('site.gender_required')</label>
                             <select name="gender" 
                                     id="gender" 
                                     class="form-select @error('gender') is-invalid @enderror"
                                     >
-                                <option value="">Select Gender</option>
+                                <option value="">@lang('site.select_gender')</option>
                                 <option value="male" {{ old('gender', $patient->gender) == 'male' ? 'selected' : '' }}>@lang('site.male')</option>
                                 <option value="female" {{ old('gender', $patient->gender) == 'female' ? 'selected' : '' }}>@lang('site.female')</option>
                             </select>
@@ -118,7 +118,7 @@
 
                         <!-- Birth Date -->
                         <div class="mb-3">
-                            <label for="birth_date" class="form-label">Birth Date *</label>
+                            <label for="birth_date" class="form-label">@lang('site.birth_date_required')</label>
                             <input type="date" 
                                    name="birth_date" 
                                    id="birth_date" 
@@ -134,7 +134,7 @@
 
                         <!-- Submit Button -->
                         <div class="mt-4">
-                            <button type="submit" class="ui-btn ui-btn-primary">Update Patient</button>
+                            <button type="submit" class="ui-btn ui-btn-primary">@lang('site.update_patient')</button>
                             <a href="{{ route('patients.index') }}" class="ui-btn ui-btn-ghost ms-2">@lang('site.cancel')</a>
                         </div>
 
