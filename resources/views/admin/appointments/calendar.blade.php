@@ -11,22 +11,22 @@
                 📋 List View
             </a>
             <a href="{{ route('admin.appointments.calendar', ['month' => $date->copy()->subMonth()->month, 'year' => $date->copy()->subMonth()->year]) }}"
-               class="btn btn-outline-secondary">← Prev</a>
-            <a href="{{ route('admin.appointments.calendar') }}" class="btn btn-outline-secondary">Today</a>
+               class="btn btn-outline-secondary">@lang('site.calendar_prev')</a>
+            <a href="{{ route('admin.appointments.calendar') }}" class="btn btn-outline-secondary">@lang('site.today')</a>
             <a href="{{ route('admin.appointments.calendar', ['month' => $date->copy()->addMonth()->month, 'year' => $date->copy()->addMonth()->year]) }}"
-               class="btn btn-outline-secondary">Next →</a>
+               class="btn btn-outline-secondary">@lang('site.calendar_next')</a>
         </div>
     </div>
 
     <!-- Doctor filter -->
     <div class="card mb-4">
         <div class="card-body d-flex align-items-center gap-3">
-            <label class="mb-0 fw-semibold">Filter by doctor:</label>
+            <label class="mb-0 fw-semibold">@lang('site.filter_by_doctor')</label>
             <form method="GET" class="d-flex gap-2" id="doctorFilterForm">
                 <input type="hidden" name="month" value="{{ $date->month }}">
                 <input type="hidden" name="year"  value="{{ $date->year }}">
                 <select name="doctor_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">All doctors</option>
+                    <option value="">@lang('site.all_doctors')</option>
                     @foreach($doctors as $doctor)
                         <option value="{{ $doctor->id }}"
                             {{ ($filters['doctor_id'] ?? '') == $doctor->id ? 'selected' : '' }}>

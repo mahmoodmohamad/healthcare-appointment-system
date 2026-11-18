@@ -9,7 +9,7 @@
          ============================================================ --}}
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
-            <h2 class="mb-0">Admin Dashboard</h2>
+            <h2 class="mb-0">@lang('site.admin_dashboard')</h2>
             <p class="text-muted mb-0">System overview as of {{ now()->format('l, F j, Y — g:i A') }}</p>
         </div>
         <div class="d-flex gap-2">
@@ -101,7 +101,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card border-start border-primary border-4 h-100">
                 <div class="card-body">
-                    <h6 class="text-muted mb-1 small text-uppercase">Today's Appointments</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">@lang('site.todays_appointments')</h6>
                     <h3 class="text-primary mb-0">{{ $stats['today_appointments'] }}</h3>
                 </div>
             </div>
@@ -109,7 +109,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card border-start border-info border-4 h-100">
                 <div class="card-body">
-                    <h6 class="text-muted mb-1 small text-uppercase">Scheduled</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">@lang('site.scheduled')</h6>
                     <h3 class="text-info mb-0">{{ $stats['scheduled'] }}</h3>
                 </div>
             </div>
@@ -117,7 +117,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card border-start border-success border-4 h-100">
                 <div class="card-body">
-                    <h6 class="text-muted mb-1 small text-uppercase">Completed</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">@lang('site.completed')</h6>
                     <h3 class="text-success mb-0">{{ $stats['completed'] }}</h3>
                 </div>
             </div>
@@ -125,7 +125,7 @@
         <div class="col-lg-3 col-md-6">
             <div class="card border-start border-warning border-4 h-100">
                 <div class="card-body">
-                    <h6 class="text-muted mb-1 small text-uppercase">This Month</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">@lang('site.this_month')</h6>
                     <h3 class="text-warning mb-0">{{ $stats['month_appointments'] }}</h3>
                 </div>
             </div>
@@ -141,7 +141,7 @@
         <div class="col-xl-8">
             <div class="card mb-3">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Appointments by Status</h5>
+                    <h5 class="mb-0">@lang('site.appointments_by_status')</h5>
                     <span class="badge bg-light text-dark">{{ $stats['total_appointments'] }} total</span>
                 </div>
                 <div class="card-body">
@@ -151,7 +151,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Appointments Trend — Last 6 Months</h5>
+                    <h5 class="mb-0">@lang('site.appointments_trend')</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="monthlyChart" height="90"></canvas>
@@ -165,9 +165,9 @@
             {{-- Top Doctors --}}
             <div class="card mb-3">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">🏆 Top Doctors</h5>
+                    <h5 class="mb-0">@lang('site.top_doctors')</h5>
                     <a href="{{ route('admin.doctors.index') }}"
-                       class="text-white small text-decoration-none">View all →</a>
+                       class="text-white small text-decoration-none">@lang('site.view_all')</a>
                 </div>
                 <div class="card-body p-0">
                     @forelse($topDoctors as $doctor)
@@ -180,7 +180,7 @@
                             <span class="badge bg-primary">{{ $doctor->appointments_count }}</span>
                         </div>
                     @empty
-                        <p class="text-muted text-center py-3 mb-0 small">No doctors yet.</p>
+                        <p class="text-muted text-center py-3 mb-0 small">@lang('site.no_doctors_yet')</p>
                     @endforelse
                 </div>
             </div>
@@ -188,9 +188,9 @@
             {{-- Top Receptionists --}}
             <div class="card mb-3">
                 <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">🎯 Top Receptionists</h5>
+                    <h5 class="mb-0">@lang('site.top_receptionists')</h5>
                     <a href="{{ route('admin.receptionists.index') }}"
-                       class="text-white small text-decoration-none">View all →</a>
+                       class="text-white small text-decoration-none">@lang('site.view_all')</a>
                 </div>
                 <div class="card-body p-0">
                     @forelse($topReceptionists as $r)
@@ -203,7 +203,7 @@
                             <span class="badge bg-secondary">{{ $r->appointments_count }}</span>
                         </div>
                     @empty
-                        <p class="text-muted text-center py-3 mb-0 small">No receptionists yet.</p>
+                        <p class="text-muted text-center py-3 mb-0 small">@lang('site.no_receptionists_yet')</p>
                     @endforelse
                 </div>
             </div>
@@ -211,9 +211,9 @@
             {{-- Recent Patients --}}
             <div class="card">
                 <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">👤 Recent Patients</h5>
+                    <h5 class="mb-0">@lang('site.recent_patients')</h5>
                     <a href="{{ route('admin.patients.index') }}"
-                       class="text-white small text-decoration-none">View all →</a>
+                       class="text-white small text-decoration-none">@lang('site.view_all')</a>
                 </div>
                 <div class="card-body p-0">
                     @forelse($recentPatients as $patient)
@@ -224,7 +224,7 @@
                             <small class="text-muted">{{ $patient->created_at->diffForHumans() }}</small>
                         </a>
                     @empty
-                        <p class="text-muted text-center py-3 mb-0 small">No patients yet.</p>
+                        <p class="text-muted text-center py-3 mb-0 small">@lang('site.no_patients_yet')</p>
                     @endforelse
                 </div>
             </div>
@@ -239,9 +239,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Appointments</h5>
+                    <h5 class="mb-0">@lang('site.recent_appointments')</h5>
                     <a href="{{ route('admin.appointments.index') }}" class="btn btn-sm btn-outline-primary">
-                        View all →
+                        @lang('site.view_all')
                     </a>
                 </div>
                 <div class="card-body p-0">
@@ -249,10 +249,10 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Date</th>
-                                    <th>Patient</th>
-                                    <th>Doctor</th>
-                                    <th>Status</th>
+                                    <th>@lang('site.date')</th>
+                                    <th>@lang('site.patient')</th>
+                                    <th>@lang('site.doctor')</th>
+                                    <th>@lang('site.status')</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -283,7 +283,7 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('admin.appointments.show', $appointment) }}"
-                                               class="btn btn-sm btn-outline-primary">Open</a>
+                                               class="btn btn-sm btn-outline-primary">@lang('site.open')</a>
                                         </td>
                                     </tr>
                                 @empty
