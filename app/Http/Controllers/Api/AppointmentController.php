@@ -176,11 +176,13 @@ class AppointmentController extends Controller
             $time = $data['appointment_time']
                 ?? $appointment->appointment_time;
 
+            $normalizedCurrentTime = substr((string) $appointment->appointment_time, 0, 5);
+            $normalizedTime = substr((string) $time, 0, 5);
             $sameSlot = (int) $doctorId === (int) $appointment->doctor_id
                 && $date === $appointment->appointment_date->format('Y-m-d')
-                && $time === $appointment->appointment_time;
+                && $normalizedTime === $normalizedCurrentTime;
 
-            if (! $sameSlot && ! Appointment::isAvailable($doctorId, $date, $time)) {
+            if (! $sameSlot && ! Appointment::isAvailable($doctorId, $date, $normalizedTime, $appointment->id)) {
                 return response()->json([
                     'message' => 'The selected doctor is not available at this time.',
                     'errors' => [
@@ -193,9 +195,9 @@ class AppointmentController extends Controller
 
             try {
                 $appointment->reschedule(
-                    $doctorId,
-                    Carbon::parse($date . ' ' . $time),
-                    $time
+                    (int) $doctorId,
+                    Carbon::parse($date)->toDateString(),
+                    $normalizedTime
                 );
             } catch (QueryException $e) {
                 throw Appointment::translateSlotConflict($e);
@@ -254,13 +256,9 @@ class AppointmentController extends Controller
 
     private function canManageAppointments($user): bool
     {
-        return $user !== null && (
-            $user->isAdmin()
-            || (
-                $user->isReceptionist()
-                && $user->receptionist !== null
-            )
-        );
+        return $user !== null
+            && $user->isReceptionist()
+            && $user->receptionist !== null;
     }
 
     private function canViewAppointment(
@@ -300,10 +298,6 @@ class AppointmentController extends Controller
             return false;
         }
 
-        if ($user->isAdmin()) {
-            return true;
-        }
-
         if ($user->isReceptionist()) {
             return $this->isOwnAppointment($user, $appointment);
         }
@@ -319,10 +313,6 @@ class AppointmentController extends Controller
     ): bool {
         if ($user === null) {
             return false;
-        }
-
-        if ($user->isAdmin()) {
-            return true;
         }
 
         return $user->isReceptionist()
