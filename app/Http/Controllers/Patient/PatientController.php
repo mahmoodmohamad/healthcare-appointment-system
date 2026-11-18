@@ -7,6 +7,11 @@ use App\Models\{Patient, User, City};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class PatientController extends Controller
 {
@@ -18,12 +23,19 @@ class PatientController extends Controller
         // index→viewAny, create/store→create, show→view, edit/update→update
         $this->authorizeResource(Patient::class, 'patient');
     }
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $query = Patient::with(['user', 'city', 'receptionist.user']);
+        $filters = $request->validate([
+            'search' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'city_id' => ['sometimes', 'nullable', 'integer', 'exists:cities,id'],
+        ]);
 
-        // Search by name, national_id, or phone
-        if ($search = $request->search) {
+        $query = Patient::query()
+            ->with(['user', 'city', 'receptionist.user'])
+            ->latest();
+
+        // Search by patient name, email, national ID, or phone.
+        if ($search = trim($filters['search'] ?? '')) {
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($userQuery) use ($search) {
                     $userQuery->where('name', 'LIKE', "%{$search}%")
@@ -35,12 +47,12 @@ class PatientController extends Controller
         }
 
         // Filter by city
-        if ($cityId = $request->city_id) {
+        if ($cityId = $filters['city_id'] ?? null) {
             $query->where('city_id', $cityId);
         }
 
-        $patients = $query->latest()->paginate(15);
-        $cities = City::all();
+        $patients = $query->paginate(15)->withQueryString();
+        $cities = City::query()->orderBy('name')->get(['id', 'name']);
 
         return view('patients.index', compact('patients', 'cities'));
     }
@@ -49,7 +61,7 @@ class PatientController extends Controller
      * Show the form for creating a new patient
      */
 
-    public function create()
+    public function create(): View
     {
         $cities = City::query()
             ->orderBy('name')
@@ -64,7 +76,7 @@ class PatientController extends Controller
     /**
      * Store a newly created patient
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
 
@@ -112,9 +124,10 @@ class PatientController extends Controller
     /**
      * Display the specified patient
      */
-    public function show(Patient $patient)
+    public function show(Patient $patient): View
     {
-        $receptionistId = auth()->user()->receptionist->id;
+        $receptionistId = auth()->user()->receptionist?->id;
+        abort_unless($receptionistId, 403);
 
         $patient->load(['user', 'city.country', 'receptionist.user']);
 
@@ -126,6 +139,7 @@ class PatientController extends Controller
             'upcoming_appointments' => $own()->where('status', 'scheduled')
                                              ->whereDate('appointment_date', '>=', today())->count(),
             'completed_appointments' => $own()->where('status', 'completed')->count(),
+            'total_diagnoses' => $patient->diagnoses()->count(),
         ];
 
         $upcomingAppointments = $own()
@@ -143,7 +157,7 @@ class PatientController extends Controller
     /**
      * Show the form for editing the patient
      */
-    public function edit(Patient $patient)
+    public function edit(Patient $patient): View
     {
         return view('patients.edit', [
             'patient' => $patient->load('user'),
@@ -151,7 +165,7 @@ class PatientController extends Controller
         ]);
     }
 
-    public function update(Request $request, Patient $patient)
+    public function update(Request $request, Patient $patient): RedirectResponse
     {
         $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
 
