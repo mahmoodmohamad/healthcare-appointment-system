@@ -95,10 +95,7 @@ class AppointmentPolicy
     public function reschedule(User $user, Appointment $appointment): bool
     {
         return $appointment->status === Appointment::SCHEDULED
-            && (
-                $this->ownsAsReceptionist($user, $appointment)
-                || $this->ownsAsDoctor($user, $appointment)
-            );
+            && $this->ownsAsReceptionist($user, $appointment);
     }
 
     /**
