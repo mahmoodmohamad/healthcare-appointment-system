@@ -167,25 +167,19 @@ class PatientController extends Controller
 
     public function update(Request $request, Patient $patient): RedirectResponse
     {
-        $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
-
         $request->validate([
             'name'        => 'required|string|max:255',
-            'email'       => 'required|email|max:255|unique:users,email,' . $patient->user_id,
             'national_id' => 'required|string|max:50|unique:patients,national_id,' . $patient->id,
             'phone'       => 'required|string|max:30',
             'city_id'     => 'required|exists:cities,id',
             'gender'      => ['nullable', Rule::in(['male', 'female'])],
             'birth_date'  => ['nullable', 'date', 'before:today'],
-            'password'    => ['nullable', 'confirmed', Password::min(10)],
         ]);
 
         DB::transaction(function () use ($request, $patient) {
-            $userData = ['name' => $request->name, 'email' => $request->email];
-            if ($request->filled('password')) {
-                $userData['password'] = Hash::make($request->password);
-            }
-            $patient->user->update($userData);
+            // Receptionists may maintain patient demographics, but must not
+            // change login credentials (email/password) for patient accounts.
+            $patient->user->update(['name' => $request->name]);
 
             $patient->update($request->only(
                 'national_id',
