@@ -80,7 +80,7 @@
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('admin.receptionists.index') }}" class="btn btn-secondary">
-                                Cancel
+                                @lang('site.cancel')
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 Create Receptionist

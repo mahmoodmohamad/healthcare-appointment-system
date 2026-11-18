@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="mb-0">{{ $receptionist->user->name }}</h2>
-            <p class="text-muted mb-0">Receptionist</p>
+            <p class="text-muted mb-0">@lang('site.receptionist')</p>
         </div>
         <a href="{{ route('admin.receptionists.index') }}" class="btn btn-secondary">
             ← Back to Receptionists
@@ -27,7 +27,7 @@
             <div class="card bg-success text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['completed'] }}</h3>
-                    <small>Completed</small>
+                    <small>@lang('site.completed')</small>
                 </div>
             </div>
         </div>
@@ -60,9 +60,9 @@
                     <p><strong>City:</strong> {{ $receptionist->city->name ?? '—' }}</p>
                     <p class="mb-0"><strong>Account:</strong>
                         @if($receptionist->user->activation)
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">@lang('site.active')</span>
                         @else
-                            <span class="badge bg-secondary">Inactive</span>
+                            <span class="badge bg-secondary">@lang('site.inactive')</span>
                         @endif
                     </p>
                 </div>
@@ -80,10 +80,10 @@
                             <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Patient</th>
-                                        <th>Doctor</th>
-                                        <th>Status</th>
+                                        <th>@lang('site.date')</th>
+                                        <th>@lang('site.patient')</th>
+                                        <th>@lang('site.doctor')</th>
+                                        <th>@lang('site.status')</th>
                                         <th></th>
                                     </tr>
                                 </thead>

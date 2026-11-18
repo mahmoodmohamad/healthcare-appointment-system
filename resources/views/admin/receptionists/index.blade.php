@@ -6,7 +6,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-0">Receptionists</h2>
+            <h2 class="mb-0">@lang('site.receptionists')</h2>
             <p class="text-muted mb-0">All registered front-desk staff.</p>
         </div>
         <a href="{{ route('admin.receptionists.create') }}" class="btn btn-primary">
@@ -25,7 +25,7 @@
         <div class="card-body">
             <form method="GET" action="{{ route('admin.receptionists.index') }}" class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">Search</label>
+                    <label class="form-label">@lang('site.search')</label>
                     <input type="text" name="search" class="form-control"
                            placeholder="Name, email, phone..."
                            value="{{ $filters['search'] ?? '' }}">
@@ -43,7 +43,7 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end gap-2">
-                    <button class="btn btn-primary flex-grow-1">Filter</button>
+                    <button class="btn btn-primary flex-grow-1">@lang('site.filter')</button>
                     <a href="{{ route('admin.receptionists.index') }}" class="btn btn-outline-secondary">Clear</a>
                 </div>
             </form>
@@ -58,12 +58,12 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
+                                <th>@lang('site.name')</th>
+                                <th>@lang('site.email')</th>
+                                <th>@lang('site.phone')</th>
                                 <th>City</th>
-                                <th>Appointments</th>
-                                <th>Patients</th>
+                                <th>@lang('site.appointments')</th>
+                                <th>@lang('site.patients')</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -79,7 +79,7 @@
                                     <td><span class="badge bg-success">{{ $r->patients_count }}</span></td>
                                     <td>
                                         <a href="{{ route('admin.receptionists.show', $r) }}"
-                                           class="btn btn-sm btn-info">View</a>
+                                           class="btn btn-sm btn-info">@lang('site.view')</a>
                                     </td>
                                 </tr>
                             @endforeach
