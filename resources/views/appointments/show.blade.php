@@ -1,207 +1,452 @@
+
 @extends('layouts.app')
+
 @section('title', 'Appointment Details')
 
 @section('content')
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Appointment Details</h2>
-                <a href="{{ route('appointments.index') }}" class="btn btn-secondary">
-                    ← Back to List
-                </a>
-            </div>
+@php
+    $user = auth()->user();
 
-            <!-- Appointment Info -->
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">Appointment Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="150">ID:</th>
-                                    <td>#{{ $appointment->id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Date:</th>
-                                    <td>{{ $appointment->appointment_date->format('l, F j, Y') }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Time:</th>
-                                    <td>{{ $appointment->appointment_time ?? $appointment->appointment_date->format('g:i A') }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Status:</th>
-                                    <td>
-                                        @if($appointment->status == 'scheduled')
-                                            <span class="badge bg-primary">Scheduled</span>
-                                        @elseif($appointment->status == 'completed')
-                                            <span class="badge bg-success">Completed</span>
-                                        @elseif($appointment->status == 'cancelled')
-                                            <span class="badge bg-danger">Cancelled</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="150">Booked:</th>
-                                    <td>{{ $appointment->created_at->format('Y-m-d h:i A') }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Booked By:</th>
-                                    <td>
-                                        @if($appointment->receptionist)
-                                            {{ $appointment->receptionist->user->name }} (Receptionist)
-                                        @else
-                                            System
-                                        @endif
-                                    </td>
-                                </tr>
-                                @if($appointment->notes)
-                                <tr>
-                                    <th>Notes:</th>
-                                    <td>{{ $appointment->notes }}</td>
-                                </tr>
-                                @endif
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    $isReceptionist = $user?->isReceptionist() ?? false;
 
-            <!-- Patient Info -->
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Patient Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="150">Name:</th>
-                                    <td>{{ $appointment->patient->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>National ID:</th>
-                                    <td>{{ $appointment->patient->national_id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Phone:</th>
-                                    <td>{{ $appointment->patient->phone }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="150">Email:</th>
-                                    <td>{{ $appointment->patient->user->email }}</td>
-                                </tr>
-                                <tr>
-                                    <th>City:</th>
-                                    <td>{{ $appointment->patient->city->name ?? 'N/A' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    $canViewMedicalData = $user !== null && (
+        $user->isAdmin()
+        || $user->isDoctor()
+        || $user->isPatient()
+    );
 
-            <!-- Doctor Info -->
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Doctor Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="150">Name:</th>
-                                    <td>Dr. {{ $appointment->doctor->user->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Specialization:</th>
-                                    <td>{{ $appointment->doctor->specialization }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <th width="150">Phone:</th>
-                                    <td>{{ $appointment->doctor->phone }}</td>
-                                </tr>
-                                <tr>
-                                    <th>City:</th>
-                                    <td>{{ $appointment->doctor->city->name ?? 'N/A' }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    $status = $appointment->status;
 
-            <!-- Diagnosis Info -->
-            @if($appointment->diagnosis)
-            <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0">Diagnosis</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <strong>Symptoms:</strong>
-                        <p>{{ $appointment->diagnosis->symptoms }}</p>
-                    </div>
-                    <div class="mb-3">
-                        <strong>Diagnosis:</strong>
-                        <p>{{ $appointment->diagnosis->diagnosis }}</p>
-                    </div>
-                    @if($appointment->diagnosis->prescription)
-                    <div class="mb-3">
-                        <strong>Prescription:</strong>
-                        <p>{{ $appointment->diagnosis->prescription }}</p>
-                    </div>
-                    @endif
-                    <small class="text-muted">
-                        Diagnosed on: {{ $appointment->diagnosis->created_at->format('Y-m-d h:i A') }}
-                    </small>
-                </div>
-            </div>
-            @else
-                @if($appointment->status == 'completed')
-                <div class="alert alert-info">
-                    This appointment is completed but no diagnosis has been recorded yet.
-                </div>
-                @endif
-            @endif
+    $statusConfig = match ($status) {
+        'scheduled' => [
+            'label' => 'Scheduled',
+            'class' => 'status-scheduled',
+            'icon' => 'bi-calendar-check',
+        ],
+        'completed' => [
+            'label' => 'Completed',
+            'class' => 'status-completed',
+            'icon' => 'bi-check-circle',
+        ],
+        'cancelled' => [
+            'label' => 'Cancelled',
+            'class' => 'status-cancelled',
+            'icon' => 'bi-x-circle',
+        ],
+        default => [
+            'label' => ucfirst($status ?? 'Unknown'),
+            'class' => 'status-unknown',
+            'icon' => 'bi-info-circle',
+        ],
+    };
 
-            <!-- Actions -->
-            @if($appointment->status == 'scheduled')
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Actions</h5>
-                    <form action="{{ route('appointments.destroy', $appointment) }}" 
-                          method="POST" 
-                          onsubmit="return confirm('Are you sure you want to cancel this appointment?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">
-                            ❌ Cancel Appointment
-                        </button>
-                    </form>
-                </div>
-            </div>
-            @endif
+    $appointmentDate = $appointment->appointment_date;
+    $appointmentTime = $appointment->appointment_time;
+
+    $patient = $appointment->patient;
+    $doctor = $appointment->doctor;
+    $diagnosis = $appointment->diagnosis;
+
+    $canCancel = $status === 'scheduled' && (
+        $user?->isAdmin()
+        || (
+            $user?->isReceptionist()
+            && $user->receptionist !== null
+            && (int) $appointment->receptionist_id === (int) $user->receptionist->id
+        )
+    );
+@endphp
+
+<div class="appointment-details container-fluid py-4">
+
+    {{-- Page Header --}}
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Appointment Details</h1>
+            <p class="page-subtitle">
+                View appointment information and related records.
+            </p>
         </div>
+
+        <a href="{{ route('appointments.index') }}" class="back-btn">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            Back to Appointments
+        </a>
     </div>
+
+    {{-- Appointment Overview --}}
+    <section class="panel hero-card">
+
+        <div class="hero-top">
+            <div>
+                <div class="appointment-reference">
+                    APPOINTMENT REFERENCE
+                    <strong>#{{ $appointment->id }}</strong>
+                </div>
+
+                <h2 class="hero-title">Appointment Overview</h2>
+
+                <p class="hero-description">
+                    Review the current appointment schedule and status.
+                </p>
+            </div>
+
+            <span class="status-badge {{ $statusConfig['class'] }}">
+                <i class="bi {{ $statusConfig['icon'] }}" aria-hidden="true"></i>
+                {{ $statusConfig['label'] }}
+            </span>
+        </div>
+
+        <div class="hero-stats">
+
+            <div class="hero-stat">
+                <div class="stat-label">Appointment Date</div>
+                <div class="stat-value">
+                    <i class="bi bi-calendar3" aria-hidden="true"></i>
+                    {{ $appointmentDate?->format('D, M d, Y') ?? 'Not set' }}
+                </div>
+            </div>
+
+            <div class="hero-stat">
+                <div class="stat-label">Appointment Time</div>
+                <div class="stat-value">
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+
+                    @if($appointmentTime)
+                        {{ \Illuminate\Support\Carbon::parse($appointmentTime)->format('h:i A') }}
+                    @else
+                        {{ $appointmentDate?->format('h:i A') ?? 'Not set' }}
+                    @endif
+                </div>
+            </div>
+
+            <div class="hero-stat">
+                <div class="stat-label">Booking Created</div>
+                <div class="stat-value">
+                    <i class="bi bi-calendar-plus" aria-hidden="true"></i>
+                    {{ $appointment->created_at?->format('M d, Y') ?? '—' }}
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    {{-- Patient and Doctor --}}
+    <div class="row g-3 mb-1">
+
+        {{-- Patient --}}
+        <div class="col-12 col-lg-6">
+            <section class="panel section-card">
+
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="bi bi-person" aria-hidden="true"></i>
+                    </div>
+
+                    <div>
+                        <h3>Patient Information</h3>
+                        <p>Patient contact and identification details</p>
+                    </div>
+                </div>
+
+                <div class="section-body">
+
+                    <div class="person-profile">
+                        <div class="avatar">
+                            <i class="bi bi-person-fill" aria-hidden="true"></i>
+                        </div>
+
+                        <div>
+                            <div class="person-name">
+                                {{ $patient?->user?->name ?? 'Unknown patient' }}
+                            </div>
+
+                            <div class="person-role">Registered Patient</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Patient ID</span>
+                        <span class="detail-value">
+                            #{{ $appointment->patient_id }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">National ID</span>
+                        <span class="detail-value">
+                            {{ $patient?->national_id ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value">
+                            {{ $patient?->phone ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">
+                            {{ $patient?->user?->email ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">City</span>
+                        <span class="detail-value">
+                            {{ $patient?->city?->name ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        {{-- Doctor --}}
+        <div class="col-12 col-lg-6">
+            <section class="panel section-card">
+
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="bi bi-person-badge" aria-hidden="true"></i>
+                    </div>
+
+                    <div>
+                        <h3>Doctor Information</h3>
+                        <p>Assigned healthcare professional</p>
+                    </div>
+                </div>
+
+                <div class="section-body">
+
+                    <div class="person-profile">
+                        <div class="avatar doctor">
+                            <i class="bi bi-heart-pulse-fill" aria-hidden="true"></i>
+                        </div>
+
+                        <div>
+                            <div class="person-name">
+                                Dr. {{ $doctor?->user?->name ?? 'Unknown doctor' }}
+                            </div>
+
+                            <div class="person-role">
+                                {{ $doctor?->specialization ?? 'Specialization not available' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Doctor ID</span>
+                        <span class="detail-value">
+                            #{{ $appointment->doctor_id }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Specialization</span>
+                        <span class="detail-value">
+                            {{ $doctor?->specialization ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value">
+                            {{ $doctor?->phone ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">City</span>
+                        <span class="detail-value">
+                            {{ $doctor?->city?->name ?? 'Not available' }}
+                        </span>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    {{-- Booking Information --}}
+    <section class="panel section-card">
+
+        <div class="section-header">
+            <div class="section-icon">
+                <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+            </div>
+
+            <div>
+                <h3>Booking Information</h3>
+                <p>Administrative details about this appointment</p>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="row g-3">
+
+                <div class="col-12 col-md-6">
+                    <div class="detail-row">
+                        <span class="detail-label">Appointment ID</span>
+                        <span class="detail-value">#{{ $appointment->id }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Booked By</span>
+                        <span class="detail-value">
+                            {{ $appointment->receptionist?->user?->name ?? 'System' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="detail-row">
+                        <span class="detail-label">Created At</span>
+                        <span class="detail-value">
+                            {{ $appointment->created_at?->format('M d, Y - h:i A') ?? '—' }}
+                        </span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="detail-label">Last Updated</span>
+                        <span class="detail-value">
+                            {{ $appointment->updated_at?->format('M d, Y - h:i A') ?? '—' }}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            @if(! $isReceptionist && $appointment->notes)
+                <div class="mt-4">
+                    <div class="detail-label fw-bold mb-2">
+                        Appointment Notes
+                    </div>
+
+                    <div class="notes-content">{{ $appointment->notes }}</div>
+                </div>
+            @endif
+
+        </div>
+    </section>
+
+    {{-- Medical Information: Authorized Roles Only --}}
+    @if($canViewMedicalData)
+
+        @if($diagnosis)
+            <section class="panel section-card medical-card">
+
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="bi bi-clipboard2-pulse" aria-hidden="true"></i>
+                    </div>
+
+                    <div>
+                        <h3>Medical Assessment</h3>
+                        <p>Clinical information recorded for this appointment</p>
+                    </div>
+                </div>
+
+                <div class="section-body">
+
+                    <div class="medical-field">
+                        <div class="medical-field-label">
+                            <i class="bi bi-activity" aria-hidden="true"></i>
+                            Reported Symptoms
+                        </div>
+
+                        <div class="medical-field-content">
+                            {{ $diagnosis->symptoms ?: 'No symptoms recorded.' }}
+                        </div>
+                    </div>
+
+                    <div class="medical-field">
+                        <div class="medical-field-label">
+                            <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
+                            Diagnosis
+                        </div>
+
+                        <div class="medical-field-content">
+                            {{ $diagnosis->diagnosis ?: 'No diagnosis recorded.' }}
+                        </div>
+                    </div>
+
+                    @if($diagnosis->prescription)
+                        <div class="medical-field">
+                            <div class="medical-field-label">
+                                <i class="bi bi-prescription2" aria-hidden="true"></i>
+                                Prescription
+                            </div>
+
+                            <div class="medical-field-content">
+                                {{ $diagnosis->prescription }}
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="metadata">
+                        <i class="bi bi-clock-history me-1" aria-hidden="true"></i>
+                        Recorded on
+                        {{ $diagnosis->created_at?->format('M d, Y - h:i A') ?? 'Unknown date' }}
+                    </div>
+
+                </div>
+            </section>
+
+        @elseif($status === 'completed')
+
+            <div class="empty-medical mb-4">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                <div>
+                    <strong>No medical assessment recorded</strong>
+                    <p>
+                        This appointment is marked as completed,
+                        but no diagnosis has been recorded yet.
+                    </p>
+                </div>
+            </div>
+
+        @endif
+
+    @endif
+
+    {{-- Appointment Actions --}}
+    @if($canCancel)
+
+        <section class="panel actions-card">
+
+            <h3 class="actions-title">Appointment Actions</h3>
+
+            <p class="actions-description">
+                Manage this appointment. Cancellation cannot be treated as a normal edit.
+            </p>
+
+            <form action="{{ route('appointments.destroy', $appointment) }}"
+                  method="POST"
+                  onsubmit="return confirm('Are you sure you want to cancel appointment #{{ $appointment->id }}? This action cannot be undone.')">
+
+                @csrf
+                @method('DELETE')
+
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                    Cancel Appointment
+                </button>
+
+            </form>
+
+            <div class="metadata">
+                <i class="bi bi-shield-lock me-1" aria-hidden="true"></i>
+                Only authorized users can perform this action.
+            </div>
+
+        </section>
+
+    @endif
+
 </div>
 @endsection

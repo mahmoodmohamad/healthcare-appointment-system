@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Http\Controllers\Api;
@@ -8,11 +9,19 @@ use App\Http\Requests\Api\UpdateAppointmentRequest;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class AppointmentController extends Controller
 {
+    private const BASIC_WITH = [
+        'patient.user',
+        'doctor.user',
+        'receptionist.user',
+    ];
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -23,26 +32,29 @@ class AppointmentController extends Controller
             ], 403);
         }
 
+        $validated = $request->validate([
+            'status' => ['sometimes', 'string', 'in:scheduled,completed,cancelled'],
+            'date' => ['sometimes', 'date_format:Y-m-d'],
+        ]);
+
         $query = Appointment::query()
-            ->with(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis'])
+            ->with($this->relationsFor($user))
             ->latest('appointment_date')
             ->latest('appointment_time');
 
-        if ($user->isDoctor()) {
-            $query->where('doctor_id', $user->doctor->id);
-        } elseif ($user->isPatient()) {
-            $query->where('patient_id', $user->patient->id);
+        $this->applyOwnershipFilter($query, $user);
+
+        if (isset($validated['status'])) {
+            $query->where('status', $validated['status']);
         }
 
-        $query->when($request->filled('status'), function ($builder) use ($request) {
-            $builder->where('status', $request->string('status')->toString());
-        });
+        if (isset($validated['date'])) {
+            $query->whereDate('appointment_date', $validated['date']);
+        }
 
-        $query->when($request->filled('date'), function ($builder) use ($request) {
-            $builder->whereDate('appointment_date', $request->date('date'));
-        });
-
-        return AppointmentResource::collection($query->paginate(15));
+        return AppointmentResource::collection(
+            $query->paginate(15)->withQueryString()
+        );
     }
 
     public function store(StoreAppointmentRequest $request): JsonResponse
@@ -57,45 +69,42 @@ class AppointmentController extends Controller
 
         $data = $request->validated();
 
-        if (! Appointment::isAvailable(
-            $data['doctor_id'],
-            $data['appointment_date'],
-            $data['appointment_time']
-        )) {
-            return response()->json([
-                'message' => 'The selected doctor is not available at this time.',
-                'errors' => [
-                    'appointment_time' => ['This time slot is already booked.'],
-                ],
-            ], 422);
+        try {
+            $appointment = Appointment::book([
+                ...$data,
+                'receptionist_id' => $user->isReceptionist()
+                    ? $user->receptionist?->id
+                    : null,
+                'appointment_date' => Carbon::parse(
+                    $data['appointment_date'] . ' ' . $data['appointment_time']
+                ),
+                'status' => 'scheduled',
+            ]);
+        } catch (QueryException $e) {
+            throw Appointment::translateSlotConflict($e);
         }
 
-        $appointment = Appointment::book([
-            ...$data,
-            'receptionist_id' => optional($user->receptionist)->id,
-            'appointment_date' => Carbon::parse(
-                $data['appointment_date'] . ' ' . $data['appointment_time']
-            ),
-            'status' => 'scheduled',
-        ]);
-
-        $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
+        $appointment->load($this->relationsFor($user));
 
         return (new AppointmentResource($appointment))
             ->response()
             ->setStatusCode(201);
     }
 
-    public function show(Request $request, Appointment $appointment): JsonResponse|AppointmentResource
-    {
-        if (! $this->canViewAppointment($request->user(), $appointment)) {
+    public function show(
+        Request $request,
+        Appointment $appointment
+    ): JsonResponse|AppointmentResource {
+        $user = $request->user();
+
+        if (! $this->canViewAppointment($user, $appointment)) {
             return response()->json([
                 'message' => 'You are not authorized to view this appointment.',
             ], 403);
         }
 
         return new AppointmentResource(
-            $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis'])
+            $appointment->load($this->relationsFor($user))
         );
     }
 
@@ -112,48 +121,121 @@ class AppointmentController extends Controller
         }
 
         $data = $request->validated();
-        $doctorId = $data['doctor_id'] ?? $appointment->doctor_id;
-        $date = $data['appointment_date'] ?? $appointment->appointment_date->format('Y-m-d');
-        $time = $data['appointment_time'] ?? $appointment->appointment_time;
 
-        if (isset($data['appointment_date']) || isset($data['appointment_time']) || isset($data['doctor_id'])) {
-            $isSameSlot = $doctorId === $appointment->doctor_id
+        if ($user->isReceptionist()) {
+            // Receptionists may only update scheduling information.
+            $allowed = [
+                'doctor_id',
+                'appointment_date',
+                'appointment_time',
+            ];
+
+            $data = array_intersect_key(
+                $data,
+                array_flip($allowed)
+            );
+        } elseif ($user->isDoctor()) {
+            // Doctors may update appointment status and notes,
+            // but cannot change the booking or its ownership.
+            $allowed = ['status', 'notes'];
+
+            $data = array_intersect_key(
+                $data,
+                array_flip($allowed)
+            );
+
+            if (isset($data['status']) && $data['status'] !== 'completed') {
+                return response()->json([
+                    'message' => 'Doctors may only mark appointments as completed.',
+                ], 422);
+            }
+        }
+
+        $scheduleChanged = isset($data['doctor_id'])
+            || isset($data['appointment_date'])
+            || isset($data['appointment_time']);
+
+        if ($scheduleChanged) {
+            if (! $user->isAdmin() && ! $user->isReceptionist()) {
+                return response()->json([
+                    'message' => 'You are not authorized to reschedule this appointment.',
+                ], 403);
+            }
+
+            if ($appointment->status !== 'scheduled') {
+                return response()->json([
+                    'message' => 'Only scheduled appointments can be rescheduled.',
+                ], 422);
+            }
+
+            $doctorId = $data['doctor_id'] ?? $appointment->doctor_id;
+
+            $date = $data['appointment_date']
+                ?? $appointment->appointment_date->format('Y-m-d');
+
+            $time = $data['appointment_time']
+                ?? $appointment->appointment_time;
+
+            $sameSlot = (int) $doctorId === (int) $appointment->doctor_id
                 && $date === $appointment->appointment_date->format('Y-m-d')
                 && $time === $appointment->appointment_time;
 
-            if (! $isSameSlot && ! Appointment::isAvailable($doctorId, $date, $time)) {
+            if (! $sameSlot && ! Appointment::isAvailable($doctorId, $date, $time)) {
                 return response()->json([
                     'message' => 'The selected doctor is not available at this time.',
                     'errors' => [
-                        'appointment_time' => ['This time slot is already booked.'],
+                        'appointment_time' => [
+                            'This time slot is already booked.',
+                        ],
                     ],
                 ], 422);
             }
 
-            $data['appointment_date'] = Carbon::parse($date . ' ' . $time);
-            $data['appointment_time'] = $time;
+            try {
+                $appointment->reschedule(
+                    $doctorId,
+                    Carbon::parse($date . ' ' . $time),
+                    $time
+                );
+            } catch (QueryException $e) {
+                throw Appointment::translateSlotConflict($e);
+            }
+
+            unset(
+                $data['doctor_id'],
+                $data['appointment_date'],
+                $data['appointment_time']
+            );
         }
 
-        try {
+        if (! empty($data)) {
             $appointment->update($data);
-        } catch (\Illuminate\Database\QueryException $e) {
-            throw Appointment::translateSlotConflict($e);
         }
 
-        $appointment->load(['patient.user', 'doctor.user', 'receptionist.user', 'diagnosis']);
+        $appointment->load($this->relationsFor($user));
 
         return new AppointmentResource($appointment);
     }
 
-    public function destroy(Request $request, Appointment $appointment): JsonResponse
-    {
-        if (! $this->canManageAppointment($request->user(), $appointment)) {
+    public function destroy(
+        Request $request,
+        Appointment $appointment
+    ): JsonResponse {
+        $user = $request->user();
+
+        if (! $this->canCancelAppointment($user, $appointment)) {
             return response()->json([
                 'message' => 'You are not authorized to cancel this appointment.',
             ], 403);
         }
 
-        $appointment->update(['status' => 'cancelled']);
+        if ($appointment->status !== 'scheduled') {
+            return response()->json([
+                'message' => 'Only scheduled appointments can be cancelled.',
+            ], 422);
+        }
+
+        $appointment->cancel();
 
         return response()->json([
             'message' => 'Appointment cancelled successfully.',
@@ -172,31 +254,120 @@ class AppointmentController extends Controller
 
     private function canManageAppointments($user): bool
     {
-        return $user !== null && ($user->isAdmin() || $user->isReceptionist());
+        return $user !== null && (
+            $user->isAdmin()
+            || (
+                $user->isReceptionist()
+                && $user->receptionist !== null
+            )
+        );
     }
 
-    private function canViewAppointment($user, Appointment $appointment): bool
-    {
+    private function canViewAppointment(
+        $user,
+        Appointment $appointment
+    ): bool {
         if ($user === null) {
             return false;
         }
 
-        if ($user->isAdmin() || $user->isReceptionist()) {
+        if ($user->isAdmin()) {
             return true;
         }
 
-        return ($user->isDoctor() && optional($user->doctor)->id === $appointment->doctor_id)
-            || ($user->isPatient() && optional($user->patient)->id === $appointment->patient_id);
+        if ($user->isReceptionist()) {
+            return $this->isOwnAppointment($user, $appointment);
+        }
+
+        if ($user->isDoctor()) {
+            return $user->doctor !== null
+                && (int) $user->doctor->id === (int) $appointment->doctor_id;
+        }
+
+        if ($user->isPatient()) {
+            return $user->patient !== null
+                && (int) $user->patient->id === (int) $appointment->patient_id;
+        }
+
+        return false;
     }
 
-    private function canManageAppointment($user, Appointment $appointment): bool
-    {
-        if ($this->canManageAppointments($user)) {
+    private function canManageAppointment(
+        $user,
+        Appointment $appointment
+    ): bool {
+        if ($user === null) {
+            return false;
+        }
+
+        if ($user->isAdmin()) {
             return true;
         }
 
-        return $user !== null
-            && $user->isDoctor()
-            && optional($user->doctor)->id === $appointment->doctor_id;
+        if ($user->isReceptionist()) {
+            return $this->isOwnAppointment($user, $appointment);
+        }
+
+        return $user->isDoctor()
+            && $user->doctor !== null
+            && (int) $user->doctor->id === (int) $appointment->doctor_id;
+    }
+
+    private function canCancelAppointment(
+        $user,
+        Appointment $appointment
+    ): bool {
+        if ($user === null) {
+            return false;
+        }
+
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isReceptionist()
+            && $this->isOwnAppointment($user, $appointment);
+    }
+
+    private function isOwnAppointment(
+        $user,
+        Appointment $appointment
+    ): bool {
+        return $user->receptionist !== null
+            && (int) $appointment->receptionist_id === (int) $user->receptionist->id;
+    }
+
+    private function applyOwnershipFilter(
+        Builder $query,
+        $user
+    ): void {
+        if ($user->isReceptionist()) {
+            $query->where(
+                'receptionist_id',
+                $user->receptionist->id
+            );
+        } elseif ($user->isDoctor()) {
+            $query->where(
+                'doctor_id',
+                $user->doctor->id
+            );
+        } elseif ($user->isPatient()) {
+            $query->where(
+                'patient_id',
+                $user->patient->id
+            );
+        }
+    }
+
+    private function relationsFor($user): array
+    {
+        $relations = self::BASIC_WITH;
+
+        // Receptionists must never receive diagnosis data.
+        if (! $user->isReceptionist()) {
+            $relations[] = 'diagnosis';
+        }
+
+        return $relations;
     }
 }

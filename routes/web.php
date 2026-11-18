@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAppointmentController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminDoctorController;
+use App\Http\Controllers\Admin\AdminPatientController;
+use App\Http\Controllers\Admin\AdminReceptionistController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Appointment\AppointmentController;
 use App\Http\Controllers\Auth\LoginController;
@@ -9,10 +13,6 @@ use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Patient\DashboardController as PatientDashboardController;
 use App\Http\Controllers\Patient\PatientController;
 use App\Http\Controllers\Receptionist\DashboardController as ReceptionistDashboardController;
-use App\Http\Controllers\Admin\AdminAppointmentController;
-use App\Http\Controllers\Admin\AdminDoctorController;
-use App\Http\Controllers\Admin\AdminReceptionistController;
-use App\Http\Controllers\Admin\AdminPatientController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -77,19 +77,24 @@ Route::middleware(['auth', 'active', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+        // Dashboard & statistics
         Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
 
         Route::get('/statistics', [AdminController::class, 'statistics'])
             ->name('statistics');
 
+        // Users
+        Route::post('/users/{user}/toggle-activation', [UserManagementController::class, 'toggleActivation'])
+            ->name('users.toggle-activation');
+
         Route::resource('users', UserManagementController::class)
             ->except(['edit', 'update']);
 
-        Route::post('/users/{user}/toggle-activation', [UserManagementController::class, 'toggleActivation'])
-            ->name('users.toggle-activation');
-        
-            Route::get('/appointments', [AdminAppointmentController::class, 'index'])
+        // Appointments (read-only for admin).
+        // "calendar" must be declared before "{appointment}".
+        Route::get('/appointments', [AdminAppointmentController::class, 'index'])
             ->name('appointments.index');
 
         Route::get('/appointments/calendar', [AdminAppointmentController::class, 'calendar'])
@@ -98,44 +103,44 @@ Route::middleware(['auth', 'active', 'role:admin'])
         Route::get('/appointments/{appointment}', [AdminAppointmentController::class, 'show'])
             ->name('appointments.show');
 
-            // ---- Doctors ------------------------------------------------
-Route::get('/doctors', [AdminDoctorController::class, 'index'])
-    ->name('doctors.index');
+        // Doctors
+        Route::get('/doctors', [AdminDoctorController::class, 'index'])
+            ->name('doctors.index');
 
-Route::get('/doctors/create', [AdminDoctorController::class, 'create'])
-    ->name('doctors.create');
+        Route::get('/doctors/create', [AdminDoctorController::class, 'create'])
+            ->name('doctors.create');
 
-Route::post('/doctors', [AdminDoctorController::class, 'store'])
-    ->name('doctors.store');
+        Route::post('/doctors', [AdminDoctorController::class, 'store'])
+            ->name('doctors.store');
 
-Route::get('/doctors/{doctor}', [AdminDoctorController::class, 'show'])
-    ->name('doctors.show');
+        Route::get('/doctors/{doctor}', [AdminDoctorController::class, 'show'])
+            ->name('doctors.show');
 
-// ---- Receptionists -------------------------------------------
-Route::get('/receptionists', [AdminReceptionistController::class, 'index'])
-    ->name('receptionists.index');
+        // Receptionists
+        Route::get('/receptionists', [AdminReceptionistController::class, 'index'])
+            ->name('receptionists.index');
 
-Route::get('/receptionists/create', [AdminReceptionistController::class, 'create'])
-    ->name('receptionists.create');
+        Route::get('/receptionists/create', [AdminReceptionistController::class, 'create'])
+            ->name('receptionists.create');
 
-Route::post('/receptionists', [AdminReceptionistController::class, 'store'])
-    ->name('receptionists.store');
+        Route::post('/receptionists', [AdminReceptionistController::class, 'store'])
+            ->name('receptionists.store');
 
-Route::get('/receptionists/{receptionist}', [AdminReceptionistController::class, 'show'])
-    ->name('receptionists.show');
+        Route::get('/receptionists/{receptionist}', [AdminReceptionistController::class, 'show'])
+            ->name('receptionists.show');
 
-    // ---- Patients -----------------------------------------------
-Route::get('/patients', [AdminPatientController::class, 'index'])
-    ->name('patients.index');
+        // Patients
+        Route::get('/patients', [AdminPatientController::class, 'index'])
+            ->name('patients.index');
 
-Route::get('/patients/create', [AdminPatientController::class, 'create'])
-    ->name('patients.create');
+        Route::get('/patients/create', [AdminPatientController::class, 'create'])
+            ->name('patients.create');
 
-Route::post('/patients', [AdminPatientController::class, 'store'])
-    ->name('patients.store');
+        Route::post('/patients', [AdminPatientController::class, 'store'])
+            ->name('patients.store');
 
-Route::get('/patients/{patient}', [AdminPatientController::class, 'show'])
-    ->name('patients.show');
+        Route::get('/patients/{patient}', [AdminPatientController::class, 'show'])
+            ->name('patients.show');
     });
 
 /*
@@ -146,53 +151,22 @@ Route::get('/patients/{patient}', [AdminPatientController::class, 'show'])
 
 Route::middleware(['auth', 'active', 'role:receptionist'])
     ->group(function () {
+
         Route::get('/receptionist/dashboard', ReceptionistDashboardController::class)
             ->name('receptionist.dashboard');
 
+        // Appointments.
+        // "calendar" must be declared before the resource ("appointments/{appointment}").
         Route::get('/appointments/calendar', [AppointmentController::class, 'calendar'])
             ->name('appointments.calendar');
-
-        Route::get('/appointments/by-date', [AppointmentController::class, 'getAppointments'])
-            ->name('appointments.by-date');
-
-        Route::get('/appointments/available-slots', [AppointmentController::class, 'getAvailableSlots'])
-            ->name('appointments.available-slots');
 
         Route::resource('appointments', AppointmentController::class)
             ->only(['index', 'create', 'store', 'show', 'destroy']);
 
-        Route::get('/patients/{patient}/medical-history', [PatientController::class, 'medicalHistory'])
-            ->name('patients.medical-history');
-
+        // Patients (no destroy, no medical history for receptionists).
+        // Authorization is enforced by PatientPolicy via authorizeResource().
         Route::resource('patients', PatientController::class)
             ->except(['destroy']);
-
-        // Legacy template compatibility
-        Route::get('/receptionist/patients', [PatientController::class, 'index'])
-            ->name('receptionist.patient.list');
-
-        Route::get('/receptionist/patients/{patient}', [PatientController::class, 'show'])
-            ->name('receptionist.patient.details');
-
-        Route::get('/receptionist/patients/{patient}/edit', [PatientController::class, 'edit'])
-            ->name('receptionist.patient.edit');
-
-        Route::post('/receptionist/patients', [PatientController::class, 'store'])
-            ->name('receptionist.patient.save');
-
-        Route::get('/receptionist/patients/{patient}/clinic/edit', [PatientController::class, 'edit'])
-            ->name('receptionist.patient.clinic.edit');
-
-        Route::post('/receptionist/patients/{patient}/clinic', [PatientController::class, 'update'])
-            ->name('receptionist.patient.clinic.save');
-
-        Route::get('/receptionist/ajax/country', function () {
-            return response()->json(
-                \App\Models\Country::query()
-                    ->orderBy('name')
-                    ->get()
-            );
-        })->name('receptionist.ajax.country');
     });
 
 /*
@@ -205,31 +179,35 @@ Route::middleware(['auth', 'active', 'role:doctor'])
     ->prefix('doctor')
     ->name('doctor.')
     ->group(function () {
+
         Route::get('/dashboard', [DoctorDashboardController::class, 'dashboard'])
             ->name('dashboard');
 
         Route::get('/appointments', [DoctorController::class, 'appointments'])
             ->name('appointments.index');
 
+        // Ownership: the appointment must be assigned to this doctor.
         Route::middleware('can:view,appointment')->group(function () {
             Route::get('/appointments/{appointment}', [DoctorController::class, 'showAppointment'])
                 ->name('appointments.show');
         });
 
+        // Only the owning doctor, and only for non-cancelled appointments.
         Route::middleware('can:diagnose,appointment')->group(function () {
-    Route::get('/appointments/{appointment}/diagnosis/create', [DoctorController::class, 'createDiagnosis'])
-        ->name('diagnosis.create');
+            Route::get('/appointments/{appointment}/diagnosis/create', [DoctorController::class, 'createDiagnosis'])
+                ->name('diagnosis.create');
 
-    Route::post('/appointments/{appointment}/diagnosis', [DoctorController::class, 'storeDiagnosis'])
-        ->name('diagnosis.store');
+            Route::post('/appointments/{appointment}/diagnosis', [DoctorController::class, 'storeDiagnosis'])
+                ->name('diagnosis.store');
 
-    Route::get('/appointments/{appointment}/diagnosis/edit', [DoctorController::class, 'editDiagnosis'])
-        ->name('diagnosis.edit');
+            Route::get('/appointments/{appointment}/diagnosis/edit', [DoctorController::class, 'editDiagnosis'])
+                ->name('diagnosis.edit');
 
-    Route::put('/appointments/{appointment}/diagnosis', [DoctorController::class, 'updateDiagnosis'])
-        ->name('diagnosis.update');
-});
+            Route::put('/appointments/{appointment}/diagnosis', [DoctorController::class, 'updateDiagnosis'])
+                ->name('diagnosis.update');
+        });
 
+        // Ownership is checked inside the controller (doctor must have appointments with the patient).
         Route::get('/patients/{patient}/history', [DoctorController::class, 'patientHistory'])
             ->name('patients.history');
     });
@@ -254,7 +232,7 @@ Route::middleware(['auth', 'active', 'role:patient'])
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')
+Route::middleware(['auth', 'active'])
     ->get('/dashboard', fn () => redirect('/'))
     ->name('dashboard');
 
@@ -265,14 +243,10 @@ Route::middleware('auth')
 */
 
 Route::get('/lang/{locale}', function (string $locale) {
-    abort_unless(
-        in_array($locale, ['en', 'ar'], true),
-        400
-    );
+    abort_unless(in_array($locale, ['en', 'ar'], true), 400);
 
     App::setLocale($locale);
     session(['locale' => $locale]);
 
     return back();
 })->name('language.switch');
-

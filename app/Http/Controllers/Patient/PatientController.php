@@ -13,6 +13,11 @@ class PatientController extends Controller
     /**
      * Display a listing of patients
      */
+	 public function __construct()
+{
+    // index→viewAny, create/store→create, show→view, edit/update→update
+    $this->authorizeResource(Patient::class, 'patient');
+}
     public function index(Request $request)
     {
         $query = Patient::with(['user', 'city', 'receptionist.user']);
@@ -43,195 +48,137 @@ class PatientController extends Controller
     /**
      * Show the form for creating a new patient
      */
-    public function create()
-    {
-        $cities = City::all();
-        return view('patients.create', compact('cities'));
-    }
+    
+public function create()
+{
+    $cities = City::query()
+        ->orderBy('name')
+        ->get(['id', 'name']);
+
+    return view('patients.create', [
+        'cities' => $cities,
+    ]);
+}
+
 
     /**
      * Store a newly created patient
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'national_id' => 'required|string|unique:patients,national_id',
-            'phone' => 'required|string',
-            'city_id' => 'required|exists:cities,id',
-        ]);
+   public function store(Request $request)
+{
+    $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
 
-        DB::beginTransaction();
-        try {
-            // Create user account
+    $request->validate([
+        'name'        => 'required|string|max:255',
+        'email'       => 'required|email|max:255|unique:users,email',
+        'password'    => ['required', 'confirmed', Password::min(10)],
+        'national_id' => 'required|string|max:50|unique:patients,national_id',
+        'phone'       => 'required|string|max:30',
+        'city_id'     => 'required|exists:cities,id',
+        'gender'      => ['nullable', Rule::in(['male', 'female'])],
+        'birth_date'  => ['nullable', 'date', 'before:today'],
+    ]);
+
+    try {
+        DB::transaction(function () use ($request) {
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
+                'name'     => $request->name,
+                'email'    => $request->email,
                 'password' => Hash::make($request->password),
-                'activation' => true,
+            ]); // activation = DB default (true)
+
+            Patient::create([
+                'user_id'         => $user->id,
+                'national_id'     => $request->national_id,
+                'phone'           => $request->phone,
+                'city_id'         => $request->city_id,
+                'gender'          => $request->gender,
+                'birth_date'      => $request->birth_date,
+                'receptionist_id' => auth()->user()->receptionist?->id,
             ]);
+        });
 
-            // Create patient profile
-            $patient = Patient::create([
-                'user_id' => $user->id,
-                'national_id' => $request->national_id,
-                'phone' => $request->phone,
-                'city_id' => $request->city_id,
-                'receptionist_id' => auth()->user()->receptionist->id ?? null,
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('patients.index')
-                ->with('success', 'Patient registered successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to register patient. Please try again.'])
-                ->withInput();
-        }
+        return redirect()->route('patients.index')
+            ->with('success', 'Patient registered successfully!');
+    } catch (\Throwable $e) {
+        report($e);
+        return back()
+            ->withErrors(['error' => 'Failed to register patient. Please try again.'])
+            ->withInput($request->except('password', 'password_confirmation'));
     }
+}
+
 
     /**
      * Display the specified patient
      */
-    public function show(Patient $patient)
+   public function show(Patient $patient)
 {
-    // Load basic patient relations
-    $patient->load([
-        'user',
-        'city.country',
-        'receptionist.user',
-        'appointments.doctor.user',
-        'appointments.diagnosis',
-    ]);
+    $receptionistId = auth()->user()->receptionist->id;
 
-    /**
-     * =========================
-     * 📊 Statistics
-     * =========================
-     */
+    $patient->load(['user', 'city.country', 'receptionist.user']);
+
+    // المواعيد اللي الـ Receptionist ده حجزها بس
+    $own = fn () => $patient->appointments()->where('receptionist_id', $receptionistId);
+
     $stats = [
-        'total_appointments' => $patient->appointments()->count(),
-
-        'upcoming_appointments' => $patient->appointments()
-            ->where('appointment_date', '>', now())
-            ->where('status', 'scheduled')
-            ->count(),
-
-        'completed_appointments' => $patient->appointments()
-            ->where('status', 'completed')
-            ->count(),
-
-        // via hasManyThrough (Patient -> Appointment -> Diagnosis)
-        'total_diagnoses' => $patient->diagnoses()->count(),
+        'total_appointments'     => $own()->count(),
+        'upcoming_appointments' => $own()->where('status', 'scheduled')
+                                         ->whereDate('appointment_date', '>=', today())->count(),
+        'completed_appointments'=> $own()->where('status', 'completed')->count(),
     ];
 
-    /**
-     * =========================
-     * 📅 Upcoming Appointments
-     * =========================
-     */
-    $upcomingAppointments = $patient->appointments()
-        ->with(['doctor.user'])
-        ->where('appointment_date', '>', now())
+    $upcomingAppointments = $own()
+        ->with('doctor.user')
         ->where('status', 'scheduled')
-        ->orderBy('appointment_date')
+        ->whereDate('appointment_date', '>=', today())
+        ->orderBy('appointment_date')->orderBy('appointment_time')
         ->get();
 
-    /**
-     * =========================
-     * 🩺 Recent Diagnoses
-     * =========================
-     * Diagnosis -> Appointment -> Doctor -> User
-     */
-    $recentDiagnoses = $patient->diagnoses()
-        ->with(['appointment.doctor.user'])
-        ->latest()
-        ->take(5)
-        ->get();
-
-    return view('patients.show', compact(
-        'patient',
-        'stats',
-        'upcomingAppointments',
-        'recentDiagnoses'
-    ));
+    return view('patients.show', compact('patient', 'stats', 'upcomingAppointments'));
 }
 
-    /**
-     * Show patient's complete medical history
-     */
-    public function medicalHistory(Patient $patient)
-    {
-        $patient->load(['user', 'city']);
-
-        $appointments = $patient->appointments()
-            ->with(['doctor.user', 'diagnosis'])
-            ->orderByDesc('appointment_date')
-            ->paginate(10);
-
-        return view('patients.medical-history', compact('patient', 'appointments'));
-    }
+    
 
     /**
      * Show the form for editing the patient
      */
-   public function edit(Patient $patient)
+ public function edit(Patient $patient)
 {
-    $cities = City::all();
-    $receptionists = \App\Models\Receptionist::with('user')->get(); // جلب كل السكرتير مع المستخدم
-
-    return view('patients.edit', compact('patient', 'cities', 'receptionists'));
+    return view('patients.edit', [
+        'patient' => $patient->load('user'),
+        'cities'  => City::orderBy('name')->get(),
+    ]);
 }
 
+public function update(Request $request, Patient $patient)
+{
+    $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
 
-    /**
-     * Update the specified patient
-     */
-    public function update(Request $request, Patient $patient)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $patient->user_id,
-            'national_id' => 'required|string|unique:patients,national_id,' . $patient->id,
-            'phone' => 'required|string',
-            'city_id' => 'required|exists:cities,id',
-            'password' => 'nullable|string|min:6|confirmed',
-        ]);
+    $request->validate([
+        'name'        => 'required|string|max:255',
+        'email'       => 'required|email|max:255|unique:users,email,' . $patient->user_id,
+        'national_id' => 'required|string|max:50|unique:patients,national_id,' . $patient->id,
+        'phone'       => 'required|string|max:30',
+        'city_id'     => 'required|exists:cities,id',
+        'gender'      => ['nullable', Rule::in(['male', 'female'])],
+        'birth_date'  => ['nullable', 'date', 'before:today'],
+        'password'    => ['nullable', 'confirmed', Password::min(10)],
+    ]);
 
-        DB::beginTransaction();
-        try {
-            // Update user
-            $userData = [
-                'name' => $request->name,
-                'email' => $request->email,
-            ];
-
-            if ($request->filled('password')) {
-                $userData['password'] = Hash::make($request->password);
-            }
-
-            $patient->user()->update($userData);
-
-            // Update patient
-            $patient->update([
-                'national_id' => $request->national_id,
-                'phone' => $request->phone,
-                'city_id' => $request->city_id,
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('patients.show', $patient)
-                ->with('success', 'Patient updated successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to update patient. Please try again.'])
-                ->withInput();
+    DB::transaction(function () use ($request, $patient) {
+        $userData = ['name' => $request->name, 'email' => $request->email];
+        if ($request->filled('password')) {
+            $userData['password'] = Hash::make($request->password);
         }
-    }
+        $patient->user->update($userData);
+
+        $patient->update($request->only(
+            'national_id', 'phone', 'city_id', 'gender', 'birth_date'
+        ));
+    });
+
+    return redirect()->route('patients.show', $patient)
+        ->with('success', 'Patient updated successfully!');
+}
 }

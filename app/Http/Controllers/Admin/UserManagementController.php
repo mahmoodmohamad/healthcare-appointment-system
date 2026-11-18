@@ -147,6 +147,9 @@ class UserManagementController extends Controller
 
     public function destroy(User $user)
     {
+		if ($user->isAdmin() && Admin::count() <= 1) {
+    return back()->withErrors(['error' => 'You cannot delete the last administrator.']);
+}
         if ($user->id === auth()->id()) {
             return back()->withErrors(['error' => 'You cannot delete yourself!']);
         }

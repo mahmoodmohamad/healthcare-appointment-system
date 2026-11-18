@@ -106,7 +106,7 @@
                             <select name="gender" 
                                     id="gender" 
                                     class="form-select @error('gender') is-invalid @enderror"
-                                    required>
+                                    >
                                 <option value="">Select Gender</option>
                                 <option value="male" {{ old('gender', $patient->gender) == 'male' ? 'selected' : '' }}>Male</option>
                                 <option value="female" {{ old('gender', $patient->gender) == 'female' ? 'selected' : '' }}>Female</option>
@@ -124,31 +124,13 @@
                                    id="birth_date" 
                                    class="form-control @error('birth_date') is-invalid @enderror"
                                    value="{{ old('birth_date', optional(\Carbon\Carbon::parse($patient->birth_date))->format('Y-m-d')) }}"
-                                   required>
+                                   >
                             @error('birth_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Receptionist -->
-                        <div class="mb-3">
-                            <label for="receptionist_id" class="form-label">Receptionist *</label>
-                            <select name="receptionist_id" 
-                                    id="receptionist_id" 
-                                    class="form-select @error('receptionist_id') is-invalid @enderror"
-                                    required>
-                                <option value="">Select Receptionist</option>
-                                @foreach($receptionists as $receptionist)
-                                    <option value="{{ $receptionist->id }}" 
-                                        {{ old('receptionist_id', $patient->receptionist_id) == $receptionist->id ? 'selected' : '' }}>
-                                        {{ $receptionist->user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('receptionist_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                       
 
                         <!-- Submit Button -->
                         <div class="mt-4">

@@ -125,17 +125,27 @@ class Appointment extends Model
         }
     }
 
-    public static function translateSlotConflict(QueryException $e): \Throwable
-    {
-        // errorInfo[1] ممكن يرجع string في بعض الـ drivers → cast لـ int
-        if ((int) ($e->errorInfo[1] ?? 0) === 1062) {
-            return ValidationException::withMessages([
-                'appointment_time' => 'This time slot is already booked.',
-            ]);
-        }
+    public static function isDuplicateKey(QueryException $e): bool
+{
+    $sqlState = $e->errorInfo[0] ?? null;
+    $code     = (int) ($e->errorInfo[1] ?? 0);
 
-        return $e;
+    return $code === 1062                                   // MySQL / MariaDB
+        || $sqlState === '23505'                            // PostgreSQL
+        || ($sqlState === '23000' && $code === 19           // SQLite
+            && str_contains($e->getMessage(), 'UNIQUE'));
+}
+
+public static function translateSlotConflict(QueryException $e): \Throwable
+{
+    if (static::isDuplicateKey($e)) {
+        return ValidationException::withMessages([
+            'appointment_time' => 'This time slot is already booked.',
+        ]);
     }
+
+    return $e;
+}
 
     // ---------- Accessors ----------
     public function getFullDateTimeAttribute()

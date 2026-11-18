@@ -1,50 +1,82 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Appointment, Patient};
+use App\Http\Requests\Doctor\IndexAppointmentsRequest;
+use App\Models\Appointment;
+use App\Models\Patient;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
- use Illuminate\Database\QueryException;
+use Illuminate\View\View;
+
 /**
- * Ownership checks (view / update) are enforced in routes/web.php
- * through `can:view,appointment` and `can:update,appointment`.
+ * Ownership checks (view / diagnose) are enforced in routes/web.php
+ * through `can:view,appointment` and `can:diagnose,appointment`.
  */
 class DoctorController extends Controller
 {
-   public function appointments(Request $request)
-{
-    $validated = $request->validate([
-        'status' => ['nullable', 'in:scheduled,completed,cancelled'],
-        'date'   => ['nullable', 'date'],
-        'filter' => ['nullable', 'in:today,upcoming,past'],
-    ]);
+    private const PER_PAGE = 15;
 
-    $appointments = auth()->user()->doctor
-        ->appointments()
-        ->with(['patient.user', 'diagnosis'])
-        ->when($validated['status'] ?? null, fn ($q, $status) => $q->where('status', $status))
-        ->when($validated['date'] ?? null, fn ($q, $date) => $q->whereDate('appointment_date', $date))
-        ->when($validated['filter'] ?? null, fn ($q, $filter) => match ($filter) {
-            'today'    => $q->whereDate('appointment_date', today()),
-            'upcoming' => $q->where('appointment_date', '>', now()),
-            'past'     => $q->where('appointment_date', '<', now()),
-        })
-        ->pendingFirst()
-        ->paginate(15)
-        ->withQueryString();
+    /**
+     * List the authenticated doctor's appointments.
+     *
+     * Date filters compare the DATE part only, because appointment_date
+     * is stored with a time by the API but at 00:00 by the web form.
+     */
+    public function appointments(IndexAppointmentsRequest $request): View
+    {
+        $doctor = $request->user()->doctor;
 
-    return view('doctor.appointments.index', compact('appointments'));
-}
-    public function showAppointment(Appointment $appointment)
+        abort_unless($doctor, 403, 'Doctor profile not found.');
+
+        $filters = $request->validated();
+
+        $appointments = $doctor->appointments()
+            // Only existence is needed for the diagnosis column
+            // (pendingFirst() already adds `diagnosis_exists`).
+            ->with('patient.user')
+            ->when(
+                $filters['status'] ?? null,
+                fn ($query, string $status) => $query->where('status', $status)
+            )
+            ->when(
+                $filters['date'] ?? null,
+                fn ($query, string $date) => $query->whereDate('appointment_date', $date)
+            )
+            ->when(
+                $filters['filter'] ?? null,
+                fn ($query, string $filter) => match ($filter) {
+                    IndexAppointmentsRequest::FILTER_TODAY => $query
+                        ->whereDate('appointment_date', today()),
+                    IndexAppointmentsRequest::FILTER_UPCOMING => $query
+                        ->whereDate('appointment_date', '>', today()),
+                    IndexAppointmentsRequest::FILTER_PAST => $query
+                        ->whereDate('appointment_date', '<', today()),
+                }
+            )
+            ->pendingFirst()
+            ->paginate(self::PER_PAGE)
+            ->withQueryString();
+
+        return view('doctor.appointments.index', [
+            'appointments' => $appointments,
+            'filters' => $filters,
+        ]);
+    }
+
+    public function showAppointment(Appointment $appointment): View
     {
         $appointment->load(['patient.user', 'patient.city', 'diagnosis']);
 
         return view('doctor.appointments.show', compact('appointment'));
     }
 
-    public function createDiagnosis(Appointment $appointment)
+    public function createDiagnosis(Appointment $appointment): View|RedirectResponse
     {
         if ($appointment->diagnosis) {
             return redirect()
@@ -57,47 +89,52 @@ class DoctorController extends Controller
         return view('doctor.diagnosis.create', compact('appointment'));
     }
 
-    public function storeDiagnosis(Request $request, Appointment $appointment)
-{
-    $data = $request->validate([
-        'symptoms'     => 'required|string',
-        'diagnosis'    => 'required|string',
-        'prescription' => 'nullable|string',
-        'notes'        => 'nullable|string',
-    ]);
+    public function storeDiagnosis(
+        Request $request,
+        Appointment $appointment
+    ): RedirectResponse {
+        $data = $request->validate([
+            'symptoms' => ['required', 'string'],
+            'diagnosis' => ['required', 'string'],
+            'prescription' => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
+        ]);
 
-    try {
-        // Row lock + unique index: two concurrent submits can't create two diagnoses
-        $created = DB::transaction(function () use ($data, $appointment) {
-            $locked = Appointment::lockForUpdate()->findOrFail($appointment->id);
+        try {
+            // Row lock + unique index: two concurrent submits
+            // can never create two diagnoses.
+            $created = DB::transaction(function () use ($data, $appointment): bool {
+                $locked = Appointment::lockForUpdate()->findOrFail($appointment->id);
 
-            if ($locked->diagnosis()->exists()) {
-                return false;
+                if ($locked->diagnosis()->exists()) {
+                    return false;
+                }
+
+                $locked->diagnosis()->create($data);
+                $locked->update(['status' => Appointment::COMPLETED]);
+
+                return true;
+            });
+        } catch (QueryException $exception) {
+            if (! Appointment::isDuplicateKey($exception)) {
+                throw $exception;
             }
 
-            $locked->diagnosis()->create($data);
-            $locked->update(['status' => 'completed']);
-
-            return true;
-        });
-    } catch (QueryException $e) {
-        if (($e->errorInfo[1] ?? null) !== 1062) {
-            throw $e;
+            $created = false;
         }
-        $created = false;
-    }
 
-    if (! $created) {
+        if (! $created) {
+            return redirect()
+                ->route('doctor.appointments.show', $appointment)
+                ->with('error', 'Diagnosis already exists.');
+        }
+
         return redirect()
             ->route('doctor.appointments.show', $appointment)
-            ->with('error', 'Diagnosis already exists.');
+            ->with('success', 'Diagnosis saved successfully!');
     }
 
-    return redirect()
-        ->route('doctor.appointments.show', $appointment)
-        ->with('success', 'Diagnosis saved successfully!');
-}
-    public function editDiagnosis(Appointment $appointment)
+    public function editDiagnosis(Appointment $appointment): View|RedirectResponse
     {
         if (! $appointment->diagnosis) {
             return redirect()
@@ -110,8 +147,10 @@ class DoctorController extends Controller
         return view('doctor.diagnosis.edit', compact('appointment'));
     }
 
-    public function updateDiagnosis(Request $request, Appointment $appointment)
-    {
+    public function updateDiagnosis(
+        Request $request,
+        Appointment $appointment
+    ): RedirectResponse {
         if (! $appointment->diagnosis) {
             return redirect()
                 ->route('doctor.appointments.show', $appointment)
@@ -119,10 +158,10 @@ class DoctorController extends Controller
         }
 
         $data = $request->validate([
-            'symptoms'     => 'required|string',
-            'diagnosis'    => 'required|string',
-            'prescription' => 'nullable|string',
-            'notes'        => 'nullable|string',
+            'symptoms' => ['required', 'string'],
+            'diagnosis' => ['required', 'string'],
+            'prescription' => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
         ]);
 
         $appointment->diagnosis->update($data);
@@ -132,7 +171,7 @@ class DoctorController extends Controller
             ->with('success', 'Diagnosis updated successfully!');
     }
 
-    public function patientHistory(Patient $patient)
+    public function patientHistory(Patient $patient): View
     {
         $doctor = auth()->user()->doctor;
 
@@ -142,7 +181,7 @@ class DoctorController extends Controller
             ->orderByDesc('appointment_date')
             ->get();
 
-        // A doctor may only see patients he has treated / is booked with
+        // A doctor may only see patients he has treated / is booked with.
         abort_if($appointments->isEmpty(), 403);
 
         $patient->load(['user', 'city']);

@@ -21,19 +21,16 @@ class DoctorSeeder extends Seeder
     {
         //
 		$city = City::first();
+$user = User::create([
+    'name'     => 'Dr Ahmed Hassan',
+    'email'    => 'doctor@clinic.com',
+    'password' => Hash::make('password'),
+]);
 
         $user = User::create([
-            'name' => 'Dr Ahmed Hassan',
-            'email' => 'doctor@clinic.com',
-            'password' => Hash::make('password'),
-            'activation' => true,
-        ]);
-
-        Doctor::create([
-            'user_id' => $user->id,
-            'specialization' => 'Internal Medicine',
-            'phone' => '01000000001',
-            'city_id' => $city->id,
-        ]);
+    'name'     => 'Dr Mohamed Adel',
+    'email'    => 'doctor2@clinic.com',
+    'password' => Hash::make('password'),
+]);
     }
 }

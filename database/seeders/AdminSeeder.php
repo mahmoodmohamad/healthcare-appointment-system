@@ -17,12 +17,11 @@ class AdminSeeder extends Seeder
     public function run()
     {
         //
-		 $user = User::create([
-            'name' => 'System Admin',
-            'email' => 'admin@clinic.com',
-            'password' => Hash::make('password'),
-            'activation' => true,
-        ]);
+		$user = User::create([
+    'name'     => 'System Admin',
+    'email'    => 'admin@clinic.com',
+    'password' => Hash::make('password'),
+]);
 
         Admin::create([
             'user_id' => $user->id

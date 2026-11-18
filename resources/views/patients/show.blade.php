@@ -161,31 +161,7 @@
                 </div>
             </div>
 
-            <!-- Recent Medical History -->
-            <div class="card">
-                <div class="card-header bg-warning d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Recent Medical History</h5>
-                    <a href="{{ route('patients.medical-history', $patient) }}" class="btn btn-light btn-sm">
-                        View All →
-                    </a>
-                </div>
-                <div class="card-body">
-                    @if($recentDiagnoses->count() > 0)
-                        @foreach($recentDiagnoses as $diagnosis)
-                        <div class="border-bottom pb-3 mb-3">
-                            <div class="d-flex justify-content-between">
-                                <strong>{{ $diagnosis->created_at->format('Y-m-d') }}</strong>
-                                <small class="text-muted">Dr. {{ $diagnosis->doctor->user->name }}</small>
-                            </div>
-                            <p class="mb-1"><strong>Symptoms:</strong> {{ Str::limit($diagnosis->symptoms, 80) }}</p>
-                            <p class="mb-0"><strong>Diagnosis:</strong> {{ Str::limit($diagnosis->diagnosis, 80) }}</p>
-                        </div>
-                        @endforeach
-                    @else
-                        <p class="text-muted text-center py-3">No medical history yet</p>
-                    @endif
-                </div>
-            </div>
+            
         </div>
     </div>
 </div>

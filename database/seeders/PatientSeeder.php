@@ -25,11 +25,10 @@ class PatientSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
 
             $user = User::create([
-                'name' => "Patient $i",
-                'email' => "patient$i@clinic.com",
-                'password' => Hash::make('password'),
-                'activation' => true,
-            ]);
+    'name'     => "Patient $i",
+    'email'    => "patient$i@clinic.com",
+    'password' => Hash::make('password'),
+]);
 
             Patient::create([
                 'user_id' => $user->id,

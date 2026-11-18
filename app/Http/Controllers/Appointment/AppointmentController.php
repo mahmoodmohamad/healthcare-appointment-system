@@ -10,15 +10,21 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AppointmentController extends Controller
 {
-    private const WITH = [
+    /**
+     * Relationships safe to load for appointment listings.
+     *
+     * Diagnosis is intentionally excluded here and loaded
+     * only for users authorized to access medical information.
+     */
+    private const BASIC_WITH = [
         'patient.user',
         'doctor.user',
         'receptionist.user',
-        'diagnosis',
     ];
 
     /**
@@ -31,33 +37,36 @@ class AppointmentController extends Controller
         $user = $request->user();
 
         $query = Appointment::query()
-            ->with(self::WITH)
+            ->with(self::BASIC_WITH)
             ->latest('appointment_date')
             ->latest('appointment_time');
 
-        if ($user->isDoctor()) {
-            $query->where('doctor_id', $user->doctor->id);
-        } elseif ($user->isPatient()) {
-            $query->where('patient_id', $user->patient->id);
+        $this->applyOwnershipFilter($query, $user);
+
+        $data = $request->validate([
+            'status' => [
+                'sometimes',
+                'nullable',
+                'in:scheduled,completed,cancelled',
+            ],
+            'date' => [
+                'sometimes',
+                'nullable',
+                'date_format:Y-m-d',
+            ],
+        ]);
+
+        if (! empty($data['status'])) {
+            $query->where('status', $data['status']);
         }
 
-        $query->when(
-            $request->filled('status'),
-            fn ($q) => $q->where(
-                'status',
-                $request->string('status')->toString()
-            )
-        );
+        if (! empty($data['date'])) {
+            $query->whereDate('appointment_date', $data['date']);
+        }
 
-        $query->when(
-            $request->filled('date'),
-            fn ($q) => $q->whereDate(
-                'appointment_date',
-                $request->date('date')
-            )
-        );
-
-        $appointments = $query->paginate(15);
+        $appointments = $query
+            ->paginate(15)
+            ->withQueryString();
 
         return view('appointments.index', compact('appointments'));
     }
@@ -65,22 +74,25 @@ class AppointmentController extends Controller
     /**
      * Show create appointment form.
      */
+    public function create(): View
+    {
+        $this->authorize('create', Appointment::class);
 
-public function create(): View
-{
-    $this->authorize('create', Appointment::class);
+        $patients = Patient::query()
+            ->with('user')
+            ->orderBy('id')
+            ->get();
 
-    $patients = Patient::with('user')
-        ->orderBy('id')
-        ->get();
+        $doctors = Doctor::query()
+            ->with('user')
+            ->orderBy('id')
+            ->get();
 
-    $doctors = Doctor::with('user')
-        ->orderBy('id')
-        ->get();
-
-    return view('appointments.create', compact('patients', 'doctors'));
-}
-
+        return view('appointments.create', compact(
+            'patients',
+            'doctors'
+        ));
+    }
 
     /**
      * Store a new appointment.
@@ -90,33 +102,62 @@ public function create(): View
         $this->authorize('create', Appointment::class);
 
         $data = $request->validate([
-            'patient_id'       => ['required', 'integer', 'exists:patients,id'],
-            'doctor_id'        => ['required', 'integer', 'exists:doctors,id'],
-            'appointment_date' => ['required', 'date', 'after_or_equal:today'],
-            'appointment_time' => ['required', 'date_format:H:i'],
-            'notes'            => ['nullable', 'string', 'max:5000'],
+            'patient_id' => [
+                'required',
+                'integer',
+                'exists:patients,id',
+            ],
+            'doctor_id' => [
+                'required',
+                'integer',
+                'exists:doctors,id',
+            ],
+            'appointment_date' => [
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:today',
+            ],
+            'appointment_time' => [
+                'required',
+                'date_format:H:i',
+            ],
+            'notes' => [
+                'nullable',
+                'string',
+                'max:5000',
+            ],
         ]);
 
-        if (! Appointment::isAvailable(
-            $data['doctor_id'],
-            $data['appointment_date'],
-            $data['appointment_time']
-        )) {
-            return back()
-                ->withErrors([
-                    'appointment_time' => 'The selected doctor is not available at this time.',
-                ])
-                ->withInput();
+        $user = $request->user();
+
+        $receptionistId = null;
+
+        if ($user->isReceptionist()) {
+            $receptionistId = $user->receptionist?->id;
+
+            abort_unless($receptionistId, 403);
         }
 
-        Appointment::create([
-            ...$data,
-            'receptionist_id' => optional($request->user()->receptionist)->id,
-            'appointment_date' => Carbon::parse(
-                $data['appointment_date'] . ' ' . $data['appointment_time']
-            ),
-            'status' => Appointment::SCHEDULED,
-        ]);
+        /*
+         * Do not accept receptionist_id or status from request.
+         * Both values are controlled by the application.
+         */
+        try {
+            Appointment::book([
+                'patient_id' => $data['patient_id'],
+                'doctor_id' => $data['doctor_id'],
+                'receptionist_id' => $receptionistId,
+                'appointment_date' => Carbon::createFromFormat(
+                    'Y-m-d',
+                    $data['appointment_date']
+                )->startOfDay(),
+                'appointment_time' => $data['appointment_time'],
+                'notes' => $data['notes'] ?? null,
+                'status' => Appointment::SCHEDULED,
+            ]);
+        } catch (ValidationException $exception) {
+            throw $exception;
+        }
 
         return redirect()
             ->route('appointments.index')
@@ -124,13 +165,23 @@ public function create(): View
     }
 
     /**
-     * Show appointment.
+     * Show appointment details.
      */
     public function show(Appointment $appointment): View
     {
         $this->authorize('view', $appointment);
 
-        $appointment->load(self::WITH);
+        $appointment->load(self::BASIC_WITH);
+
+        /*
+         * Only doctors and patients may load diagnosis here.
+         * Receptionists must never receive diagnosis data.
+         */
+        $user = request()->user();
+
+        if ($user->isDoctor() || $user->isPatient() || $user->isAdmin()) {
+            $appointment->load('diagnosis');
+        }
 
         return view('appointments.show', compact('appointment'));
     }
@@ -146,67 +197,118 @@ public function create(): View
 
         $user = $request->user();
 
-        $data = $request->validate([
-            'patient_id'       => ['sometimes', 'integer', 'exists:patients,id'],
-            'doctor_id'        => ['sometimes', 'integer', 'exists:doctors,id'],
-            'appointment_date' => ['sometimes', 'date', 'after_or_equal:today'],
-            'appointment_time' => ['sometimes', 'date_format:H:i'],
-            'status'           => ['sometimes', 'in:scheduled,completed,cancelled'],
-            'notes'            => ['nullable', 'string', 'max:5000'],
-        ]);
+        $isReceptionist = $user->isReceptionist();
+        $isDoctor = $user->isDoctor();
 
         /*
-         * Doctors cannot reassign or reschedule appointments.
-         * They can only change status and notes.
+         * Validate only fields that this endpoint supports.
+         * Patient and receptionist ownership cannot be reassigned.
          */
-        if (! ($user->isAdmin() || $user->isReceptionist())) {
-            $data = Arr::only($data, [
-                'status',
-                'notes',
-            ]);
+        $rules = [
+            'doctor_id' => [
+                'sometimes',
+                'required',
+                'integer',
+                'exists:doctors,id',
+            ],
+            'appointment_date' => [
+                'sometimes',
+                'required',
+                'date_format:Y-m-d',
+                'after_or_equal:today',
+            ],
+            'appointment_time' => [
+                'sometimes',
+                'required',
+                'date_format:H:i',
+            ],
+            'notes' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:5000',
+            ],
+        ];
+
+        /*
+         * Doctors may update status, but only to completed.
+         * Receptionists cannot change status through this method.
+         */
+        if ($isDoctor) {
+            $rules['status'] = [
+                'sometimes',
+                'required',
+                'in:completed',
+            ];
         }
 
+        $data = $request->validate($rules);
+
         /*
-         * Re-check availability when doctor/date/time changes.
+         * Rescheduling is handled through the model method.
+         * It checks slot availability and translates conflicts.
          */
-        if (Arr::hasAny($data, [
+        $rescheduleFields = [
             'doctor_id',
             'appointment_date',
             'appointment_time',
-        ])) {
+        ];
+
+        if (Arr::hasAny($data, $rescheduleFields)) {
+            if ($isDoctor) {
+                abort(403, 'Doctors cannot reschedule appointments.');
+            }
+
             $doctorId = (int) (
-                $data['doctor_id']
-                ?? $appointment->doctor_id
+                $data['doctor_id'] ?? $appointment->doctor_id
             );
 
-            $date = isset($data['appointment_date'])
-                ? Carbon::parse($data['appointment_date'])->format('Y-m-d')
-                : $appointment->appointment_date->format('Y-m-d');
+            $date = $data['appointment_date']
+                ?? $appointment->appointment_date->format('Y-m-d');
 
             $time = $data['appointment_time']
                 ?? substr($appointment->appointment_time, 0, 5);
 
-            if (! Appointment::isAvailable(
+            $appointment->reschedule(
                 $doctorId,
                 $date,
-                $time,
-                $appointment->id
-            )) {
-                return back()
-                    ->withErrors([
-                        'appointment_time' => 'The selected doctor is not available at this time.',
-                    ])
-                    ->withInput();
-            }
-
-            $data['appointment_date'] = Carbon::parse(
-                "$date $time"
+                $time
             );
-
-            $data['appointment_time'] = $time;
         }
 
-        $appointment->update($data);
+        /*
+         * Do not update scheduling fields twice.
+         */
+        $remainingData = Arr::except(
+            $data,
+            $rescheduleFields
+        );
+
+        /*
+         * Receptionists may update notes only.
+         * Doctors may update notes and complete their appointment.
+         */
+        if ($isReceptionist) {
+            $remainingData = Arr::only(
+                $remainingData,
+                ['notes']
+            );
+        }
+
+        if (! empty($remainingData)) {
+            if (isset($remainingData['status'])) {
+                if (
+                    $remainingData['status'] !== Appointment::COMPLETED
+                    || ! $appointment->canTransitionTo(
+                        Appointment::COMPLETED
+                    )
+                ) {
+                    abort(403, 'This status transition is not allowed.');
+                }
+            }
+
+            $appointment->update($remainingData);
+        }
 
         return redirect()
             ->route('appointments.show', $appointment)
@@ -216,77 +318,135 @@ public function create(): View
     /**
      * Cancel appointment.
      */
-    public function destroy(Appointment $appointment): RedirectResponse
-    {
-       $this->authorize('cancel', $appointment);
-        $appointment->update([
-            'status' => Appointment::CANCELLED,
-        ]);
+    public function destroy(
+        Appointment $appointment
+    ): RedirectResponse {
+        $this->authorize('cancel', $appointment);
+
+        $appointment->cancel();
 
         return redirect()
             ->route('appointments.index')
             ->with('success', 'Appointment cancelled successfully.');
     }
 
-public function calendar(Request $request): View
-{
-    $this->authorize('viewAny', Appointment::class);
-
-    $user = $request->user();
-
-    $month = (int) $request->input('month', now()->month);
-    $year  = (int) $request->input('year', now()->year);
-
-    $date = now()
-        ->setYear($year)
-        ->setMonth($month)
-        ->startOfMonth();
-
-    $query = Appointment::query()
-        ->with([
-            'patient.user',
-            'doctor.user',
-        ])
-        ->whereYear('appointment_date', $year)
-        ->whereMonth('appointment_date', $month);
-
-    /*
-     * Receptionists may only see appointments
-     * created by themselves.
+    /**
+     * Display appointment calendar.
      */
-    if ($user->isReceptionist()) {
-        $receptionist = $user->receptionist;
+    public function calendar(Request $request): View
+    {
+        $this->authorize('viewAny', Appointment::class);
 
-        abort_unless($receptionist, 403);
+        $data = $request->validate([
+            'month' => [
+                'sometimes',
+                'integer',
+                'between:1,12',
+            ],
+            'year' => [
+                'sometimes',
+                'integer',
+                'between:2000,2100',
+            ],
+            'doctor_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                'exists:doctors,id',
+            ],
+        ]);
 
-        $query->where('receptionist_id', $receptionist->id);
+        $month = (int) (
+            $data['month'] ?? now()->month
+        );
+
+        $year = (int) (
+            $data['year'] ?? now()->year
+        );
+
+        $date = Carbon::create(
+            $year,
+            $month,
+            1
+        )->startOfMonth();
+
+        $user = $request->user();
+
+        $query = Appointment::query()
+            ->with(self::BASIC_WITH)
+            ->whereYear('appointment_date', $year)
+            ->whereMonth('appointment_date', $month);
+
+        $this->applyOwnershipFilter($query, $user);
+
+        if (! empty($data['doctor_id'])) {
+            $query->where(
+                'doctor_id',
+                $data['doctor_id']
+            );
+        }
+
+        $appointments = $query
+            ->orderBy('appointment_date')
+            ->orderBy('appointment_time')
+            ->get()
+            ->groupBy(
+                fn (Appointment $appointment) =>
+                    $appointment->appointment_date->format('Y-m-d')
+            );
+
+        $doctors = Doctor::query()
+            ->with('user')
+            ->orderBy('id')
+            ->get();
+
+        return view('appointments.calendar', compact(
+            'date',
+            'appointments',
+            'doctors'
+        ));
     }
 
-    if ($request->filled('doctor_id')) {
-        $query->where('doctor_id', $request->integer('doctor_id'));
-    }
-
-    $appointments = $query
-        ->orderBy('appointment_date')
-        ->orderBy('appointment_time')
-        ->get()
-        ->groupBy(function (Appointment $appointment) {
-            return $appointment->appointment_date->format('Y-m-d');
-        });
-
-    /*
-     * Only needed for the receptionist calendar filter.
+    /**
+     * Apply role-based appointment ownership filtering.
      */
-    $doctors = Doctor::with('user')
-        ->orderBy('id')
-        ->get();
+    private function applyOwnershipFilter($query, $user): void
+    {
+        if ($user->isReceptionist()) {
+            $receptionistId = $user->receptionist?->id;
 
-    return view('appointments.calendar', compact(
-        'date',
-        'appointments',
-        'doctors'
-    ));
-}
+            abort_unless($receptionistId, 403);
 
+            $query->where(
+                'receptionist_id',
+                $receptionistId
+            );
 
+            return;
+        }
+
+        if ($user->isDoctor()) {
+            $doctorId = $user->doctor?->id;
+
+            abort_unless($doctorId, 403);
+
+            $query->where(
+                'doctor_id',
+                $doctorId
+            );
+
+            return;
+        }
+
+        if ($user->isPatient()) {
+            $patientId = $user->patient?->id;
+
+            abort_unless($patientId, 403);
+
+            $query->where(
+                'patient_id',
+                $patientId
+            );
+        }
+    }
 }

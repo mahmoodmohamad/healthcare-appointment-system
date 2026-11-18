@@ -15,12 +15,7 @@ class PatientPolicy
      * allowed to create/update/delete from this policy — those actions
      * belong to receptionists (or explicit admin user-management paths).
      */
-    public function before(User $user, string $ability)
-    {
-        return ($user->isAdmin() && in_array($ability, ['viewAny', 'view'], true))
-            ? true
-            : null;
-    }
+ 
 
     public function viewAny(User $user): bool
     {
@@ -45,10 +40,7 @@ class PatientPolicy
         return false;
     }
 
-    public function create(User $user): bool
-    {
-        return $user->isReceptionist();
-    }
+ 
 
     public function update(User $user, Patient $patient): bool
     {
@@ -60,4 +52,16 @@ class PatientPolicy
         // Never allow patient hard-delete; deactivate the user instead.
         return false;
     }
+	
+	public function before(User $user, string $ability)
+{
+    return ($user->isAdmin() && in_array($ability, ['viewAny', 'view', 'create'], true))
+        ? true
+        : null;
+}
+
+public function create(User $user): bool
+{
+    return $user->isReceptionist();
+}
 }

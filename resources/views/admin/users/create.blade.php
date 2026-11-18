@@ -229,7 +229,7 @@
                                     </div>
 
                                     <!-- National ID -->
-                                    <div class="col-12 mb-3 role-field" data-roles="receptionist,patient">
+                                    <div class="col-12 mb-3 role-field" data-roles="patient">
                                         <label for="national_id" class="form-label">
                                             <span class="required">*</span> National ID
                                         </label>

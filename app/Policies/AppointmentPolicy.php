@@ -11,16 +11,24 @@ class AppointmentPolicy
     use HandlesAuthorization;
 
     /**
-     * Admin can *see* everything — nothing more.
-     * Write actions still go through the methods below.
+     * Admin can view all appointments.
+     * Other abilities are checked individually.
      */
-    public function before(User $user, string $ability)
+    public function before(User $user, string $ability): ?bool
     {
-        return ($user->isAdmin() && in_array($ability, ['viewAny', 'view'], true))
-            ? true
-            : null;
+        if (
+            $user->isAdmin()
+            && in_array($ability, ['viewAny', 'view'], true)
+        ) {
+            return true;
+        }
+
+        return null;
     }
 
+    /**
+     * Who can access the appointments listing?
+     */
     public function viewAny(User $user): bool
     {
         return $user->isAdmin()
@@ -29,50 +37,118 @@ class AppointmentPolicy
             || $user->isPatient();
     }
 
-    public function view(User $user, Appointment $a): bool
+    /**
+     * View a specific appointment.
+     */
+    public function view(User $user, Appointment $appointment): bool
     {
-        return $user->isReceptionist()
-            || $this->ownsAsDoctor($user, $a)
-            || $this->ownsAsPatient($user, $a);
+        return $this->ownsAsReceptionist($user, $appointment)
+            || $this->ownsAsDoctor($user, $appointment)
+            || $this->ownsAsPatient($user, $appointment);
     }
 
+    /**
+     * Create appointments.
+     */
     public function create(User $user): bool
     {
         return $user->isAdmin() || $user->isReceptionist();
     }
 
-    public function manage(User $user, Appointment $a): bool
+    /**
+     * Update appointment details.
+     *
+     * Receptionists can manage only appointments they created.
+     * Doctors can manage appointments assigned to them.
+     */
+    public function manage(User $user, Appointment $appointment): bool
     {
-        return $user->isReceptionist() || $this->ownsAsDoctor($user, $a);
+        return $this->ownsAsReceptionist($user, $appointment)
+            || $this->ownsAsDoctor($user, $appointment);
     }
 
-    public function cancel(User $user, Appointment $a): bool
+    /**
+     * Cancel an appointment.
+     *
+     * Receptionists can cancel their own scheduled appointments.
+     */
+    public function cancel(User $user, Appointment $appointment): bool
     {
-        return $user->isReceptionist() && $a->status === Appointment::SCHEDULED;
+        return $appointment->status === Appointment::SCHEDULED
+            && $this->ownsAsReceptionist($user, $appointment);
     }
 
-    public function diagnose(User $user, Appointment $a): bool
+    /**
+     * Access diagnosis and medical information.
+     *
+     * Receptionists are deliberately excluded.
+     */
+    public function diagnose(User $user, Appointment $appointment): bool
     {
-        return $this->ownsAsDoctor($user, $a)
-            && $a->status !== Appointment::CANCELLED;
+        return $appointment->status !== Appointment::CANCELLED
+            && $this->ownsAsDoctor($user, $appointment);
     }
 
-    public function reschedule(User $user, Appointment $a): bool
+    /**
+     * Reschedule an appointment.
+     */
+    public function reschedule(User $user, Appointment $appointment): bool
     {
-        return $a->status === Appointment::SCHEDULED
-            && ($user->isReceptionist() || $this->ownsAsDoctor($user, $a));
+        return $appointment->status === Appointment::SCHEDULED
+            && (
+                $this->ownsAsReceptionist($user, $appointment)
+                || $this->ownsAsDoctor($user, $appointment)
+            );
     }
 
-    // ---- helpers -------------------------------------------------------
-    private function ownsAsDoctor(User $user, Appointment $a): bool
-    {
-        $id = $user->doctor?->id;
-        return $user->isDoctor() && $id !== null && (int) $a->doctor_id === (int) $id;
+    /**
+     * Check receptionist ownership.
+     */
+    private function ownsAsReceptionist(
+        User $user,
+        Appointment $appointment
+    ): bool {
+        if (! $user->isReceptionist()) {
+            return false;
+        }
+
+        $receptionistId = $user->receptionist?->id;
+
+        return $receptionistId !== null
+            && (int) $appointment->receptionist_id === (int) $receptionistId;
     }
 
-    private function ownsAsPatient(User $user, Appointment $a): bool
-    {
-        $id = $user->patient?->id;
-        return $user->isPatient() && $id !== null && (int) $a->patient_id === (int) $id;
+    /**
+     * Check doctor ownership.
+     */
+    private function ownsAsDoctor(
+        User $user,
+        Appointment $appointment
+    ): bool {
+        if (! $user->isDoctor()) {
+            return false;
+        }
+
+        $doctorId = $user->doctor?->id;
+
+        return $doctorId !== null
+            && (int) $appointment->doctor_id === (int) $doctorId;
+    }
+
+    /**
+     * Check patient ownership.
+     */
+    private function ownsAsPatient(
+        User $user,
+        Appointment $appointment
+    ): bool {
+        if (! $user->isPatient()) {
+            return false;
+        }
+
+        $patientId = $user->patient?->id;
+
+        return $patientId !== null
+            && (int) $appointment->patient_id === (int) $patientId;
     }
 }

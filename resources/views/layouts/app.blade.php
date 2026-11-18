@@ -27,12 +27,12 @@
 
    <!-- Fonts & Icons -->
 <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/iconify-icons.css') }}" />
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- Core CSS -->
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/node-waves/node-waves.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}" />
-
+<link rel="stylesheet" href="{{ asset('assets/css/clinic.css') }}">
 <!-- Vendors CSS -->
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 
