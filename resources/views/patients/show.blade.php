@@ -143,7 +143,7 @@
                                             <small class="text-muted">{{ $appointment->doctor->specialization }}</small>
                                         </td>
                                         <td data-label="Status">
-                                            <span class="ui-badge ui-badge-scheduled">{{ ucfirst($appointment->status) }}</span>
+                                            <span class="ui-badge ui-badge-scheduled">{{ match ($appointment->status) { 'scheduled' => __('site.scheduled'), 'completed' => __('site.completed'), 'cancelled' => __('site.cancelled'), default => __('site.unknown') } }}</span>
                                         </td>
                                         <td data-label="@lang('site.actions')">
                                             <a href="{{ route('appointments.show', $appointment) }}" class="ui-btn ui-btn-ghost ui-btn-sm">
