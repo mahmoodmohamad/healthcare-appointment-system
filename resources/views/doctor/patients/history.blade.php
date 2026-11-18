@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Patient Medical History')
+@section('title', 'Patient @lang('site.medical_history')')
 
 @section('content')
 <div class="container py-4">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2>Medical History</h2>
+            <h2>@lang('site.medical_history')</h2>
             <p class="text-muted mb-0">{{ $patient->user->name }} - {{ $patient->national_id }}</p>
         </div>
         <a href="{{ route('doctor.dashboard') }}" class="btn btn-secondary">
@@ -19,22 +19,22 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <p><strong>National ID:</strong> {{ $patient->national_id }}</p>
-                    <p><strong>Phone:</strong> {{ $patient->phone }}</p>
+                    <p><strong>@lang('site.national_id_label')</strong> {{ $patient->national_id }}</p>
+                    <p><strong>@lang('site.phone_label')</strong> {{ $patient->phone }}</p>
                 </div>
                 <div class="col-md-4">
-                    <p><strong>Email:</strong> {{ $patient->user->email }}</p>
-                    <p><strong>City:</strong> {{ $patient->city->name ?? 'N/A' }}</p>
+                    <p><strong>@lang('site.email_label')</strong> {{ $patient->user->email }}</p>
+                    <p><strong>@lang('site.city_label')</strong> {{ $patient->city->name ?? 'N/A' }}</p>
                 </div>
                 <div class="col-md-4 text-end">
                     <h4>{{ $appointments->count() }}</h4>
-                    <p class="text-muted mb-0">Total Visits with You</p>
+                    <p class="text-muted mb-0">@lang('site.total_visits_with_you')</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Medical History Timeline -->
+    <!-- @lang('site.medical_history') Timeline -->
     <div class="card">
         <div class="card-header">
             <h5 class="mb-0">@lang('site.appointment_history')</h5>
@@ -66,22 +66,22 @@
                     <div class="bg-light p-3 rounded mt-3">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <strong class="text-primary">Symptoms:</strong>
+                                <strong class="text-primary">@lang('site.symptoms_label')</strong>
                                 <p class="mb-0 mt-1">{{ $appointment->diagnosis->symptoms }}</p>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <strong class="text-success">Diagnosis:</strong>
+                                <strong class="text-success">@lang('site.diagnosis_label')</strong>
                                 <p class="mb-0 mt-1">{{ $appointment->diagnosis->diagnosis }}</p>
                             </div>
                             @if($appointment->diagnosis->prescription)
                             <div class="col-12">
-                                <strong class="text-warning">Prescription:</strong>
+                                <strong class="text-warning">@lang('site.prescription_label')</strong>
                                 <p class="mb-0 mt-1" style="white-space: pre-line;">{{ $appointment->diagnosis->prescription }}</p>
                             </div>
                             @endif
                             @if($appointment->diagnosis->notes)
                             <div class="col-12 mt-2">
-                                <strong class="text-info">Notes:</strong>
+                                <strong class="text-info">@lang('site.notes_label')</strong>
                                 <p class="mb-0 mt-1">{{ $appointment->diagnosis->notes }}</p>
                             </div>
                             @endif
@@ -89,7 +89,7 @@
                     </div>
                     @else
                         @if($appointment->status == 'completed')
-                        <p class="text-muted fst-italic mt-2">No diagnosis recorded for this visit</p>
+                        <p class="text-muted fst-italic mt-2">@lang('site.no_diagnosis_for_visit')</p>
                         @elseif($appointment->status == 'scheduled')
                         <p class="text-info mt-2">
                             <i class="bi bi-clock"></i> Upcoming appointment
@@ -100,14 +100,14 @@
                     <!-- Appointment Notes -->
                     @if($appointment->notes)
                     <div class="mt-2">
-                        <small class="text-muted"><strong>Appointment Notes:</strong> {{ $appointment->notes }}</small>
+                        <small class="text-muted"><strong>Appointment @lang('site.notes_label')</strong> {{ $appointment->notes }}</small>
                     </div>
                     @endif
                 </div>
                 @endforeach
             @else
                 <div class="text-center py-5">
-                    <p class="text-muted">No appointment history with this patient</p>
+                    <p class="text-muted">@lang('site.no_patient_appointment_history')</p>
                 </div>
             @endif
         </div>
