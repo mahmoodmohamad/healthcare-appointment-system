@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', '@lang('site.user_management')')
+@section('title', __('site.user_management'))
 
 @section('content')
 <div class="container-fluid py-4">
@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>@lang('site.user_management')</h2>
         <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-            ➕ Add New User
+            ➕ @lang('site.add_user')
         </a>
     </div>
 
@@ -42,7 +42,7 @@
                     <label class="form-label">@lang('site.role')</label>
                     <select name="role" class="form-select">
                         <option value="">@lang('site.all_roles')</option>
-                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>@lang('site.admin')</option>
                         <option value="doctor" {{ request('role') == 'doctor' ? 'selected' : '' }}>@lang('site.doctor')</option>
                         <option value="receptionist" {{ request('role') == 'receptionist' ? 'selected' : '' }}>@lang('site.receptionist')</option>
                         <option value="patient" {{ request('role') == 'patient' ? 'selected' : '' }}>@lang('site.patient')</option>
