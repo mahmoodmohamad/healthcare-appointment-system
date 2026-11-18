@@ -31,24 +31,24 @@
 @endphp
 
 
-<div class="calendar-page container-fluid py-4">
+<div class="ui-page calendar-page container-fluid py-4">
 
     {{-- Page Header --}}
-    <div class="calendar-header">
+    <div class="ui-page-head calendar-header">
         <div>
-            <h1 class="page-title">Appointment Calendar</h1>
-            <p class="page-subtitle">
+            <h1 class="ui-title page-title">Appointment Calendar</h1>
+            <p class="ui-sub page-subtitle">
                 View and manage scheduled appointments across the month.
             </p>
         </div>
 
         <div class="header-actions">
-            <a href="{{ route('appointments.index') }}" class="btn btn-light">
+            <a href="{{ route('appointments.index') }}" class="ui-btn ui-btn-ghost btn btn-light">
                 <i class="bi bi-list-ul me-1" aria-hidden="true"></i>
                 List View
             </a>
 
-            <a href="{{ route('appointments.create') }}" class="btn btn-primary">
+            <a href="{{ route('appointments.create') }}" class="ui-btn ui-btn-primary btn btn-primary">
                 <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
                 New Appointment
             </a>
@@ -101,7 +101,7 @@
     </div>
 
     {{-- Doctor Filter --}}
-    <section class="panel filter-panel">
+    <section class="ui-card panel filter-panel">
         <form method="GET"
               action="{{ route('appointments.calendar') }}"
               class="row align-items-end g-3">
@@ -117,7 +117,7 @@
 
                 <select name="doctor_id"
                         id="doctorFilter"
-                        class="form-select">
+                        class="ui-input form-select">
                     <option value="">All Doctors</option>
 
                     @foreach($doctors as $doctor)
@@ -131,7 +131,7 @@
             </div>
 
             <div class="col-6 col-md-auto">
-                <button type="submit" class="btn btn-primary w-100">
+                <button type="submit" class="ui-btn ui-btn-primary btn btn-primary w-100">
                     <i class="bi bi-funnel me-1" aria-hidden="true"></i>
                     Apply Filter
                 </button>
@@ -141,7 +141,7 @@
                 <a href="{{ route('appointments.calendar', [
                     'month' => $date->month,
                     'year' => $date->year,
-                ]) }}" class="btn btn-light w-100">
+                ]) }}" class="ui-btn ui-btn-ghost btn btn-light w-100">
                     Reset
                 </a>
             </div>
@@ -150,12 +150,12 @@
     </section>
 
     {{-- Calendar --}}
-    <section class="panel calendar-panel">
+    <section class="ui-card panel calendar-panel">
 
         <div class="calendar-toolbar">
             <div>
                 <h2 class="month-title">
-                    {{ $date->format('F Y') }}
+                    {{ $date->translatedFormat('F Y') }}
                 </h2>
 
                 <div class="month-subtitle">
@@ -258,7 +258,7 @@
                                             ?? $appointment->appointment_date?->format('H:i');
 
                                         $timeLabel = $timeValue
-                                            ? \Illuminate\Support\Carbon::parse($timeValue)->format('h:i A')
+                                            ? \Illuminate\Support\Carbon::parse($timeValue)->translatedFormat('h:i A')
                                             : 'Time not set';
 
                                         $patientName = $appointment->patient?->user?->name
