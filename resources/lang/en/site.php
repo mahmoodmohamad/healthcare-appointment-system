@@ -475,4 +475,6 @@ return [
     'admin_dashboard_welcome' => 'Monitor clinic activity, people and appointments from one place.',
     'matching_filters' => 'matching the selected filters',
     'view_details' => 'View details',
+    'reschedule_appointment' => 'Reschedule appointment',
+    'reschedule_description' => 'Choose a new doctor, date, and time for this appointment.',
 ];
