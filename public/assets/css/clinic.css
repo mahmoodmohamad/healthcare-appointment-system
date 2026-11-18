@@ -634,3 +634,50 @@ a.ui-row:hover {
         justify-content: flex-start;
     }
 }
+/* Patient index: prevent SVG sprite icons inheriting oversized theme dimensions */
+.pt-page svg.icon {
+    display: inline-block !important;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+    min-width: 1.1rem;
+    min-height: 1.1rem;
+    max-width: 1.1rem;
+    max-height: 1.1rem;
+    flex: 0 0 1.1rem;
+    overflow: visible;
+    vertical-align: middle;
+}
+.pt-page .pt-search svg.icon {
+    position: absolute;
+    inset-inline-start: .85rem;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+}
+.pt-page .pt-empty-icon svg.icon {
+    width: 1.8rem !important;
+    height: 1.8rem !important;
+    min-width: 1.8rem;
+    min-height: 1.8rem;
+    max-width: 1.8rem;
+    max-height: 1.8rem;
+    flex-basis: 1.8rem;
+}
+.pt-page .pt-register-link {
+    display: inline-flex !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 2.65rem !important;
+    height: auto !important;
+    padding: .65rem 1rem !important;
+    border-radius: .65rem;
+    font-size: .9rem;
+    line-height: 1.25;
+}
+.pt-page .pt-register-link svg.icon {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+    flex-basis: 1.1rem;
+}
+@media (max-width: 575.98px) {
+    .pt-page .pt-register-link { width: 100% !important; }
+}
