@@ -2,30 +2,20 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Country;
-
-;
 use App\Models\City;
+use App\Models\Country;
+use Illuminate\Database\Seeder;
 
 class CitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //
-        $egypt = Country::where('name', 'Egypt')->first();
+        $egypt = Country::firstOrCreate(['name' => 'Egypt']);
 
-        $cities = ['Cairo', 'Giza', 'Alexandria'];
-
-        foreach ($cities as $city) {
-            City::create([
-                'name' => $city,
-                'country_id' => $egypt->id
+        foreach (['Cairo', 'Giza', 'Alexandria'] as $name) {
+            City::firstOrCreate([
+                'name' => $name,
+                'country_id' => $egypt->id,
             ]);
         }
     }
