@@ -17,7 +17,7 @@
         <div class="card-body">
             <p><strong>@lang('site.date_label')</strong> {{ $appointment->appointment_date->format('l, F j, Y') }}</p>
             <p><strong>@lang('site.time_label')</strong> {{ $appointment->appointment_time ?? $appointment->appointment_date->format('g:i A') }}</p>
-            <p><strong>@lang('site.status_label')</strong> <span class="badge bg-primary">{{ ucfirst($appointment->status) }}</span></p>
+            <p><strong>@lang('site.status_label')</strong> <span class="badge bg-primary">{{ match ($appointment->status) { 'scheduled' => __('site.scheduled'), 'completed' => __('site.completed'), 'cancelled' => __('site.cancelled'), default => __('site.unknown') } }}</span></p>
             @if($appointment->notes)
                 <p><strong>@lang('site.notes_label')</strong> {{ $appointment->notes }}</p>
             @endif
