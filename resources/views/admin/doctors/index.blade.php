@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title', '{{ __('site.all') }} {{ __('site.doctor') }}s')
+@section('title', 'All Doctors')
 
 @section('content')
 <div class="container-fluid py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-0">{{ __('site.doctor') }}s</h2>
-            <p class="text-muted mb-0">{{ __('site.all_doctors_description') }}</p>
+            <h2 class="mb-0">Doctors</h2>
+            <p class="text-muted mb-0">All registered doctors in the system.</p>
         </div>
         <a href="{{ route('admin.doctors.create') }}" class="btn btn-primary">
-            ➕ Add {{ __('site.doctor') }}
+            ➕ Add Doctor
         </a>
     </div>
 
@@ -25,15 +25,15 @@
         <div class="card-body">
             <form method="GET" action="{{ route('admin.doctors.index') }}" class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">{{ __('site.search') }}</label>
+                    <label class="form-label">Search</label>
                     <input type="text" name="search" class="form-control"
-                           placeholder="{{ __('site.name') }}, email, specialization, phone..."
+                           placeholder="Name, email, specialization, phone..."
                            value="{{ $filters['search'] ?? '' }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">{{ __('site.city') }}</label>
+                    <label class="form-label">City</label>
                     <select name="city_id" class="form-select">
-                        <option value="">{{ __('site.all_cities') }}</option>
+                        <option value="">All Cities</option>
                         @foreach($cities as $city)
                             <option value="{{ $city->id }}"
                                 {{ ($filters['city_id'] ?? '') == $city->id ? 'selected' : '' }}>
@@ -43,8 +43,8 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end gap-2">
-                    <button class="btn btn-primary flex-grow-1">{{ __('site.filter') }}</button>
-                    <a href="{{ route('admin.doctors.index') }}" class="btn btn-outline-secondary">{{ __('site.clear') }}</a>
+                    <button class="btn btn-primary flex-grow-1">Filter</button>
+                    <a href="{{ route('admin.doctors.index') }}" class="btn btn-outline-secondary">Clear</a>
                 </div>
             </form>
         </div>
@@ -57,13 +57,13 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>{{ __('site.id') }}</th>
-                                <th>{{ __('site.name') }}</th>
-                                <th>{{ __('site.email') }}</th>
-                                <th>{{ __('site.specialty') }}</th>
-                                <th>{{ __('site.phone') }}</th>
-                                <th>{{ __('site.city') }}</th>
-                                <th>{{ __('site.appointment') }}s</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Specialization</th>
+                                <th>Phone</th>
+                                <th>City</th>
+                                <th>Appointments</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -81,7 +81,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('admin.doctors.show', $doctor) }}"
-                                           class="btn btn-sm btn-info">{{ __('site.view') }}</a>
+                                           class="btn btn-sm btn-info">View</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -93,7 +93,7 @@
                     {{ $doctors->links() }}
                 </div>
             @else
-                <p class="text-center text-muted py-5 mb-0">{{ __('site.no_doctors_found') }}</p>
+                <p class="text-center text-muted py-5 mb-0">No doctors found.</p>
             @endif
         </div>
     </div>
