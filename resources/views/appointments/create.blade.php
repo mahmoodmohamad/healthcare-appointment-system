@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Book New Appointment')
+@section('title', '@lang('site.book_new_appointment')')
 
 @section('content')
 
@@ -11,7 +11,7 @@
     {{-- Header --}}
     <div class="ui-page-head booking-header">
         <div>
-            <h1 class="ui-title page-title">Book New Appointment</h1>
+            <h1 class="ui-title page-title">@lang('site.book_new_appointment')</h1>
             <p class="ui-sub page-subtitle">
                 Schedule a patient visit by selecting a doctor, date and time.
             </p>
@@ -31,7 +31,7 @@
                    aria-hidden="true"></i>
 
                 <div>
-                    <strong>We couldn't save this appointment.</strong>
+                    <strong>@lang('site.appointment_save_error')</strong>
                     <ul class="mb-0 mt-2 ps-3">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -54,17 +54,17 @@
             <div class="ui-card booking-card">
 
                 <div class="card-top">
-                    <h2>Appointment Information</h2>
-                    <p>Complete the information below to create a new booking.</p>
+                    <h2>@lang('site.appointment_information')</h2>
+                    <p>@lang('site.complete_booking_information')</p>
                 </div>
 
                 <div class="booking-body">
 
-                    {{-- Section 1: Patient --}}
+                    {{-- Section 1: @lang('site.patient') --}}
                     <section class="form-section">
                         <h3 class="section-title">
                             <span class="section-number">01</span>
-                            Patient Information
+                            @lang('site.patient') Information
                         </h3>
 
                         <div>
@@ -79,7 +79,7 @@
                                         id="patient_id"
                                         class="ui-input form-select @error('patient_id') is-invalid @enderror"
                                         required>
-                                    <option value="">Choose a patient</option>
+                                    <option value="">@lang('site.choose_patient')</option>
 
                                     @foreach($patients as $patient)
                                         <option value="{{ $patient->id }}"
@@ -122,7 +122,7 @@
                                         id="doctor_id"
                                         class="ui-input form-select @error('doctor_id') is-invalid @enderror"
                                         required>
-                                    <option value="">Select a doctor</option>
+                                    <option value="">@lang('site.select_doctor')</option>
 
                                     @foreach($doctors as $doctor)
                                         <option value="{{ $doctor->id }}"
@@ -157,7 +157,7 @@
 
                             <div class="col-12 col-md-6">
                                 <label for="appointment_date" class="form-label">
-                                    Appointment Date <span class="required-mark">*</span>
+                                    @lang('site.appointment_date') <span class="required-mark">*</span>
                                 </label>
 
                                 <div class="field-icon">
@@ -179,7 +179,7 @@
 
                             <div class="col-12 col-md-6">
                                 <label for="appointment_time" class="form-label">
-                                    Appointment Time <span class="required-mark">*</span>
+                                    @lang('site.appointment_time') <span class="required-mark">*</span>
                                 </label>
 
                                 <div class="field-icon">
@@ -190,7 +190,7 @@
                                             class="ui-input form-select @error('appointment_time') is-invalid @enderror"
                                             required>
 
-                                        <option value="">Select a time</option>
+                                        <option value="">@lang('site.select_time')</option>
 
                                         <optgroup label="Morning">
                                             @for($hour = 9; $hour < 12; $hour++)
@@ -235,7 +235,7 @@
                         <div class="availability-note">
                             <i class="bi bi-info-circle" aria-hidden="true"></i>
                             <div>
-                                <strong>Appointment availability</strong>
+                                <strong>@lang('site.appointment_availability')</strong>
                                 <span>
                                     Available times depend on the doctor's schedule.
                                     The booking will be validated when submitted.
@@ -249,7 +249,7 @@
                         <h3 class="section-title">
                             <span class="section-number">04</span>
                             Additional Information
-                            <span class="text-muted fw-normal small">(Optional)</span>
+                            <span class="text-muted fw-normal small">@lang('site.optional_parenthetical')</span>
                         </h3>
 
                         <label for="notes" class="form-label">
@@ -261,7 +261,7 @@
                                   rows="3"
                                   maxlength="1000"
                                   class="ui-input form-control @error('notes') is-invalid @enderror"
-                                  placeholder="Add any relevant administrative notes...">{{ old('notes') }}</textarea>
+                                  placeholder="@lang('site.administrative_notes_placeholder')">{{ old('notes') }}</textarea>
 
                         @error('notes')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -307,8 +307,8 @@
                 </p>
 
                 <div class="summary-item">
-                    <div class="summary-label">Patient</div>
-                    <div class="summary-value" id="summaryPatient">
+                    <div class="summary-label">@lang('site.patient')</div>
+                    <div class="summary-value" id="summary@lang('site.patient')">
                         Not selected
                     </div>
                 </div>
@@ -321,21 +321,21 @@
                 </div>
 
                 <div class="summary-item">
-                    <div class="summary-label">Specialization</div>
-                    <div class="summary-value" id="summarySpecialization">
+                    <div class="summary-label">@lang('site.specialty')</div>
+                    <div class="summary-value" id="summary@lang('site.specialty')">
                         Not selected
                     </div>
                 </div>
 
                 <div class="summary-item">
-                    <div class="summary-label">Appointment Date</div>
+                    <div class="summary-label">@lang('site.appointment_date')</div>
                     <div class="summary-value" id="summaryDate">
                         Not selected
                     </div>
                 </div>
 
                 <div class="summary-item">
-                    <div class="summary-label">Appointment Time</div>
+                    <div class="summary-label">@lang('site.appointment_time')</div>
                     <div class="summary-value" id="summaryTime">
                         Not selected
                     </div>
@@ -366,9 +366,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const timeSelect = document.getElementById('appointment_time');
     const appointmentForm = document.getElementById('appointmentForm');
 
-    const summaryPatient = document.getElementById('summaryPatient');
+    const summary@lang('site.patient') = document.getElementById('summary@lang('site.patient')');
     const summaryDoctor = document.getElementById('summaryDoctor');
-    const summarySpecialization = document.getElementById('summarySpecialization');
+    const summary@lang('site.specialty') = document.getElementById('summary@lang('site.specialty')');
     const summaryDate = document.getElementById('summaryDate');
     const summaryTime = document.getElementById('summaryTime');
 
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const patientOption = selectedOption(patientSelect);
         const doctorOption = selectedOption(doctorSelect);
 
-        summaryPatient.textContent =
+        summary@lang('site.patient').textContent =
             patientSelect.value && patientOption
                 ? patientOption.dataset.name || patientOption.textContent.trim()
                 : 'Not selected';
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? 'Dr. ' + (doctorOption.dataset.name || doctorOption.textContent.trim())
                 : 'Not selected';
 
-        summarySpecialization.textContent =
+        summary@lang('site.specialty').textContent =
             doctorSelect.value && doctorOption
                 ? doctorOption.dataset.specialization || 'Not specified'
                 : 'Not selected';
