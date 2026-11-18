@@ -182,7 +182,7 @@
                     <ul class="menu-sub">
                         <li class="menu-item {{ request()->routeIs('patients.index') ? 'active' : '' }}">
                             <a href="{{ route('patients.index') }}" class="menu-link">
-                                <div>All Patients</div>
+                                <div>@lang('site.all_patients')</div>
                             </a>
                         </li>
                         <li class="menu-item {{ request()->routeIs('patients.create') ? 'active' : '' }}">

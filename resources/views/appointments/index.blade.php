@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Appointments')
+@section('title', __('site.appointments'))
 
 @section('content')
 
@@ -12,7 +12,7 @@
         <div>
             <h1 class="ui-title page-title">@lang('site.appointments')</h1>
             <p class="ui-sub page-subtitle">
-                Manage patient appointments and track their status.
+                @lang('site.page_description')
             </p>
         </div>
 
@@ -20,7 +20,7 @@
             <a href="{{ route('appointments.calendar') }}"
                class="ui-btn ui-btn-ghost btn btn-light">
                 <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>
-                Calendar View
+                @lang('site.calendar_view')
             </a>
 
             <a href="{{ route('appointments.create') }}"
@@ -41,14 +41,14 @@
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
-                    aria-label="Close"></button>
+                    aria-label="@lang('site.close')"></button>
         </div>
     @endif
 
     {{-- Validation / Error Messages --}}
     @if($errors->any())
         <div class="alert alert-danger mb-4" role="alert">
-            <strong>Please review the following:</strong>
+            <strong>@lang('site.review_following')</strong>
             <ul class="mb-0 mt-2">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -61,21 +61,21 @@
     <section class="ui-card panel filter-panel" aria-labelledby="filters-heading">
         <h2 class="section-heading" id="filters-heading">
             <i class="bi bi-funnel me-2 text-primary" aria-hidden="true"></i>
-            Filter Appointments
+            @lang('site.filter_appointments')
         </h2>
 
         <form method="GET" action="{{ route('appointments.index') }}">
             <div class="row g-3 align-items-end">
 
                 <div class="col-12 col-md-4 col-lg-3">
-                    <label for="status" class="form-label">Appointment Status</label>
+                    <label for="status" class="form-label">@lang('site.appointment_status')</label>
 
                     <select name="status" id="status" class="ui-input form-select">
-                        <option value="">All statuses</option>
+                        <option value="">@lang('site.all_statuses')</option>
 
                         <option value="scheduled"
                             @selected(request('status') === 'scheduled')>
-                            Scheduled
+                            @lang('site.scheduled')
                         </option>
 
                         <option value="completed"
@@ -85,13 +85,13 @@
 
                         <option value="cancelled"
                             @selected(request('status') === 'cancelled')>
-                            Cancelled
+                            @lang('site.cancelled')
                         </option>
                     </select>
                 </div>
 
                 <div class="col-12 col-md-4 col-lg-3">
-                    <label for="date" class="form-label">Appointment Date</label>
+                    <label for="date" class="form-label">@lang('site.appointment_date')</label>
 
                     <input type="date"
                            name="date"
@@ -103,7 +103,7 @@
                 <div class="col-6 col-md-2 col-lg-2">
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search me-1" aria-hidden="true"></i>
-                        Apply
+                        @lang('site.apply')
                     </button>
                 </div>
 
@@ -112,7 +112,7 @@
                        class="btn btn-light w-100">
                         <i class="bi bi-arrow-counterclockwise me-1"
                            aria-hidden="true"></i>
-                        Reset
+                        @lang('site.reset')
                     </a>
                 </div>
 
@@ -125,15 +125,15 @@
 
         <div class="table-heading">
             <div>
-                <h2 id="appointments-heading">Appointment Records</h2>
+                <h2 id="appointments-heading">@lang('site.appointment_records')</h2>
                 <p class="page-subtitle mt-1">
-                    Review and manage your appointment records.
+                    @lang('site.review_manage_appointments')
                 </p>
             </div>
 
             <span class="results-count">
                 {{ $appointments->total() }}
-                {{ \Illuminate\Support\Str::plural('appointment', $appointments->total()) }}
+                @lang('site.appointments_count')
             </span>
         </div>
 
@@ -143,12 +143,12 @@
                 <table class="ui-table table">
                     <thead>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Date & Time</th>
-                            <th scope="col">Patient</th>
-                            <th scope="col">Doctor</th>
+                            <th scope="col">@lang('site.id')</th>
+                            <th scope="col">@lang('site.date_time')</th>
+                            <th scope="col">@lang('site.patient')</th>
+                            <th scope="col">@lang('site.doctor')</th>
                             <th scope="col">@lang('site.status')</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">@lang('site.actions')</th>
                         </tr>
                     </thead>
 
@@ -166,23 +166,23 @@
                                 };
 
                                 $statusLabel = match ($status) {
-                                    'scheduled' => 'Scheduled',
+                                    'scheduled' => '@lang('site.scheduled')',
                                     'completed' => 'Completed',
-                                    'cancelled' => 'Cancelled',
+                                    'cancelled' => '@lang('site.cancelled')',
                                     default => ucfirst($status ?? 'Unknown'),
                                 };
                             @endphp
 
                             <tr>
-                                <td data-label="{{ __('ID') }}">
+                                <td data-label="{{ __('@lang('site.id')') }}">
                                     <span class="appointment-id">
                                         #{{ $appointment->id }}
                                     </span>
                                 </td>
 
-                                <td data-label="{{ __('Date & Time') }}">
+                                <td data-label="{{ __('@lang('site.date_time')') }}">
                                     <div class="date-main">
-                                        {{ $appointment->appointment_date?->translatedFormat('M d, Y') ?? '—' }}
+                                        {{ $appointment->appointment_date?->locale(app()->getLocale())->translatedFormat('M d, Y') ?? '—' }}
                                     </div>
 
                                     <div class="date-meta">
@@ -194,25 +194,25 @@
                                     </div>
                                 </td>
 
-                                <td data-label="{{ __('Patient') }}">
+                                <td data-label="{{ __('@lang('site.patient')') }}">
                                     <div class="person-name">
-                                        {{ $appointment->patient?->user?->name ?? 'Unknown patient' }}
+                                        {{ $appointment->patient?->user?->name ?? '@lang('site.unknown_patient')' }}
                                     </div>
 
                                     <div class="person-meta">
-                                        Patient ID: {{ $appointment->patient_id }}
+                                        @lang('site.patient') @lang('site.id'): {{ $appointment->patient_id }}
                                     </div>
                                 </td>
 
-                                <td data-label="{{ __('Doctor') }}">
+                                <td data-label="{{ __('@lang('site.doctor')') }}">
                                     <div class="person-name">
                                         {{ $appointment->doctor?->user?->name
                                             ? 'Dr. ' . $appointment->doctor->user->name
-                                            : 'Unknown doctor' }}
+                                            : '@lang('site.unknown_doctor')' }}
                                     </div>
 
                                     <div class="person-meta">
-                                        {{ $appointment->doctor?->specialization ?? 'No specialization' }}
+                                        {{ $appointment->doctor?->specialization ?? '@lang('site.no_specialization')' }}
                                     </div>
                                 </td>
 
@@ -222,11 +222,11 @@
                                     </span>
                                 </td>
 
-                                <td data-label="{{ __('Actions') }}">
+                                <td data-label="{{ __('@lang('site.actions')') }}">
                                     <div class="action-group">
                                         <a href="{{ route('appointments.show', $appointment) }}"
                                            class="action-btn action-view"
-                                           aria-label="View appointment {{ $appointment->id }}">
+                                           aria-label="{{ __('site.view') }} {{ __('site.appointment') }} {{ $appointment->id }}">
                                             <i class="bi bi-eye me-1" aria-hidden="true"></i>
                                             @lang('site.view')
                                         </a>
@@ -234,13 +234,13 @@
                                         @if($appointment->status === 'scheduled')
                                             <form action="{{ route('appointments.destroy', $appointment) }}"
                                                   method="POST"
-                                                  onsubmit="return confirm('Are you sure you want to cancel appointment #{{ $appointment->id }}?')">
+                                                  onsubmit="return confirm(@js(__('site.cancel_appointment_confirm', ['id' => $appointment->id])))">
                                                 @csrf
                                                 @method('DELETE')
 
                                                 <button type="submit"
                                                         class="action-btn action-cancel"
-                                                        aria-label="Cancel appointment {{ $appointment->id }}">
+                                                        aria-label="{{ __('site.cancel_appointment') }} {{ $appointment->id }}">
                                                     <i class="bi bi-x-circle me-1"
                                                        aria-hidden="true"></i>
                                                     @lang('site.cancel')
@@ -269,30 +269,30 @@
                     <i class="bi bi-calendar2-x" aria-hidden="true"></i>
                 </div>
 
-                <h4>No appointments found</h4>
+                <h4>@lang('site.no_appointments_found')</h4>
 
                 @if(request()->hasAny(['status', 'date']))
                     <p>
-                        No appointments match your current filters.
-                        Try changing your search criteria.
+                        @lang('site.no_appointments_match_filters')
+                        @lang('site.change_search_criteria')
                     </p>
 
                     <a href="{{ route('appointments.index') }}"
                        class="ui-btn ui-btn-ghost btn btn-light">
                         <i class="bi bi-arrow-counterclockwise me-1"
                            aria-hidden="true"></i>
-                        Clear Filters
+                        @lang('site.clear_filters')
                     </a>
                 @else
                     <p>
-                        There are no appointment records yet.
-                        Create your first appointment to get started.
+                        @lang('site.no_appointment_records')
+                        @lang('site.create_first_appointment')
                     </p>
 
                     <a href="{{ route('appointments.create') }}"
                        class="ui-btn ui-btn-primary btn btn-primary">
                         <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
-                        Create Appointment
+                        @lang('site.create_appointment')
                     </a>
                 @endif
             </div>
