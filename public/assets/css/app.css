@@ -1934,12 +1934,12 @@
     }
 
     .calendar-page .calendar-weekdays,
-    .calendar-page .legacy-calendar .calendar-days {
+    .calendar-page .calendar-days {
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));
     }
 
-    .calendar-page .legacy-calendar .calendar-weekdays {
+    .calendar-page .calendar-weekdays {
         background: #f9fafc;
         border-bottom: 1px solid var(--cal-border);
     }
@@ -1954,7 +1954,7 @@
         letter-spacing: .45px;
     }
 
-    .calendar-page .legacy-calendar .calendar-day {
+    .calendar-page .calendar-day {
         min-height: 137px;
         padding: 9px;
         border-right: 1px solid #edf0f5;
@@ -1967,11 +1967,11 @@
         border-right: 0;
     }
 
-    .calendar-page .legacy-calendar .calendar-day.other-month {
+    .calendar-page .calendar-day.other-month {
         background: #fafbfd;
     }
 
-    .calendar-page .legacy-calendar .calendar-day.today {
+    .calendar-page .calendar-day.today {
         background: #f8fbff;
     }
 
@@ -1982,7 +1982,7 @@
         margin-bottom: 9px;
     }
 
-    .calendar-page .legacy-calendar .day-number {
+    .calendar-page .day-number {
         width: 27px;
         height: 27px;
         display: inline-flex;
@@ -2123,14 +2123,14 @@
         border-top: 1px solid var(--cal-border);
     }
 
-    .calendar-page .legacy-calendar .legend {
+    .calendar-page .legend {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 17px;
     }
 
-    .calendar-page .legacy-calendar .legend-item {
+    .calendar-page .legend-item {
         display: inline-flex;
         align-items: center;
         gap: 7px;
@@ -2386,14 +2386,14 @@
     }
 
     /* Statistics */
-    .reception-dashboard .legacy-dashboard .stats-grid {
+    .reception-dashboard .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 16px;
         margin-bottom: 28px;
     }
 
-    .reception-dashboard .legacy-dashboard .stat-card {
+    .reception-dashboard .stat-card {
         background: var(--rd-surface);
         border: 1px solid var(--rd-border);
         border-radius: 17px;
@@ -2524,7 +2524,7 @@
         padding: 4px 22px;
     }
 
-    .reception-dashboard .legacy-calendar .appointment-item {
+    .reception-dashboard .appointment-item {
         display: grid;
         grid-template-columns: 58px minmax(0, 1fr) auto;
         align-items: center;
@@ -2799,7 +2799,7 @@
     }
 
     @media (max-width: 1100px) {
-        .reception-dashboard .legacy-dashboard .stats-grid {
+        .reception-dashboard .stats-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
@@ -2836,11 +2836,11 @@
             width: 100%;
         }
 
-        .reception-dashboard .legacy-dashboard .stats-grid {
+        .reception-dashboard .stats-grid {
             gap: 10px;
         }
 
-        .reception-dashboard .legacy-dashboard .stat-card {
+        .reception-dashboard .stat-card {
             padding: 15px;
             border-radius: 14px;
         }
@@ -2862,7 +2862,7 @@
             padding: 3px 15px;
         }
 
-        .reception-dashboard .legacy-calendar .appointment-item {
+        .reception-dashboard .appointment-item {
             grid-template-columns: 48px minmax(0, 1fr) 32px;
             gap: 10px;
         }
