@@ -8,6 +8,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Demo accounts use predictable local-only credentials. Never seed them in production.
+        if (app()->isProduction()) {
+            return;
+        }
+
         $this->call([
             CountrySeeder::class,
             CitySeeder::class,
