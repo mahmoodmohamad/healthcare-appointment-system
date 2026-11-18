@@ -51,8 +51,12 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (! Schema::hasColumn('appointments', 'patient_slot_lock')) {
+            return;
+        }
+
         Schema::table('appointments', function (Blueprint $table) {
-            $table->dropUnique(['patient_slot_lock']);
+            $table->dropUnique('appointments_patient_slot_lock_unique');
             $table->dropColumn('patient_slot_lock');
         });
     }
