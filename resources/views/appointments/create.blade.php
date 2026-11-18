@@ -253,7 +253,7 @@
 
                                                     <option value="{{ $time }}"
                                                         @selected(old('appointment_time') == $time)>
-                                                        {{ \Illuminate\Support\Carbon::createFromFormat('H:i', $time)->format('h:i A') }}
+                                                        {{ \Illuminate\Support\Carbon::createFromFormat('H:i', $time)->locale(app()->getLocale())->translatedFormat('h:i A') }}
                                                     </option>
                                                 @endforeach
                                             @endfor
