@@ -25,13 +25,13 @@ class ReceptionistPolicy
     public function view(User $user, Receptionist $receptionist): bool
     {
         // ReceptionistPolicy::view
-return $user->isAdmin()
-    || ($user->isReceptionist()
-        && (int) $user->receptionist?->id === (int) $receptionist->id);
+        return $user->isAdmin()
+            || ($user->isReceptionist()
+                && (int) $user->receptionist?->id === (int) $receptionist->id);
 
-// DoctorPolicy::view
-return $user->isAdmin()
-    || ($user->isDoctor() && (int) $user->doctor?->id === (int) $doctor->id);
+        // DoctorPolicy::view
+        return $user->isAdmin()
+            || ($user->isDoctor() && (int) $user->doctor?->id === (int) $doctor->id);
     }
 
     public function create(User $user): bool

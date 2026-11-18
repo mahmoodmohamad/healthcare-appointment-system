@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\LabSpecialist\DashboardController as LabSpecialistDashboardController;
 use App\Http\Controllers\Radiologist\DashboardController as RadiologistDashboardController;
-use App\Models\XraySpecialist;
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
 
@@ -18,24 +17,30 @@ class DashboardController extends Controller
     public function getClassName(Request $request)
     {
         //if ($request->user()->isPatient())
-          //  return Patient\DashboardController::class;
+        //  return Patient\DashboardController::class;
 
-        if ($request->user()->isDoctor())
+        if ($request->user()->isDoctor()) {
             return Doctor\DashboardController::class;
+        }
 
-        if ($request->user()->isRadiologist())
+        if ($request->user()->isRadiologist()) {
             return RadiologistDashboardController::class;
-        
-        if ($request->user()->isLabSpecialist())
+        }
+
+        if ($request->user()->isLabSpecialist()) {
             return LabSpecialistDashboardController::class;
-        
-        if ($request->user()->isReceptionist())
+        }
+
+        if ($request->user()->isReceptionist()) {
             return Receptionist\DashboardController::class;
+        }
 
-        if ($request->user()->isClinicManger())
+        if ($request->user()->isClinicManger()) {
             return ClinicManger\DashboardController::class;
+        }
 
-        if ($request->user()->isAdmin())
+        if ($request->user()->isAdmin()) {
             return Admin\DashboardController::class;
+        }
     }
 }

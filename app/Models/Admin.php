@@ -27,7 +27,7 @@ class Admin extends Model
 
     public function scopeSearch($query, string $search)
     {
-        return $query->whereHas('user', function($q) use ($search) {
+        return $query->whereHas('user', function ($q) use ($search) {
             $q->search($search);
         });
     }

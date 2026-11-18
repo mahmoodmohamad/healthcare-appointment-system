@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -7,7 +8,8 @@ use Tests\TestCase;
 
 class RoleAccessTest extends TestCase
 {
-    use RefreshDatabase, CreatesRoles;
+    use RefreshDatabase;
+    use CreatesRoles;
 
     public function test_guest_is_redirected_to_login(): void
     {

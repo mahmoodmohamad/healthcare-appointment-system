@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\{User, Patient, Doctor, Receptionist, Appointment, Diagnosis, City};
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -57,9 +56,9 @@ class AdminController extends Controller
             ->get();
 
         $monthlyData = Appointment::select(
-                DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
-                DB::raw('count(*) as count')
-            )
+            DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
+            DB::raw('count(*) as count')
+        )
             ->where('appointment_date', '>=', now()->subMonths(6))
             ->groupBy('month')
             ->orderBy('month')
@@ -103,9 +102,9 @@ class AdminController extends Controller
             ],
 
             'appointments_by_month' => Appointment::select(
-                    DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
-                    DB::raw('count(*) as count')
-                )
+                DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
+                DB::raw('count(*) as count')
+            )
                 ->where('appointment_date', '>=', now()->subYear())
                 ->groupBy('month')
                 ->orderBy('month')

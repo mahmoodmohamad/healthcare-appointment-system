@@ -1,14 +1,15 @@
 <?php
+
 namespace Tests\Feature;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\CreatesRoles;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
-    use RefreshDatabase, CreatesRoles;
+    use RefreshDatabase;
+    use CreatesRoles;
 
     public function test_deactivated_user_cannot_login(): void
     {

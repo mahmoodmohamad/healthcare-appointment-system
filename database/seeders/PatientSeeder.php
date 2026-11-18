@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\City;
 use App\Models\User;
 use App\Models\Patient;
 use App\Models\Receptionist;
 use Illuminate\Support\Facades\Hash;
+
 class PatientSeeder extends Seeder
 {
     /**
@@ -19,7 +19,7 @@ class PatientSeeder extends Seeder
     public function run()
     {
         //
-		$city = City::first();
+        $city = City::first();
         $receptionist = Receptionist::first();
 
         for ($i = 1; $i <= 10; $i++) {

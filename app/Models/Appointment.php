@@ -13,11 +13,11 @@ class Appointment extends Model
 {
     use HasFactory;
 
-    const SCHEDULED = 'scheduled';
-    const COMPLETED = 'completed';
-    const CANCELLED = 'cancelled';
+    public const SCHEDULED = 'scheduled';
+    public const COMPLETED = 'completed';
+    public const CANCELLED = 'cancelled';
 
-    const TRANSITIONS = [
+    public const TRANSITIONS = [
         self::SCHEDULED => [self::COMPLETED, self::CANCELLED],
         self::COMPLETED => [],
         self::CANCELLED => [],
@@ -56,10 +56,22 @@ class Appointment extends Model
     }
 
     // ---------- Relationships ----------
-    public function patient()      { return $this->belongsTo(Patient::class); }
-    public function doctor()       { return $this->belongsTo(Doctor::class); }
-    public function receptionist() { return $this->belongsTo(Receptionist::class); }
-    public function diagnosis()    { return $this->hasOne(Diagnosis::class); }
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
+    }
+    public function receptionist()
+    {
+        return $this->belongsTo(Receptionist::class);
+    }
+    public function diagnosis()
+    {
+        return $this->hasOne(Diagnosis::class);
+    }
 
     // ---------- Lifecycle ----------
     public function canTransitionTo(string $to): bool
@@ -75,8 +87,14 @@ class Appointment extends Model
         $this->update(['status' => $to]);
     }
 
-    public function complete(): void { $this->transitionTo(self::COMPLETED); }
-    public function cancel(): void   { $this->transitionTo(self::CANCELLED); }
+    public function complete(): void
+    {
+        $this->transitionTo(self::COMPLETED);
+    }
+    public function cancel(): void
+    {
+        $this->transitionTo(self::CANCELLED);
+    }
 
     public function reschedule(int $doctorId, string $date, string $time): void
     {
@@ -126,26 +144,26 @@ class Appointment extends Model
     }
 
     public static function isDuplicateKey(QueryException $e): bool
-{
-    $sqlState = $e->errorInfo[0] ?? null;
-    $code     = (int) ($e->errorInfo[1] ?? 0);
+    {
+        $sqlState = $e->errorInfo[0] ?? null;
+        $code     = (int) ($e->errorInfo[1] ?? 0);
 
-    return $code === 1062                                   // MySQL / MariaDB
-        || $sqlState === '23505'                            // PostgreSQL
-        || ($sqlState === '23000' && $code === 19           // SQLite
-            && str_contains($e->getMessage(), 'UNIQUE'));
-}
-
-public static function translateSlotConflict(QueryException $e): \Throwable
-{
-    if (static::isDuplicateKey($e)) {
-        return ValidationException::withMessages([
-            'appointment_time' => 'This time slot is already booked.',
-        ]);
+        return $code === 1062                                   // MySQL / MariaDB
+            || $sqlState === '23505'                            // PostgreSQL
+            || ($sqlState === '23000' && $code === 19           // SQLite
+                && str_contains($e->getMessage(), 'UNIQUE'));
     }
 
-    return $e;
-}
+    public static function translateSlotConflict(QueryException $e): \Throwable
+    {
+        if (static::isDuplicateKey($e)) {
+            return ValidationException::withMessages([
+                'appointment_time' => 'This time slot is already booked.',
+            ]);
+        }
+
+        return $e;
+    }
 
     // ---------- Accessors ----------
     public function getFullDateTimeAttribute()

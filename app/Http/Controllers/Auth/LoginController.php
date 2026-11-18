@@ -58,10 +58,18 @@ class LoginController extends Controller
 
             $user = Auth::user();
 
-            if ($user->isAdmin())        return redirect()->route('admin.dashboard');
-            if ($user->isDoctor())       return redirect()->route('doctor.dashboard');
-            if ($user->isReceptionist()) return redirect()->route('receptionist.dashboard');
-            if ($user->isPatient())      return redirect()->route('patient.dashboard');
+            if ($user->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+            if ($user->isDoctor()) {
+                return redirect()->route('doctor.dashboard');
+            }
+            if ($user->isReceptionist()) {
+                return redirect()->route('receptionist.dashboard');
+            }
+            if ($user->isPatient()) {
+                return redirect()->route('patient.dashboard');
+            }
 
             $this->endSession($request);
 

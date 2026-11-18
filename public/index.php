@@ -2,10 +2,10 @@
 
 /**
  * Laravel Application Entry Point
- * 
+ *
  * This is the entry point for all requests entering the application.
  * It handles the initialization, request processing, and response delivery.
- * 
+ *
  * @package    Healthcare Appointment System
  * @author     Your Name
  * @version    1.0.0

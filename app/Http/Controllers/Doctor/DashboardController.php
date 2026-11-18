@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Doctor;
 
-
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -20,17 +18,17 @@ class DashboardController extends Controller
             'today_appointments' => $doctor->appointments()
                 ->whereDate('appointment_date', today())
                 ->count(),
-            
+
             'today_completed' => $doctor->appointments()
                 ->whereDate('appointment_date', today())
                 ->where('status', 'completed')
                 ->count(),
-            
+
             'today_pending' => $doctor->appointments()
                 ->whereDate('appointment_date', today())
                 ->where('status', 'scheduled')
                 ->count(),
-            
+
             'total_patients' => $doctor->appointments()
                 ->distinct('patient_id')
                 ->count('patient_id'),

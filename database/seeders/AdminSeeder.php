@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
+
 class AdminSeeder extends Seeder
 {
     /**
@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
     public function run()
     {
         //
-		$user = User::create([
+        $user = User::create([
     'name'     => 'System Admin',
     'email'    => 'admin@clinic.com',
     'password' => Hash::make('password'),

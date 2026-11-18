@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Country;;
+use App\Models\Country;
+
+;
 use App\Models\City;
+
 class CitySeeder extends Seeder
 {
     /**
@@ -16,7 +18,7 @@ class CitySeeder extends Seeder
     public function run()
     {
         //
-		$egypt = Country::where('name', 'Egypt')->first();
+        $egypt = Country::where('name', 'Egypt')->first();
 
         $cities = ['Cairo', 'Giza', 'Alexandria'];
 

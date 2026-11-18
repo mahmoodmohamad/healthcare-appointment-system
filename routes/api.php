@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')
     ->name('api.')
     ->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
 
-    Route::apiResource('appointments', AppointmentController::class);
-});
+        Route::apiResource('appointments', AppointmentController::class);
+    });

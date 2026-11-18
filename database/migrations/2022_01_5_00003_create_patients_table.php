@@ -15,17 +15,17 @@ class CreatePatientsTable extends Migration
     {
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
-    $table->foreignId('user_id')->constrained()->onDelete('cascade');
-    $table->string('national_id')->unique();
-    $table->string('phone');
-	$table->enum('gender', ['male', 'female'])->nullable();
-    $table->date('birth_date')->nullable();
-    $table->foreignId('city_id')->constrained()->onDelete('cascade');
-      $table->text('address')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('national_id')->unique();
+            $table->string('phone');
+            $table->enum('gender', ['male', 'female'])->nullable();
+            $table->date('birth_date')->nullable();
+            $table->foreignId('city_id')->constrained()->onDelete('cascade');
+            $table->text('address')->nullable();
             $table->text('notes')->nullable();
             $table->string('emergency')->nullable();
-    $table->foreignId('receptionist_id')->nullable()->constrained()->onDelete('set null');
-    $table->timestamps();
+            $table->foreignId('receptionist_id')->nullable()->constrained()->onDelete('set null');
+            $table->timestamps();
         });
     }
 

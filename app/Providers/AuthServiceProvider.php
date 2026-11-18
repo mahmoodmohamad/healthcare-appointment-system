@@ -9,7 +9,6 @@ use App\Policies\AppointmentPolicy;
 use App\Policies\DoctorPolicy;
 use App\Policies\ReceptionistPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Patient;
 use App\Policies\PatientPolicy;
 
@@ -26,6 +25,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-       
+
     }
 }
