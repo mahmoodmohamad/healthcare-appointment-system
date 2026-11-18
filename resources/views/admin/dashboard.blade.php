@@ -65,6 +65,14 @@
     })->values();
 
     $statusValues = $appointmentsByStatus->pluck('count')->values();
+    $statusColors = $appointmentsByStatus->map(function ($item) {
+        return match ($item->status) {
+            'completed' => '#2f855a',
+            'cancelled' => '#b42318',
+            'scheduled' => '#1d6fb8',
+            default => '#c2610c',
+        };
+    })->values();
     $monthlyLabels = $monthlyData->pluck('month')->values();
     $monthlyValues = $monthlyData->pluck('count')->values();
 @endphp
@@ -231,7 +239,7 @@
                         <div class="ui-row admin-person-row">
                             <span class="ui-avatar"><i class="bi bi-person-badge" aria-hidden="true"></i></span>
                             <div class="ui-row-main">
-                                <strong>{{ $doctor->user->name }}</strong>
+                                <strong>{{ $doctor->user?->name ?? __('site.unknown_doctor') }}</strong>
                                 <span class="ui-meta">{{ $doctor->specialization ?: __('site.no_specialization') }}</span>
                             </div>
                             <span class="admin-count-pill">{{ number_format($doctor->appointments_count) }}</span>
@@ -260,7 +268,7 @@
                         <div class="ui-row admin-person-row">
                             <span class="ui-avatar admin-avatar-blue"><i class="bi bi-person-workspace" aria-hidden="true"></i></span>
                             <div class="ui-row-main">
-                                <strong>{{ $receptionist->user->name }}</strong>
+                                <strong>{{ $receptionist->user?->name ?? __('site.user') }}</strong>
                                 <span class="ui-meta">{{ $receptionist->phone ?: __('site.no_contact_details') }}</span>
                             </div>
                             <span class="admin-count-pill">{{ number_format($receptionist->appointments_count) }}</span>
@@ -304,7 +312,7 @@
                                         'scheduled' => 'scheduled',
                                         'completed' => 'completed',
                                         'cancelled' => 'cancelled',
-                                        default => 'scheduled',
+                                        default => 'pending',
                                     };
                                     $statusLabel = match ($appointment->status) {
                                         'scheduled' => __('site.scheduled'),
@@ -412,7 +420,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 labels: @json($statusLabels),
                 datasets: [{
                     data: @json($statusValues),
-                    backgroundColor: ['#0f766e', '#3b82a0', '#d97745', '#94a3b8'],
+                    backgroundColor: @json($statusColors),
                     borderColor: '#ffffff',
                     borderWidth: 4,
                     hoverOffset: 5
