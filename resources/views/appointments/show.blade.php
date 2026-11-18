@@ -62,7 +62,7 @@
     {{-- Page Header --}}
     <div class="ui-page-head page-header">
         <div>
-            <h1 class="ui-title page-title">Appointment Details</h1>
+            <h1 class="ui-title page-title">@lang('site.appointment_details')</h1>
             <p class="ui-sub page-subtitle">
                 View appointment information and related records.
             </p>
@@ -180,14 +180,14 @@
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Phone</span>
+                        <span class="detail-label">@lang('site.phone')</span>
                         <span class="detail-value">
                             {{ $patient?->phone ?? 'Not available' }}
                         </span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Email</span>
+                        <span class="detail-label">@lang('site.email')</span>
                         <span class="detail-value">
                             {{ $patient?->user?->email ?? 'Not available' }}
                         </span>
@@ -252,7 +252,7 @@
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Phone</span>
+                        <span class="detail-label">@lang('site.phone')</span>
                         <span class="detail-value">
                             {{ $doctor?->phone ?? 'Not available' }}
                         </span>
@@ -367,7 +367,7 @@
                     <div class="medical-field">
                         <div class="medical-field-label">
                             <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
-                            Diagnosis
+                            @lang('site.diagnosis')
                         </div>
 
                         <div class="medical-field-content">
@@ -379,7 +379,7 @@
                         <div class="medical-field">
                             <div class="medical-field-label">
                                 <i class="bi bi-prescription2" aria-hidden="true"></i>
-                                Prescription
+                                @lang('site.prescription')
                             </div>
 
                             <div class="medical-field-content">

@@ -10,7 +10,7 @@
     {{-- Page Header --}}
     <div class="ui-page-head page-header">
         <div>
-            <h1 class="ui-title page-title">Appointments</h1>
+            <h1 class="ui-title page-title">@lang('site.appointments')</h1>
             <p class="ui-sub page-subtitle">
                 Manage patient appointments and track their status.
             </p>
@@ -26,7 +26,7 @@
             <a href="{{ route('appointments.create') }}"
                class="ui-btn ui-btn-primary btn btn-primary">
                 <i class="bi bi-plus-lg me-1" aria-hidden="true"></i>
-                New Appointment
+                @lang('site.new_appointment')
             </a>
         </div>
     </div>
@@ -80,7 +80,7 @@
 
                         <option value="completed"
                             @selected(request('status') === 'completed')>
-                            Completed
+                            @lang('site.completed')
                         </option>
 
                         <option value="cancelled"
@@ -147,7 +147,7 @@
                             <th scope="col">Date & Time</th>
                             <th scope="col">Patient</th>
                             <th scope="col">Doctor</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">@lang('site.status')</th>
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -228,7 +228,7 @@
                                            class="action-btn action-view"
                                            aria-label="View appointment {{ $appointment->id }}">
                                             <i class="bi bi-eye me-1" aria-hidden="true"></i>
-                                            View
+                                            @lang('site.view')
                                         </a>
 
                                         @if($appointment->status === 'scheduled')
@@ -243,7 +243,7 @@
                                                         aria-label="Cancel appointment {{ $appointment->id }}">
                                                     <i class="bi bi-x-circle me-1"
                                                        aria-hidden="true"></i>
-                                                    Cancel
+                                                    @lang('site.cancel')
                                                 </button>
                                             </form>
                                         @endif

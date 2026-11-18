@@ -69,7 +69,7 @@
 
                         <div>
                             <label for="patient_id" class="form-label">
-                                Select Patient <span class="required-mark">*</span>
+                                @lang('site.select_patient') <span class="required-mark">*</span>
                             </label>
 
                             <div class="field-icon">
@@ -276,7 +276,7 @@
                     <div class="form-actions">
                         <a href="{{ route('appointments.index') }}"
                            class="ui-btn ui-btn-ghost btn btn-light">
-                            Cancel
+                            @lang('site.cancel')
                         </a>
 
                         <button type="submit"
