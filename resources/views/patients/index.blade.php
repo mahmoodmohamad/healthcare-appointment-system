@@ -29,8 +29,8 @@
                 @if(request('search') || request('city_id')) match your filters @else registered @endif
             </p>
         </div>
-        <a href="{{ route('patients.create') }}" class="btn btn-accent d-inline-flex align-items-center gap-2 px-3 py-2">
-            <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+        <a href="{{ route('patients.create') }}" class="btn btn-accent pt-register-link d-inline-flex align-items-center gap-2 px-3 py-2">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg>
             Register patient
         </a>
     </div>
@@ -49,7 +49,7 @@
             <div class="col-12 col-md-6 col-lg-5">
                 <label for="search" class="form-label">Search patients</label>
                 <div class="pt-search">
-                    <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
                     <input type="search" id="search" name="search" class="form-control"
                            placeholder="Name, national ID, phone or email"
                            value="{{ request('search') }}" autocomplete="off">
@@ -80,7 +80,7 @@
                     <a class="pt-chip" href="{{ route('patients.index', request()->except('search', 'page')) }}"
                        aria-label="Remove search filter: {{ request('search') }}">
                         “{{ \Illuminate\Support\Str::limit(request('search'), 24) }}”
-                        <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
                     </a>
                 @endif
                 @if(request('city_id'))
@@ -88,7 +88,7 @@
                     <a class="pt-chip" href="{{ route('patients.index', request()->except('city_id', 'page')) }}"
                        aria-label="Remove city filter">
                         {{ $activeCity->name ?? 'City' }}
-                        <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg>
                     </a>
                 @endif
             </div>
@@ -138,7 +138,7 @@
                                     @endif
                                     @if($email)
                                         <div class="d-flex align-items-center gap-2 pt-meta">
-                                            <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>
+                                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>
                                             <a href="mailto:{{ $email }}">{{ $email }}</a>
                                         </div>
                                     @endif
@@ -150,7 +150,7 @@
                                 <td class="pt-hide-sm" data-label="City">
                                     @if($patient->city)
                                         <span class="pt-city">
-                                            <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+                                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg>
                                             {{ $patient->city->name }}
                                         </span>
                                     @else
@@ -170,16 +170,16 @@
                                         <a href="{{ route('appointments.create', ['patient_id' => $patient->id]) }}"
                                            class="btn btn-soft btn-sm d-inline-flex align-items-center gap-2 px-3 py-2"
                                            aria-label="Book appointment for {{ $name }}">
-                                            <svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>
+                                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>
                                             Book
                                         </a>
                                         <a href="{{ route('patients.show', $patient) }}" class="pt-icon-btn"
                                            title="View details" aria-label="View details for {{ $name }}">
-                                            <svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg>
+                                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-eye"/></svg>
                                         </a>
                                         <a href="{{ route('patients.edit', $patient) }}" class="pt-icon-btn"
                                            title="Edit patient" aria-label="Edit {{ $name }}">
-                                            <svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>
+                                            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-edit"/></svg>
                                         </a>
                                     </div>
                                 </td>
@@ -204,7 +204,7 @@
             {{-- Empty state --}}
             <div class="pt-empty">
                 <div class="pt-empty-icon" aria-hidden="true">
-                    <svg class="icon"><use href="#i-users"/></svg>
+                    <svg class="icon" viewBox="0 0 24 24"><use href="#i-users"/></svg>
                 </div>
                 @if(request('search') || request('city_id'))
                     <h3>No patients match your filters</h3>
@@ -214,7 +214,7 @@
                     <h3>No patients yet</h3>
                     <p>Register your first patient to start booking appointments.</p>
                     <a href="{{ route('patients.create') }}" class="btn btn-accent d-inline-flex align-items-center gap-2">
-                        <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg>
                         Register first patient
                     </a>
                 @endif
