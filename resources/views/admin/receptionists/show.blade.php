@@ -10,7 +10,7 @@
             <p class="text-muted mb-0">@lang('site.receptionist')</p>
         </div>
         <a href="{{ route('admin.receptionists.index') }}" class="btn btn-secondary">
-            ← Back to Receptionists
+            ← Back to @lang('site.receptionists')
         </a>
     </div>
 
@@ -19,7 +19,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['total_appointments'] }}</h3>
-                    <small>Total Bookings</small>
+                    <small>@lang('site.total_bookings')</small>
                 </div>
             </div>
         </div>
@@ -35,7 +35,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['scheduled'] }}</h3>
-                    <small>Scheduled</small>
+                    <small>@lang('site.scheduled')</small>
                 </div>
             </div>
         </div>
@@ -43,7 +43,7 @@
             <div class="card bg-info text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0">{{ $stats['patients_registered'] }}</h3>
-                    <small>Patients Registered</small>
+                    <small>@lang('site.patients_registered')</small>
                 </div>
             </div>
         </div>
@@ -52,13 +52,13 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white"><h5 class="mb-0">Profile</h5></div>
+                <div class="card-header bg-primary text-white"><h5 class="mb-0">@lang('site.profile')</h5></div>
                 <div class="card-body">
-                    <p><strong>Name:</strong> {{ $receptionist->user->name }}</p>
-                    <p><strong>Email:</strong> {{ $receptionist->user->email }}</p>
-                    <p><strong>Phone:</strong> {{ $receptionist->phone }}</p>
-                    <p><strong>City:</strong> {{ $receptionist->city->name ?? '—' }}</p>
-                    <p class="mb-0"><strong>Account:</strong>
+                    <p><strong>@lang('site.name_label')</strong> {{ $receptionist->user->name }}</p>
+                    <p><strong>@lang('site.email_label')</strong> {{ $receptionist->user->email }}</p>
+                    <p><strong>@lang('site.phone_label')</strong> {{ $receptionist->phone }}</p>
+                    <p><strong>@lang('site.city_label')</strong> {{ $receptionist->city->name ?? '—' }}</p>
+                    <p class="mb-0"><strong>@lang('site.account_label')</strong>
                         @if($receptionist->user->activation)
                             <span class="badge bg-success">@lang('site.active')</span>
                         @else
@@ -72,7 +72,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Bookings made by this receptionist</h5>
+                    <h5 class="mb-0">@lang('site.receptionist_bookings')</h5>
                 </div>
                 <div class="card-body">
                     @if($appointments->count() > 0)
@@ -113,7 +113,7 @@
                                             </td>
                                             <td>
                                                 <a href="{{ route('admin.appointments.show', $appointment) }}"
-                                                   class="btn btn-sm btn-outline-primary">Open</a>
+                                                   class="btn btn-sm btn-outline-primary">@lang('site.open')</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -125,7 +125,7 @@
                             {{ $appointments->links() }}
                         </div>
                     @else
-                        <p class="text-center text-muted py-4 mb-0">No bookings yet.</p>
+                        <p class="text-center text-muted py-4 mb-0">@lang('site.no_bookings_yet')</p>
                     @endif
                 </div>
             </div>
