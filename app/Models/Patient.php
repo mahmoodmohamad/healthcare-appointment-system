@@ -13,11 +13,6 @@ class Patient extends Model
 {
     use HasFactory;
 
-    /**
-     * address / notes / emergency اتشالوا: مفيش أعمدة ليهم في migration جدول patients،
-     * وأي create/update بيهم كان هيرمي SQL error.
-     * لو عايزهم فعلاً، ضيف migration وارجّعهم هنا.
-     */
     protected $fillable = [
         'user_id',
         'national_id',
@@ -26,14 +21,14 @@ class Patient extends Model
         'receptionist_id',
         'gender',
         'birth_date',
+        'address',
+        'notes',
+        'emergency',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
     ];
-
-    // لا نستخدم $appends عشان ما نعملش N+1 في الـ serialization.
-    // استخدم $patient->name و $patient->age مباشرة، ومعاهم with('user') في الـ queries.
 
     protected static function booted(): void
     {
@@ -42,7 +37,6 @@ class Patient extends Model
         });
     }
 
-    // ---------- Accessors ----------
     public function getNameAttribute(): ?string
     {
         return $this->user?->name;
@@ -53,7 +47,6 @@ class Patient extends Model
         return $this->birth_date?->age;
     }
 
-    // ---------- Relationships ----------
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -79,27 +72,29 @@ class Patient extends Model
         return $this->hasManyThrough(
             Diagnosis::class,
             Appointment::class,
-            'patient_id',      // FK on appointments
-            'appointment_id',  // FK on diagnoses
-            'id',              // PK on patients
-            'id'               // PK on appointments
+            'patient_id',
+            'appointment_id',
+            'id',
+            'id'
         );
     }
 
-    // ---------- Scopes ----------
     public function scopeSearch(Builder $query, string $search): Builder
     {
         $like = "%{$search}%";
 
         return $query->where(function (Builder $q) use ($search, $like) {
             $q->whereHas('user', fn (Builder $u) => $u->search($search))
-              ->orWhere('national_id', 'LIKE', $like)
-              ->orWhere('phone', 'LIKE', $like);
+                ->orWhere('national_id', 'LIKE', $like)
+                ->orWhere('phone', 'LIKE', $like);
         });
     }
 
     public function scopeForDoctor(Builder $query, int $doctorId): Builder
     {
-        return $query->whereHas('appointments', fn (Builder $q) => $q->where('doctor_id', $doctorId));
+        return $query->whereHas(
+            'appointments',
+            fn (Builder $q) => $q->where('doctor_id', $doctorId)
+        );
     }
 }
