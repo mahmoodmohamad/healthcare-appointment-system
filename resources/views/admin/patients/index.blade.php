@@ -6,8 +6,8 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-0">Patients</h2>
-            <p class="text-muted mb-0">System-wide patient registry.</p>
+            <h2 class="mb-0">@lang('site.patients')</h2>
+            <p class="text-muted mb-0">@lang('site.patient_registry_description')</p>
         </div>
         <a href="{{ route('admin.patients.create') }}" class="btn btn-primary">
             ➕ Register Patient
@@ -26,16 +26,16 @@
         <div class="card-body">
             <form method="GET" action="{{ route('admin.patients.index') }}" class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Search</label>
+                    <label class="form-label">@lang('site.search')</label>
                     <input type="text" name="search" class="form-control"
                            placeholder="Name, email, national ID, phone..."
                            value="{{ $filters['search'] ?? '' }}">
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">City</label>
+                    <label class="form-label">@lang('site.city')</label>
                     <select name="city_id" class="form-select">
-                        <option value="">All Cities</option>
+                        <option value="">@lang('site.all_cities')</option>
                         @foreach($cities as $city)
                             <option value="{{ $city->id }}"
                                 {{ ($filters['city_id'] ?? '') == $city->id ? 'selected' : '' }}>
@@ -46,9 +46,9 @@
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">Receptionist</label>
+                    <label class="form-label">@lang('site.receptionist')</label>
                     <select name="receptionist_id" class="form-select">
-                        <option value="">All</option>
+                        <option value="">@lang('site.all')</option>
                         @foreach($receptionists as $r)
                             <option value="{{ $r->id }}"
                                 {{ ($filters['receptionist_id'] ?? '') == $r->id ? 'selected' : '' }}>
@@ -59,17 +59,17 @@
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">Gender</label>
+                    <label class="form-label">@lang('site.gender')</label>
                     <select name="gender" class="form-select">
-                        <option value="">All</option>
-                        <option value="male"   {{ ($filters['gender'] ?? '') === 'male'   ? 'selected' : '' }}>Male</option>
-                        <option value="female" {{ ($filters['gender'] ?? '') === 'female' ? 'selected' : '' }}>Female</option>
+                        <option value="">@lang('site.all')</option>
+                        <option value="male"   {{ ($filters['gender'] ?? '') === 'male'   ? 'selected' : '' }}>@lang('site.male')</option>
+                        <option value="female" {{ ($filters['gender'] ?? '') === 'female' ? 'selected' : '' }}>@lang('site.female')</option>
                     </select>
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end gap-2">
-                    <button class="btn btn-primary flex-grow-1">Filter</button>
-                    <a href="{{ route('admin.patients.index') }}" class="btn btn-outline-secondary">Clear</a>
+                    <button class="btn btn-primary flex-grow-1">@lang('site.filter')</button>
+                    <a href="{{ route('admin.patients.index') }}" class="btn btn-outline-secondary">@lang('site.clear')</a>
                 </div>
             </form>
         </div>
@@ -83,14 +83,14 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>National ID</th>
-                                <th>Phone</th>
-                                <th>City</th>
-                                <th>Gender</th>
-                                <th>Appointments</th>
-                                <th>Receptionist</th>
+                                <th>@lang('site.id')</th>
+                                <th>@lang('site.name')</th>
+                                <th>@lang('site.national_id')</th>
+                                <th>@lang('site.phone')</th>
+                                <th>@lang('site.city')</th>
+                                <th>@lang('site.gender')</th>
+                                <th>@lang('site.appointments')</th>
+                                <th>@lang('site.receptionist')</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -123,7 +123,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('admin.patients.show', $patient) }}"
-                                           class="btn btn-sm btn-info">View</a>
+                                           class="btn btn-sm btn-info">@lang('site.view')</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -135,7 +135,7 @@
                     {{ $patients->links() }}
                 </div>
             @else
-                <p class="text-center text-muted py-5 mb-0">No patients match your filters.</p>
+                <p class="text-center text-muted py-5 mb-0">@lang('site.no_patients_filter')</p>
             @endif
         </div>
     </div>
