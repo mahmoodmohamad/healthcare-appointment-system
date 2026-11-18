@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Database\\Migrations\\Migration;
-use Illuminate\Database\\Schema\\Blueprint;
-use Illuminate\Support\\Facades\\DB;
-use Illuminate\Support\\Facades\\Schema;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
 return new class extends Migration
@@ -17,8 +17,9 @@ return new class extends Migration
         $duplicates = DB::table('appointments')
             ->select('patient_id')
             ->selectRaw('DATE(appointment_date) as appointment_day')
+            ->addSelect('appointment_time')
             ->where('status', '!=', 'cancelled')
-            ->groupBy('patient_id')
+            ->groupBy('patient_id', 'appointment_time')
             ->groupByRaw('DATE(appointment_date)')
             ->havingRaw('COUNT(*) > 1')
             ->exists();
