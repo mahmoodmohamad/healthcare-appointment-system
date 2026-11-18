@@ -55,14 +55,15 @@ class AdminController extends Controller
             ->groupBy('status')
             ->get();
 
-        $monthlyData = Appointment::select(
-            DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
-            DB::raw('count(*) as count')
-        )
+        $monthlyData = Appointment::query()
             ->where('appointment_date', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
+            ->get(['appointment_date'])
+            ->groupBy(fn (Appointment $appointment) => $appointment->appointment_date->format('Y-m'))
+            ->map(fn ($items, $month) => (object) [
+                'month' => $month,
+                'count' => $items->count(),
+            ])
+            ->values();
 
         $topDoctors = Doctor::withCount('appointments')
             ->with('user')
@@ -101,14 +102,15 @@ class AdminController extends Controller
                 'admins'        => User::admins()->count(),
             ],
 
-            'appointments_by_month' => Appointment::select(
-                DB::raw('DATE_FORMAT(appointment_date, "%Y-%m") as month'),
-                DB::raw('count(*) as count')
-            )
+            'appointments_by_month' => Appointment::query()
                 ->where('appointment_date', '>=', now()->subYear())
-                ->groupBy('month')
-                ->orderBy('month')
-                ->get(),
+                ->get(['appointment_date'])
+                ->groupBy(fn (Appointment $appointment) => $appointment->appointment_date->format('Y-m'))
+                ->map(fn ($items, $month) => (object) [
+                    'month' => $month,
+                    'count' => $items->count(),
+                ])
+                ->values(),
 
             'appointments_by_doctor' => Doctor::withCount('appointments')
                 ->with('user')
