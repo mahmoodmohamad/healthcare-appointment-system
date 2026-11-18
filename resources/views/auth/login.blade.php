@@ -54,7 +54,7 @@
                         @csrf
                         <div class="form-floating form-floating-outline mb-5">
                             <input type="email" class="form-control" name="email" id="email" placeholder="Enter email" value="{{ old('email') }}" required autofocus>
-                            <label for="email">Email</label>
+                            <label for="email">@lang('site.email')</label>
                             @error('email')<span class="text-danger">{{ $message }}</span>@enderror
                         </div>
 
@@ -62,7 +62,7 @@
                             <div class="input-group input-group-merge">
                                 <div class="form-floating form-floating-outline">
                                     <input type="password" class="form-control" id="password" name="password" placeholder="••••••••••••" required>
-                                    <label for="password">Password</label>
+                                    <label for="password">@lang('site.password')</label>
                                 </div>
                                 <span class="input-group-text cursor-pointer">
                                     <i class="icon-base ri ri-eye-off-line icon-20px"></i>
@@ -73,13 +73,13 @@
                         <div class="mb-5 pb-2 d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <input class="form-check-input" type="checkbox" name="remember" id="remember-me">
-                                <label class="form-check-label" for="remember-me">Remember Me</label>
+                                <label class="form-check-label" for="remember-me">@lang('site.remember_me')</label>
                             </div>
                             <a href="#" class="float-end mb-1">Forgot Password?</a>
                         </div>
 
                         <div class="mb-5">
-                            <button type="submit" class="btn btn-primary d-grid w-100">Login</button>
+                            <button type="submit" class="btn btn-primary d-grid w-100">@lang('site.login')</button>
                         </div>
                     </form>
 
