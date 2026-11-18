@@ -54,7 +54,7 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary w-100">Clear</a>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary w-100">@lang('site.clear')</a>
                 </div>
             </form>
         </div>
@@ -74,7 +74,7 @@
                                 <th>@lang('site.role')</th>
                                 <th>@lang('site.status')</th>
                                 <th>@lang('site.registered')</th>
-                                <th>Actions</th>
+                                <th>@lang('site.actions')</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -139,7 +139,7 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <span class="badge bg-secondary">You</span>
+                                            <span class="badge bg-secondary">@lang('site.you')</span>
                                         @endif
                                     </div>
                                 </td>
