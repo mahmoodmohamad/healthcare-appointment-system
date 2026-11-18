@@ -88,7 +88,7 @@
 
                         <!-- Gender -->
                         <div class="mb-3">
-                            <label for="gender" class="form-label">@lang('site.gender_required')</label>
+                            <label for="gender" class="form-label">@lang('site.gender')</label>
                             <select name="gender" 
                                     id="gender" 
                                     class="form-select @error('gender') is-invalid @enderror"
@@ -104,7 +104,7 @@
 
                         <!-- Birth Date -->
                         <div class="mb-3">
-                            <label for="birth_date" class="form-label">@lang('site.birth_date_required')</label>
+                            <label for="birth_date" class="form-label">@lang('site.birth_date')</label>
                             <input type="date" 
                                    name="birth_date" 
                                    id="birth_date" 
