@@ -2,7 +2,7 @@
     class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
     id="layout-navbar">
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
-        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)" aria-label="{{ __('Toggle navigation') }}">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)" aria-label="{{ @lang('site.toggle_navigation') }}">
             <i class="icon-base ri ri-menu-line icon-md"></i>
         </a>
     </div>
@@ -17,7 +17,7 @@
                    role="button"
                    data-bs-toggle="dropdown"
                    aria-expanded="false"
-                   aria-label="{{ __('Change language') }}">
+                   aria-label="{{ @lang('site.change_language') }}">
                     <i class="ri ri-global-line"></i>
                     <span>{{ app()->isLocale('ar') ? 'العربية' : 'English' }}</span>
                 </a>
@@ -53,7 +53,7 @@
                     <a class="nav-link dropdown-toggle hide-arrow p-0"
                        href="javascript:void(0);"
                        data-bs-toggle="dropdown"
-                       aria-label="{{ __('Open user menu') }}">
+                       aria-label="{{ @lang('site.open_user_menu') }}">
                         <div class="avatar avatar-online">
                             <img src="{{ asset('assets/img/avatars/1.png') }}"
                                  alt="{{ auth()->user()->name }}"
@@ -84,7 +84,7 @@
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="btn btn-danger d-flex align-items-center">
-                                        <small class="align-middle">{{ __('Logout') }}</small>
+                                        <small class="align-middle">{{ @lang('site.logout') }}</small>
                                         <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
                                     </button>
                                 </form>
