@@ -436,4 +436,5 @@ return [
     'your_appointment_activity' => 'نشاط مواعيدك',
     'appointments_today' => 'مواعيد اليوم',
     'view_appointment_for' => 'عرض موعد المريض :name',
+    'not_available' => 'غير متاح',
 ];
