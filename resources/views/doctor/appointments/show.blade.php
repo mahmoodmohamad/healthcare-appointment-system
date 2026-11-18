@@ -38,7 +38,7 @@
                             <p><strong>@lang('site.time_label')</strong> {{ $appointment->appointment_time ?? $appointment->appointment_date->format('g:i A') }}</p>
                             <p><strong>@lang('site.status_label')</strong> 
                                 <span class="badge bg-{{ $appointment->status == 'completed' ? 'success' : ($appointment->status == 'cancelled' ? 'danger' : 'primary') }}">
-                                    {{ ucfirst($appointment->status) }}
+                                    {{ match ($appointment->status) { 'scheduled' => __('site.scheduled'), 'completed' => __('site.completed'), 'cancelled' => __('site.cancelled'), default => __('site.unknown') } }}
                                 </span>
                             </p>
                         </div>
