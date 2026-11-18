@@ -1166,3 +1166,21 @@ html[lang="ar"] .navbar-nav .dropdown-menu {
         padding-inline: .65rem;
     }
 }
+
+
+/* Dashboard stat layout overrides */
+.admin-dashboard .admin-primary-stats {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (max-width: 1199.98px) {
+    .admin-dashboard .admin-primary-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575.98px) {
+    .admin-dashboard .admin-primary-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
