@@ -436,4 +436,5 @@ return [
     'your_appointment_activity' => 'Your appointment activity',
     'appointments_today' => 'Appointments today',
     'view_appointment_for' => 'View appointment for :name',
+    'not_available' => 'Not available',
 ];
