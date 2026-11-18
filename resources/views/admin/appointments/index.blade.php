@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title', 'All Appointments')
+@section('title', '{{ __('site.all_appointments') }}')
 
 @section('content')
 <div class="container-fluid py-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="mb-0">All Appointments</h2>
-            <p class="text-muted mb-0">System-wide view across every doctor and receptionist.</p>
+            <h2 class="mb-0">{{ __('site.all_appointments') }}</h2>
+            <p class="text-muted mb-0">{{ __('site.appointments_system_description') }}</p>
         </div>
         <a href="{{ route('admin.appointments.calendar') }}" class="btn btn-info">
-            📅 Calendar View
+            📅 Calendar {{ __('site.view') }}
         </a>
     </div>
 
@@ -21,21 +21,21 @@
         </div>
     @endif
 
-    <!-- Filters -->
+    <!-- {{ __('site.filter') }}s -->
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.appointments.index') }}" class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Search</label>
+                    <label class="form-label">{{ __('site.search') }}</label>
                     <input type="text" name="search" class="form-control"
-                           placeholder="Patient, doctor, national ID..."
+                           placeholder="{{ __('site.patient') }}, doctor, national {{ __('site.id') }}..."
                            value="{{ $filters['search'] ?? '' }}">
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">Status</label>
+                    <label class="form-label">{{ __('site.status') }}</label>
                     <select name="status" class="form-select">
-                        <option value="">All Status</option>
+                        <option value="">{{ __('site.all') }} {{ __('site.status') }}</option>
                         @foreach(['scheduled','completed','cancelled'] as $s)
                             <option value="{{ $s }}"
                                 {{ ($filters['status'] ?? '') === $s ? 'selected' : '' }}>
@@ -46,9 +46,9 @@
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">Doctor</label>
+                    <label class="form-label">{{ __('site.doctor') }}</label>
                     <select name="doctor_id" class="form-select">
-                        <option value="">All Doctors</option>
+                        <option value="">{{ __('site.all') }} {{ __('site.doctor') }}s</option>
                         @foreach($doctors as $doctor)
                             <option value="{{ $doctor->id }}"
                                 {{ ($filters['doctor_id'] ?? '') == $doctor->id ? 'selected' : '' }}>
@@ -59,9 +59,9 @@
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">Receptionist</label>
+                    <label class="form-label">{{ __('site.receptionist') }}</label>
                     <select name="receptionist_id" class="form-select">
-                        <option value="">All Receptionists</option>
+                        <option value="">{{ __('site.all') }} {{ __('site.receptionist') }}s</option>
                         @foreach($receptionists as $r)
                             <option value="{{ $r->id }}"
                                 {{ ($filters['receptionist_id'] ?? '') == $r->id ? 'selected' : '' }}>
@@ -72,18 +72,18 @@
                 </div>
 
                 <div class="col-md-2">
-                    <label class="form-label">From</label>
+                    <label class="form-label">{{ __('site.from') }}</label>
                     <input type="date" name="date_from" class="form-control"
                            value="{{ $filters['date_from'] ?? '' }}">
                 </div>
 
                 <div class="col-md-1 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">Filter</button>
+                    <button class="btn btn-primary w-100">{{ __('site.filter') }}</button>
                 </div>
 
                 <div class="col-12">
                     <a href="{{ route('admin.appointments.index') }}" class="btn btn-sm btn-outline-secondary">
-                        Clear filters
+                        {{ __('site.clear') }} filters
                     </a>
                 </div>
             </form>
@@ -98,13 +98,13 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Date &amp; Time</th>
-                                <th>Patient</th>
-                                <th>Doctor</th>
-                                <th>Receptionist</th>
-                                <th>Status</th>
-                                <th>Diagnosis</th>
+                                <th>{{ __('site.id') }}</th>
+                                <th>{{ __('site.date_time') }}</th>
+                                <th>{{ __('site.patient') }}</th>
+                                <th>{{ __('site.doctor') }}</th>
+                                <th>{{ __('site.receptionist') }}</th>
+                                <th>{{ __('site.status') }}</th>
+                                <th>{{ __('site.diagnosis') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -157,7 +157,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('admin.appointments.show', $appointment) }}"
-                                           class="btn btn-sm btn-info">View</a>
+                                           class="btn btn-sm btn-info">{{ __('site.view') }}</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -169,7 +169,7 @@
                     {{ $appointments->links() }}
                 </div>
             @else
-                <p class="text-center text-muted py-5 mb-0">No appointments match your filters.</p>
+                <p class="text-center text-muted py-5 mb-0">{{ __('site.no_appointments_filter') }}</p>
             @endif
         </div>
     </div>
