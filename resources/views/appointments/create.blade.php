@@ -5,6 +5,56 @@
 
 @section('content')
 
+@php
+    $bookingCopy = app()->getLocale() === 'ar' ? [
+        'intro' => 'حدّد المريض والطبيب والتاريخ والوقت لإنشاء الموعد.',
+        'back' => 'العودة إلى المواعيد',
+        'unknown_patient' => 'مريض غير معروف',
+        'unknown_doctor' => 'طبيب غير معروف',
+        'patient_hint' => 'اختر المريض الذي سيحضر هذا الموعد.',
+        'doctor_section' => 'اختيار الطبيب',
+        'choose_doctor' => 'اختر الطبيب',
+        'doctor_hint' => 'اختر الطبيب المسؤول عن هذه الزيارة.',
+        'date_time' => 'التاريخ والوقت',
+        'morning' => 'صباحًا',
+        'afternoon' => 'بعد الظهر',
+        'availability_hint' => 'تعتمد الأوقات المتاحة على جدول الطبيب. سيتم التحقق من الموعد عند الإرسال.',
+        'additional' => 'معلومات إضافية',
+        'notes_label' => 'ملاحظات الموعد',
+        'notes_hint' => 'أضف ملاحظات مرتبطة بجدولة الموعد وإجراءاته الإدارية.',
+        'confirm' => 'تأكيد الموعد',
+        'summary' => 'ملخص الموعد',
+        'summary_intro' => 'ستظهر تفاصيل الموعد هنا عند استكمال البيانات.',
+        'not_selected' => 'لم يتم الاختيار',
+        'not_specified' => 'غير محدد',
+        'review' => 'يرجى مراجعة تفاصيل الموعد قبل التأكيد. سيتحقق النظام من الوقت المحدد.',
+        'booking' => 'جارٍ الحجز...',
+    ] : [
+        'intro' => '{{ $bookingCopy['intro'] }}',
+        'back' => '{{ $bookingCopy['back'] }}',
+        'unknown_patient' => '{{ $bookingCopy['unknown_patient'] }}',
+        'unknown_doctor' => '{{ $bookingCopy['unknown_doctor'] }}',
+        'patient_hint' => '{{ $bookingCopy['patient_hint'] }}',
+        'doctor_section' => '{{ $bookingCopy['doctor_section'] }}',
+        'choose_doctor' => '{{ $bookingCopy['choose_doctor'] }}',
+        'doctor_hint' => '{{ $bookingCopy['doctor_hint'] }}',
+        'date_time' => '{{ $bookingCopy['date_time'] }}',
+        'morning' => '{{ $bookingCopy['morning'] }}',
+        'afternoon' => '{{ $bookingCopy['afternoon'] }}',
+        'availability_hint' => 'Available times depend on the doctor schedule. The booking will be validated when submitted.',
+        'additional' => '{{ $bookingCopy['additional'] }}',
+        'notes_label' => '{{ $bookingCopy['notes_label'] }}',
+        'notes_hint' => '{{ $bookingCopy['notes_hint'] }}',
+        'confirm' => '{{ $bookingCopy['confirm'] }}',
+        'summary' => '{{ $bookingCopy['summary'] }}',
+        'summary_intro' => '{{ $bookingCopy['summary_intro'] }}',
+        'not_selected' => '{{ $bookingCopy['not_selected'] }}',
+        'not_specified' => '{{ $bookingCopy['not_specified'] }}',
+        'review' => 'Please review the appointment details before confirming. The system will validate the selected time slot.',
+        'booking' => 'Booking...',
+    ];
+@endphp
+
 
 <div class="ui-page booking-page container-fluid py-4">
 
@@ -371,6 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const summarySpecialty = document.getElementById('summarySpecialty');
     const summaryDate = document.getElementById('summaryDate');
     const summaryTime = document.getElementById('summaryTime');
+    const copy = @json($bookingCopy);
 
     function selectedOption(select) {
         return select.options[select.selectedIndex];
@@ -383,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function () {
         summaryPatient.textContent =
             patientSelect.value && patientOption
                 ? patientOption.dataset.name || patientOption.textContent.trim()
-                : 'Not selected';
+                : copy.not_selected;
 
         summaryDoctor.textContent =
             doctorSelect.value && doctorOption
@@ -392,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         summarySpecialty.textContent =
             doctorSelect.value && doctorOption
-                ? doctorOption.dataset.specialization || 'Not specified'
+                ? doctorOption.dataset.specialization || copy.not_specified
                 : 'Not selected';
 
         if (dateInput.value) {
@@ -439,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         submitButton.disabled = true;
         submitButton.innerHTML =
-            '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Booking...';
+            '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> ' + copy.booking;
     });
 });
 </script>
