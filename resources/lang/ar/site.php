@@ -366,4 +366,5 @@ return [
     'bootstrap_templates' => 'قوالب Bootstrap',
     'documentation' => 'التوثيق',
     'support' => 'الدعم',
+    'diagnosis_label' => 'التشخيص:',
 ];
