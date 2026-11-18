@@ -1,7 +1,7 @@
 
 @extends('layouts.app')
 
-@section('title', 'Register New Patient')
+@section('title', __('site.register_new_patient'))
 
 @section('content')
 
@@ -14,10 +14,10 @@
             <div class="breadcrumb-line">
                 <a href="{{ route('patients.index') }}">@lang('site.patients')</a>
                 <i class="bi bi-chevron-right" aria-hidden="true"></i>
-                <span>Register New Patient</span>
+                <span>@lang('site.register_new_patient')</span>
             </div>
 
-            <h1 class="page-title">Register New Patient</h1>
+            <h1 class="page-title">@lang('site.register_new_patient')</h1>
 
             <p class="page-description">
                 Create a patient profile and set up their account.
@@ -26,7 +26,7 @@
 
         <a href="{{ route('patients.index') }}" class="back-link">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            <span>Back to Patients</span>
+            <span>@lang('site.back_to_patients')</span>
         </a>
     </div>
 
@@ -37,7 +37,7 @@
         </div>
 
         <div>
-            <strong>New patient registration</strong>
+            <strong>@lang('site.new_patient_registration')</strong>
             <p>
                 Please enter accurate patient information. Fields marked with
                 <span class="text-danger">*</span> are required.
@@ -72,7 +72,7 @@
             >
                 @csrf
 
-                {{-- Personal Information --}}
+                {{-- @lang('site.personal_information') --}}
                 <section class="form-section">
                     <div class="section-heading">
                         <div class="section-icon">
@@ -80,8 +80,8 @@
                         </div>
 
                         <div>
-                            <h2>Personal Information</h2>
-                            <p>Basic information to identify the patient</p>
+                            <h2>@lang('site.personal_information')</h2>
+                            <p>@lang('site.patient_identity_description')</p>
                         </div>
                     </div>
 
@@ -101,7 +101,7 @@
                                     id="name"
                                     class="form-control ui-input @error('name') is-invalid @enderror"
                                     value="{{ old('name') }}"
-                                    placeholder="Enter patient's full name"
+                                    placeholder="@lang('site.patient_name_placeholder')"
                                     autocomplete="name"
                                     maxlength="255"
                                     required
@@ -128,7 +128,7 @@
                                     id="national_id"
                                     class="form-control @error('national_id') is-invalid @enderror"
                                     value="{{ old('national_id') }}"
-                                    placeholder="Enter national identification number"
+                                    placeholder="@lang('site.national_id_placeholder')"
                                     autocomplete="off"
                                     required
                                 >
@@ -142,7 +142,7 @@
                     </div>
                 </section>
 
-                {{-- Contact Information --}}
+                {{-- @lang('site.contact_information') --}}
                 <section class="form-section">
                     <div class="section-heading">
                         <div class="section-icon">
@@ -150,8 +150,8 @@
                         </div>
 
                         <div>
-                            <h2>Contact Information</h2>
-                            <p>How the patient can be contacted</p>
+                            <h2>@lang('site.contact_information')</h2>
+                            <p>@lang('site.patient_contact_help')</p>
                         </div>
                     </div>
 
@@ -171,7 +171,7 @@
                                     id="phone"
                                     class="form-control @error('phone') is-invalid @enderror"
                                     value="{{ old('phone') }}"
-                                    placeholder="Enter phone number"
+                                    placeholder="@lang('site.phone_placeholder')"
                                     autocomplete="tel"
                                     required
                                 >
@@ -196,7 +196,7 @@
                                     class="form-select ui-input @error('city_id') is-invalid @enderror"
                                     required
                                 >
-                                    <option value="">Select city</option>
+                                    <option value="">@lang('site.select_city')</option>
 
                                     @foreach($cities as $city)
                                         <option
@@ -246,7 +246,7 @@
                     </div>
                 </section>
 
-                {{-- Account Security --}}
+                {{-- @lang('site.account_security') --}}
                 <section class="form-section">
                     <div class="section-heading">
                         <div class="section-icon">
@@ -254,8 +254,8 @@
                         </div>
 
                         <div>
-                            <h2>Account Security</h2>
-                            <p>Create secure login credentials for the patient</p>
+                            <h2>@lang('site.account_security')</h2>
+                            <p>@lang('site.patient_login_help')</p>
                         </div>
                     </div>
 
@@ -274,7 +274,7 @@
                                     name="password"
                                     id="password"
                                     class="form-control password-input @error('password') is-invalid @enderror"
-                                    placeholder="Enter password"
+                                    placeholder="@lang('site.enter_password')"
                                     autocomplete="new-password"
                                     minlength="10"
                                     required
@@ -313,7 +313,7 @@
                                     name="password_confirmation"
                                     id="password_confirmation"
                                     class="form-control password-input"
-                                    placeholder="Re-enter password"
+                                    placeholder="@lang('site.confirm_password_placeholder')"
                                     autocomplete="new-password"
                                     minlength="10"
                                     required
@@ -360,7 +360,7 @@
         <aside class="sidebar-column">
 
             <section class="ui-card side-card">
-                <h3>Registration Checklist</h3>
+                <h3>@lang('site.registration_checklist')</h3>
 
                 <div class="info-item">
                     <div class="info-item-icon">
@@ -368,8 +368,8 @@
                     </div>
 
                     <div>
-                        <strong>Patient identity</strong>
-                        <span>Enter the patient's full legal name and national ID.</span>
+                        <strong>@lang('site.patient_identity')</strong>
+                        <span>@lang('site.patient_identity_help')</span>
                     </div>
                 </div>
 
@@ -379,8 +379,8 @@
                     </div>
 
                     <div>
-                        <strong>Contact details</strong>
-                        <span>Make sure the phone number and email are accurate.</span>
+                        <strong>@lang('site.contact_details')</strong>
+                        <span>@lang('site.patient_contact_accuracy')</span>
                     </div>
                 </div>
 
@@ -390,8 +390,8 @@
                     </div>
 
                     <div>
-                        <strong>Location</strong>
-                        <span>Select the patient's city from the available list.</span>
+                        <strong>@lang('site.location')</strong>
+                        <span>@lang('site.patient_city_help')</span>
                     </div>
                 </div>
 
@@ -401,8 +401,8 @@
                     </div>
 
                     <div>
-                        <strong>Login credentials</strong>
-                        <span>Create a password and confirm it carefully.</span>
+                        <strong>@lang('site.login_credentials')</strong>
+                        <span>@lang('site.password_confirmation_help')</span>
                     </div>
                 </div>
             </section>
@@ -414,7 +414,7 @@
                     </div>
 
                     <div>
-                        <h3>Privacy matters</h3>
+                        <h3>@lang('site.privacy_matters')</h3>
                         <p>
                             Patient information is confidential.
                             Only collect and access information needed
