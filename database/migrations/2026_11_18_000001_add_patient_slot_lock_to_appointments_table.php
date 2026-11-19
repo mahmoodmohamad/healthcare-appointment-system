@@ -10,9 +10,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasColumn('appointments', 'patient_slot_lock')) {
-            return;
-        }
+        $hasColumn = Schema::hasColumn('appointments', 'patient_slot_lock');
+        $indexes = Schema::getIndexes('appointments');
+        $hasUniqueIndex = collect($indexes)->contains(
+            fn (array $index): bool => ($index['unique'] ?? false)
+                && ($index['columns'] ?? []) === ['patient_slot_lock']
+        );
 
         $driver = DB::getDriverName();
 
@@ -25,7 +28,7 @@ return new class extends Migration
             default => 'TIME(appointment_time)',
         };
 
-        $duplicates = DB::table('appointments')
+        $duplicates = ! $hasUniqueIndex && DB::table('appointments')
             ->select('patient_id')
             ->selectRaw("{$dayExpression} as appointment_day")
             ->selectRaw("{$timeExpression} as appointment_clock")
@@ -47,14 +50,23 @@ return new class extends Migration
             default => "IF(status = 'cancelled', NULL, CONCAT(patient_id, '-', DATE(appointment_date), '-', appointment_time))",
         };
 
-        Schema::table('appointments', function (Blueprint $table) use ($driver, $expression) {
-            if ($driver === 'sqlite') {
-                $table->string('patient_slot_lock', 80)->nullable()->virtualAs($expression);
-            } else {
-                $table->string('patient_slot_lock', 80)->nullable()->storedAs($expression);
+        Schema::table('appointments', function (Blueprint $table) use (
+            $driver,
+            $expression,
+            $hasColumn,
+            $hasUniqueIndex
+        ) {
+            if (! $hasColumn) {
+                if ($driver === 'sqlite') {
+                    $table->string('patient_slot_lock', 80)->nullable()->virtualAs($expression);
+                } else {
+                    $table->string('patient_slot_lock', 80)->nullable()->storedAs($expression);
+                }
             }
 
-            $table->unique('patient_slot_lock');
+            if (! $hasUniqueIndex) {
+                $table->unique('patient_slot_lock');
+            }
         });
     }
 
