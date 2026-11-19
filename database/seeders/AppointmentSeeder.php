@@ -99,11 +99,7 @@ class AppointmentSeeder extends Seeder
                 'notes' => $seedNote,
             ];
 
-            if ($existing) {
-                $existing->update($attributes);
-            } else {
-                Appointment::create($attributes);
-            }
+            Appointment::create($attributes);
         }
     }
 }
