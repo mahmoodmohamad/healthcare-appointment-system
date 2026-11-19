@@ -73,15 +73,17 @@ class AppointmentSeeder extends Seeder
                 ->where('notes', $seedNote)
                 ->first();
 
-            if ($existing && $existing->status !== $status) {
+            // Existing historical seed examples are immutable on reruns.
+            // In particular, never move or rewrite completed/cancelled visits.
+            if ($existing) {
                 continue;
             }
 
             if (
                 $status === Appointment::COMPLETED
                 && (
-                    ! Appointment::isAvailable($doctor->id, $sampleDate, $sampleTime, $existing?->id)
-                    || ! Appointment::isPatientAvailable($patient->id, $sampleDate, $sampleTime, $existing?->id)
+                    ! Appointment::isAvailable($doctor->id, $sampleDate, $sampleTime)
+                    || ! Appointment::isPatientAvailable($patient->id, $sampleDate, $sampleTime)
                 )
             ) {
                 continue;
