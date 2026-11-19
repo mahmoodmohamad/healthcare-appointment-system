@@ -343,6 +343,20 @@ class AppointmentBookingTest extends TestCase
         $this->assertFalse(Gate::forUser($adminUser)->allows('manage', $appointment));
         $this->assertFalse(Gate::forUser($adminUser)->allows('reschedule', $appointment));
         $this->assertFalse(Gate::forUser($adminUser)->allows('cancel', $appointment));
+
+        $this->actingAs($adminUser)
+            ->get(route('admin.appointments.show', $appointment))
+            ->assertOk();
+
+        $this->actingAs($adminUser)
+            ->put(route('appointments.update', $appointment), ['notes' => 'Admin edit attempt'])
+            ->assertForbidden();
+
+        $this->actingAs($adminUser)
+            ->delete(route('appointments.destroy', $appointment))
+            ->assertForbidden();
+
+        $this->assertSame(Appointment::SCHEDULED, $appointment->fresh()->status);
     }
 
 
@@ -351,19 +365,15 @@ class AppointmentBookingTest extends TestCase
         $ownerUser = User::factory()->create();
         $owner = Receptionist::factory()->for($ownerUser)->create();
         $otherUser = User::factory()->create();
-        Receptionist::factory()->for($otherUser)->create();
+        $otherReceptionist = Receptionist::factory()->for($otherUser)->create();
 
         $ownAppointment = Appointment::factory()->create([
             'receptionist_id' => $owner->id,
             'status' => Appointment::SCHEDULED,
         ]);
         $otherAppointment = Appointment::factory()->create([
+            'receptionist_id' => $otherReceptionist->id,
             'status' => Appointment::SCHEDULED,
-        ]);
-        $otherAppointment->update([
-            'receptionist_id' => Receptionist::query()
-                ->where('user_id', $otherUser->id)
-                ->value('id'),
         ]);
 
         $this->actingAs($ownerUser)
