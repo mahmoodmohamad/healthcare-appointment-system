@@ -1205,3 +1205,162 @@ html[lang="ar"] .navbar-nav .dropdown-menu {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+
+/* Admin shared page polish */
+.admin-shell .content-wrapper {
+    background: #f5f8fa;
+}
+
+.admin-shell .content-wrapper > .container-xxl {
+    min-width: 0;
+}
+
+.admin-shell .content-wrapper .container-fluid.py-4,
+.admin-shell .content-wrapper .container.py-4 {
+    padding: clamp(1rem, 2.2vw, 2rem) !important;
+}
+
+.admin-shell .content-wrapper h1,
+.admin-shell .content-wrapper h2,
+.admin-shell .content-wrapper h3,
+.admin-shell .content-wrapper h4,
+.admin-shell .content-wrapper h5 {
+    color: var(--ui-ink, #18343b);
+    letter-spacing: -.02em;
+    font-weight: 750;
+}
+
+.admin-shell .content-wrapper .text-muted {
+    color: var(--ui-muted, #687b82) !important;
+}
+
+.admin-shell .content-wrapper .card {
+    border: 1px solid var(--ui-line, #e3eaed);
+    border-radius: 1rem;
+    box-shadow: 0 8px 26px rgba(24, 52, 59, .055);
+    overflow: hidden;
+}
+
+.admin-shell .content-wrapper .card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--ui-line, #e3eaed);
+    background: #fff;
+    color: var(--ui-ink, #18343b);
+}
+
+.admin-shell .content-wrapper .card-body {
+    padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.admin-shell .content-wrapper .form-label {
+    color: var(--ui-ink, #18343b);
+    font-size: .875rem;
+    font-weight: 650;
+}
+
+.admin-shell .content-wrapper .form-control,
+.admin-shell .content-wrapper .form-select {
+    min-height: 2.7rem;
+    border-color: #dce5e8;
+    border-radius: .7rem;
+    color: var(--ui-ink, #18343b);
+}
+
+.admin-shell .content-wrapper .form-control:focus,
+.admin-shell .content-wrapper .form-select:focus {
+    border-color: var(--ui-accent, #0f766e);
+    box-shadow: 0 0 0 .2rem rgba(15, 118, 110, .12);
+}
+
+.admin-shell .content-wrapper .btn {
+    min-height: 2.45rem;
+    border-radius: .7rem;
+    font-weight: 650;
+}
+
+.admin-shell .content-wrapper .btn-primary {
+    border-color: var(--ui-accent, #0f766e);
+    background: var(--ui-accent, #0f766e);
+}
+
+.admin-shell .content-wrapper .btn-primary:hover {
+    border-color: var(--ui-accent-dark, #115e59);
+    background: var(--ui-accent-dark, #115e59);
+}
+
+.admin-shell .content-wrapper .table {
+    --bs-table-bg: transparent;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.admin-shell .content-wrapper .table thead th {
+    padding: .9rem .85rem;
+    border-bottom-color: var(--ui-line, #e3eaed);
+    background: #f7fafb;
+    color: var(--ui-muted, #687b82);
+    font-size: .76rem;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.admin-shell .content-wrapper .table tbody td {
+    padding: .9rem .85rem;
+    border-bottom-color: #edf1f3;
+    color: var(--ui-ink, #18343b);
+}
+
+.admin-shell .content-wrapper .table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.admin-shell .content-wrapper .table-hover > tbody > tr:hover > * {
+    --bs-table-accent-bg: #f6faf9;
+}
+
+.admin-shell .content-wrapper .alert {
+    border: 1px solid transparent;
+    border-radius: .85rem;
+}
+
+.admin-shell .content-wrapper .pagination {
+    flex-wrap: wrap;
+    gap: .25rem;
+}
+
+.admin-shell .content-wrapper .page-link {
+    border-radius: .55rem;
+    color: var(--ui-accent-dark, #115e59);
+}
+
+.admin-shell .content-wrapper .page-item.active .page-link {
+    border-color: var(--ui-accent, #0f766e);
+    background: var(--ui-accent, #0f766e);
+}
+
+.admin-shell .content-wrapper .badge {
+    font-weight: 650;
+    letter-spacing: .01em;
+}
+
+.admin-shell .content-wrapper .table-responsive {
+    border-radius: .75rem;
+}
+
+@media (max-width: 767.98px) {
+    .admin-shell .content-wrapper .container-fluid.py-4,
+    .admin-shell .content-wrapper .container.py-4 {
+        padding: 1rem .75rem !important;
+    }
+
+    .admin-shell .content-wrapper .d-flex.justify-content-between.align-items-center {
+        align-items: flex-start !important;
+        flex-wrap: wrap;
+        gap: .85rem;
+    }
+
+    .admin-shell .content-wrapper .card-body {
+        padding: 1rem;
+    }
+}
