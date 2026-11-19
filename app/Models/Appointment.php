@@ -158,6 +158,12 @@ class Appointment extends Model
             ]);
         }
 
+        if (! static::isAvailable($data['doctor_id'], $date, $time)) {
+            throw ValidationException::withMessages([
+                'appointment_time' => 'This time slot is already booked.',
+            ]);
+        }
+
         if (! static::isPatientAvailable($data['patient_id'], $date, $time)) {
             throw ValidationException::withMessages([
                 'appointment_time' => 'The patient already has an appointment at this time.',
