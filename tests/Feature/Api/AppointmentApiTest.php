@@ -121,4 +121,26 @@ class AppointmentApiTest extends TestCase
         $this->assertSame(Appointment::SCHEDULED, $appointment->fresh()->status);
     }
 
+
+    public function test_receptionist_cannot_reschedule_another_receptionists_appointment_through_the_api(): void
+    {
+        $owner = Receptionist::factory()->create();
+        $otherReceptionist = Receptionist::factory()->create();
+        $appointment = Appointment::factory()->create([
+            'receptionist_id' => $owner->id,
+        ]);
+        $originalDoctorId = $appointment->doctor_id;
+        $newDoctor = Doctor::factory()->create();
+
+        Sanctum::actingAs($otherReceptionist->user);
+
+        $this->putJson(route('api.appointments.update', $appointment), [
+            'doctor_id' => $newDoctor->id,
+            'appointment_date' => now()->addDays(7)->toDateString(),
+            'appointment_time' => '13:00',
+        ])->assertForbidden();
+
+        $this->assertSame($originalDoctorId, $appointment->fresh()->doctor_id);
+    }
+
 }
