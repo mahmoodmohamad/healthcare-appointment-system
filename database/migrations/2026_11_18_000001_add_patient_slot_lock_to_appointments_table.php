@@ -14,13 +14,24 @@ return new class extends Migration
             return;
         }
 
+        $driver = DB::getDriverName();
+
+        $dayExpression = match ($driver) {
+            'pgsql' => 'appointment_date::date',
+            default => 'DATE(appointment_date)',
+        };
+        $timeExpression = match ($driver) {
+            'pgsql' => 'appointment_time::time',
+            default => 'TIME(appointment_time)',
+        };
+
         $duplicates = DB::table('appointments')
             ->select('patient_id')
-            ->selectRaw('DATE(appointment_date) as appointment_day')
-            ->addSelect('appointment_time')
+            ->selectRaw("{$dayExpression} as appointment_day")
+            ->selectRaw("{$timeExpression} as appointment_clock")
             ->where('status', '!=', 'cancelled')
-            ->groupBy('patient_id', 'appointment_time')
-            ->groupByRaw('DATE(appointment_date)')
+            ->groupBy('patient_id')
+            ->groupByRaw("{$dayExpression}, {$timeExpression}")
             ->havingRaw('COUNT(*) > 1')
             ->exists();
 
@@ -29,8 +40,6 @@ return new class extends Migration
                 'Cannot add patient appointment slot protection: duplicate active patient time slots exist. Resolve these records before migrating.'
             );
         }
-
-        $driver = DB::getDriverName();
 
         $expression = match ($driver) {
             'sqlite' => "CASE WHEN status = 'cancelled' THEN NULL ELSE CAST(patient_id AS TEXT) || '-' || date(appointment_date) || '-' || time(appointment_time) END",
