@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
 
-    <title></title>
+    <title>@yield('title', __('site.brand_healthcare'))</title>
     <meta name="description" content="" />
 
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
@@ -32,7 +32,7 @@
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 
-<body>
+<body class="{{ auth()->check() && auth()->user()->isAdmin() ? 'admin-shell' : '' }}">
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             @include('layouts.partials.sidebar')
