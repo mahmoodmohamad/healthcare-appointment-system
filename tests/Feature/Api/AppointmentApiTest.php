@@ -56,6 +56,12 @@ class AppointmentApiTest extends TestCase
             ->assertJsonPath('message', 'Doctors are not authorized to reschedule appointments.');
 
         $this->assertNotSame($newDoctor->id, $appointment->fresh()->doctor_id);
+
+        $this->putJson(route('api.appointments.update', $appointment), [
+            'notes' => 'Doctor clinical note',
+        ])->assertOk();
+
+        $this->assertSame('Doctor clinical note', $appointment->fresh()->notes);
     }
 
     public function test_patient_cannot_update_or_reschedule_an_appointment_through_the_api(): void
