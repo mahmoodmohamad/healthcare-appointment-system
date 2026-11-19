@@ -2,6 +2,14 @@
 
 namespace Tests\Feature\Api;
 
+use App\Models\Admin;
+use App\Models\Appointment;
+use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\Receptionist;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class AppointmentApiTest extends TestCase
@@ -95,7 +103,7 @@ class AppointmentApiTest extends TestCase
 
     public function test_admin_can_view_but_cannot_update_or_cancel_through_the_api(): void
     {
-        $adminUser = \\App\\Models\\User::factory()->create();
+        $adminUser = User::factory()->create();
         Admin::query()->create(['user_id' => $adminUser->id]);
         $appointment = Appointment::factory()->create();
 
