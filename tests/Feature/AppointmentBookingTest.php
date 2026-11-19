@@ -401,4 +401,24 @@ class AppointmentBookingTest extends TestCase
         $this->assertTrue(Schema::hasColumn('appointments', 'patient_slot_lock'));
     }
 
+
+    public function test_patient_slot_migration_repairs_a_missing_unique_index(): void
+    {
+        Schema::table('appointments', function ($table): void {
+            $table->dropUnique('appointments_patient_slot_lock_unique');
+        });
+
+        $migration = require database_path(
+            'migrations/2026_11_18_000001_add_patient_slot_lock_to_appointments_table.php'
+        );
+        $migration->up();
+
+        $hasUniqueIndex = collect(Schema::getIndexes('appointments'))->contains(
+            fn (array $index): bool => ($index['unique'] ?? false)
+                && ($index['columns'] ?? []) === ['patient_slot_lock']
+        );
+
+        $this->assertTrue($hasUniqueIndex);
+    }
+
 }
