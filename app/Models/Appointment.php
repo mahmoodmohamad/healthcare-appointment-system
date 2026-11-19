@@ -125,7 +125,7 @@ class Appointment extends Model
             $this->update([
                 'doctor_id'        => $doctorId,
                 'appointment_date' => Carbon::parse("$date $time"),
-                'appointment_time' => $time,
+                'appointment_time' => strlen($time) === 5 ? $time . ':00' : $time,
             ]);
         } catch (QueryException $e) {
             throw static::translateSlotConflict($e);
@@ -140,7 +140,7 @@ class Appointment extends Model
 
         return ! self::where('doctor_id', $doctorId)
             ->whereDate('appointment_date', $date)
-            ->where('appointment_time', $normalized)
+            ->whereIn('appointment_time', [$normalized, substr($normalized, 0, 5)])
             ->where('status', '!=', self::CANCELLED)
             ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
             ->exists();
@@ -170,6 +170,8 @@ class Appointment extends Model
             ]);
         }
 
+        $data['appointment_time'] = $time . ':00';
+
         try {
             return static::create($data);
         } catch (QueryException $e) {
@@ -183,7 +185,7 @@ class Appointment extends Model
 
         return ! self::where('patient_id', $patientId)
             ->whereDate('appointment_date', $date)
-            ->where('appointment_time', $normalized)
+            ->whereIn('appointment_time', [$normalized, substr($normalized, 0, 5)])
             ->where('status', '!=', self::CANCELLED)
             ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
             ->exists();
