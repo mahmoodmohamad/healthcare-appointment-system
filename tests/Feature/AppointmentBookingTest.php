@@ -379,4 +379,16 @@ class AppointmentBookingTest extends TestCase
         $this->assertSame(Appointment::SCHEDULED, $otherAppointment->fresh()->status);
     }
 
+
+    public function test_patient_slot_migration_rollback_does_not_drop_a_preexisting_column(): void
+    {
+        $migration = require database_path(
+            'migrations/2026_11_18_000001_add_patient_slot_lock_to_appointments_table.php'
+        );
+
+        $migration->down();
+
+        $this->assertTrue(Schema::hasColumn('appointments', 'patient_slot_lock'));
+    }
+
 }
