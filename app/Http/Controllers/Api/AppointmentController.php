@@ -139,6 +139,18 @@ class AppointmentController extends Controller
 
         $data = $request->validated();
 
+        $scheduleFields = [
+            'doctor_id',
+            'appointment_date',
+            'appointment_time',
+        ];
+
+        if ($user->isDoctor() && Arr::hasAny($data, $scheduleFields)) {
+            return response()->json([
+                'message' => 'Doctors are not authorized to reschedule appointments.',
+            ], 403);
+        }
+
         if ($user->isReceptionist()) {
             // Receptionists may only update scheduling information.
             $allowed = [
@@ -175,9 +187,7 @@ class AppointmentController extends Controller
             }
         }
 
-        $scheduleChanged = isset($data['doctor_id'])
-            || isset($data['appointment_date'])
-            || isset($data['appointment_time']);
+        $scheduleChanged = Arr::hasAny($data, $scheduleFields);
 
         if ($scheduleChanged) {
             if (! $user->isAdmin() && ! $user->isReceptionist()) {
