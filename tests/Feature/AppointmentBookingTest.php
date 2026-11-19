@@ -2,12 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Models\Admin;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Receptionist;
 use App\Models\User;
 use Database\Seeders\AppointmentSeeder;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
