@@ -345,4 +345,38 @@ class AppointmentBookingTest extends TestCase
         $this->assertFalse(Gate::forUser($adminUser)->allows('cancel', $appointment));
     }
 
+
+    public function test_receptionist_can_cancel_only_their_own_scheduled_appointment(): void
+    {
+        $ownerUser = User::factory()->create();
+        $owner = Receptionist::factory()->for($ownerUser)->create();
+        $otherUser = User::factory()->create();
+        Receptionist::factory()->for($otherUser)->create();
+
+        $ownAppointment = Appointment::factory()->create([
+            'receptionist_id' => $owner->id,
+            'status' => Appointment::SCHEDULED,
+        ]);
+        $otherAppointment = Appointment::factory()->create([
+            'status' => Appointment::SCHEDULED,
+        ]);
+        $otherAppointment->update([
+            'receptionist_id' => Receptionist::query()
+                ->where('user_id', $otherUser->id)
+                ->value('id'),
+        ]);
+
+        $this->actingAs($ownerUser)
+            ->delete(route('appointments.destroy', $ownAppointment))
+            ->assertRedirect(route('appointments.index'));
+
+        $this->assertSame(Appointment::CANCELLED, $ownAppointment->fresh()->status);
+
+        $this->actingAs($ownerUser)
+            ->delete(route('appointments.destroy', $otherAppointment))
+            ->assertForbidden();
+
+        $this->assertSame(Appointment::SCHEDULED, $otherAppointment->fresh()->status);
+    }
+
 }
