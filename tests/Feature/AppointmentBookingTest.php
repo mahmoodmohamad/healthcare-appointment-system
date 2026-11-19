@@ -180,17 +180,164 @@ class AppointmentBookingTest extends TestCase
     }
 
 
-    public function test_appointment_seeder_is_idempotent_when_run_twice(): void
+    public function test_appointment_seeder_keeps_completed_and_cancelled_visits_unchanged_on_reruns(): void
     {
         Doctor::factory()->create();
         Patient::factory()->count(2)->create();
 
         $this->seed(AppointmentSeeder::class);
-        $countAfterFirstRun = Appointment::query()->count();
+
+        $completedSeed = Appointment::query()
+            ->where('notes', '[SEED] Completed visit')
+            ->firstOrFail();
+        $cancelledSeed = Appointment::query()
+            ->where('notes', '[SEED] Cancelled visit')
+            ->firstOrFail();
+        $initialSeeds = Appointment::query()
+            ->where('notes', '[SEED] Initial visit')
+            ->orderBy('id')
+            ->get();
+
+        $initialCompleted = $initialSeeds[0];
+        $initialCancelled = $initialSeeds[1];
+
+        $completedSeed->update([
+            'appointment_date' => '1999-01-01 12:15:00',
+            'appointment_time' => '12:15:00',
+        ]);
+        $cancelledSeed->update([
+            'appointment_date' => '1999-01-02 13:30:00',
+            'appointment_time' => '13:30:00',
+        ]);
+        $initialCompleted->update([
+            'status' => Appointment::COMPLETED,
+            'appointment_date' => '1999-01-03 14:45:00',
+            'appointment_time' => '14:45:00',
+        ]);
+        $initialCancelled->update([
+            'status' => Appointment::CANCELLED,
+            'appointment_date' => '1999-01-04 15:00:00',
+            'appointment_time' => '15:00:00',
+        ]);
+
+        $protectedIds = [
+            $completedSeed->id,
+            $cancelledSeed->id,
+            $initialCompleted->id,
+            $initialCancelled->id,
+        ];
+        $before = Appointment::query()
+            ->whereIn('id', $protectedIds)
+            ->orderBy('id')
+            ->get(['id', 'status', 'appointment_date', 'appointment_time', 'notes'])
+            ->toArray();
+        $countBefore = Appointment::query()->count();
 
         $this->seed(AppointmentSeeder::class);
 
-        $this->assertSame($countAfterFirstRun, Appointment::query()->count());
+        $after = Appointment::query()
+            ->whereIn('id', $protectedIds)
+            ->orderBy('id')
+            ->get(['id', 'status', 'appointment_date', 'appointment_time', 'notes'])
+            ->toArray();
+
+        $this->assertSame($before, $after);
+        $this->assertSame($countBefore, Appointment::query()->count());
+    }
+
+    public function test_sqlite_migrations_create_both_unique_generated_slot_columns(): void
+    {
+        $this->assertSame('sqlite', DB::getDriverName());
+        $this->assertTrue(Schema::hasColumn('appointments', 'slot_lock'));
+        $this->assertTrue(Schema::hasColumn('appointments', 'patient_slot_lock'));
+    }
+
+    public function test_database_unique_indexes_prevent_doctor_and_patient_double_booking(): void
+    {
+        $doctor = Doctor::factory()->create();
+        $otherDoctor = Doctor::factory()->create();
+        $patient = Patient::factory()->create();
+        $otherPatient = Patient::factory()->create();
+        $date = now()->addDays(8)->toDateString();
+
+        Appointment::factory()->create([
+            'doctor_id' => $doctor->id,
+            'patient_id' => $patient->id,
+            'appointment_date' => $date . ' 10:00:00',
+            'appointment_time' => '10:00:00',
+        ]);
+
+        try {
+            Appointment::factory()->create([
+                'doctor_id' => $doctor->id,
+                'patient_id' => $otherPatient->id,
+                'appointment_date' => $date . ' 10:00:00',
+                'appointment_time' => '10:00:00',
+            ]);
+            $this->fail('The database should reject a second appointment for the same doctor and time.');
+        } catch (QueryException $exception) {
+            $this->assertTrue(Appointment::isDuplicateKey($exception));
+        }
+
+        try {
+            Appointment::factory()->create([
+                'doctor_id' => $otherDoctor->id,
+                'patient_id' => $patient->id,
+                'appointment_date' => $date . ' 10:00:00',
+                'appointment_time' => '10:00:00',
+            ]);
+            $this->fail('The database should reject a second appointment for the same patient and time.');
+        } catch (QueryException $exception) {
+            $this->assertTrue(Appointment::isDuplicateKey($exception));
+        }
+    }
+
+    public function test_cancelled_appointment_releases_doctor_and_patient_slots(): void
+    {
+        $doctor = Doctor::factory()->create();
+        $patient = Patient::factory()->create();
+        $date = now()->addDays(9)->toDateString();
+
+        Appointment::factory()->create([
+            'doctor_id' => $doctor->id,
+            'patient_id' => $patient->id,
+            'appointment_date' => $date . ' 10:00:00',
+            'appointment_time' => '10:00:00',
+            'status' => Appointment::CANCELLED,
+        ]);
+
+        $replacement = Appointment::factory()->create([
+            'doctor_id' => $doctor->id,
+            'patient_id' => $patient->id,
+            'appointment_date' => $date . ' 10:00:00',
+            'appointment_time' => '10:00:00',
+            'status' => Appointment::SCHEDULED,
+        ]);
+
+        $this->assertSame(Appointment::SCHEDULED, $replacement->status);
+    }
+
+    public function test_doctors_and_patients_cannot_reschedule_through_the_policy(): void
+    {
+        $appointment = Appointment::factory()->create();
+        $doctorUser = $appointment->doctor->user;
+        $patientUser = $appointment->patient->user;
+
+        $this->assertFalse(Gate::forUser($doctorUser)->allows('reschedule', $appointment));
+        $this->assertFalse(Gate::forUser($patientUser)->allows('reschedule', $appointment));
+    }
+
+    public function test_admin_retains_read_only_appointment_access(): void
+    {
+        $adminUser = User::factory()->create();
+        Admin::query()->create(['user_id' => $adminUser->id]);
+        $appointment = Appointment::factory()->create();
+
+        $this->assertTrue(Gate::forUser($adminUser)->allows('view', $appointment));
+        $this->assertTrue(Gate::forUser($adminUser)->allows('viewAny', Appointment::class));
+        $this->assertFalse(Gate::forUser($adminUser)->allows('manage', $appointment));
+        $this->assertFalse(Gate::forUser($adminUser)->allows('reschedule', $appointment));
+        $this->assertFalse(Gate::forUser($adminUser)->allows('cancel', $appointment));
     }
 
 }
